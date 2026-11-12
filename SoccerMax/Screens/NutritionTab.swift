@@ -9,6 +9,7 @@ struct NutritionTab: View {
     @State private var editingBody = false
     /// The day being looked at ("Mon"..."Sun" of this week); today when the tab opens.
     @State private var day = todayKey()
+    @State private var planCategory = MealPlan.categories[0]
 
     private var key: String { dateKey(dateOf(day)) }
     private var isToday: Bool { day == todayKey() }
@@ -34,9 +35,10 @@ struct NutritionTab: View {
                     week
                     calories(d, goal)
                     macros(d, goal)
+                    if isToday { tip(d, goal) }
                     water(d, goal)
                     meals(d)
-                    if isToday { quickMeals }
+                    mealPlans
                     Text("A general guide for active players, not medical advice. If you have a health condition, follow your doctor.")
                         .font(F.round(12, .medium)).foregroundStyle(C.muted)
                         .fixedSize(horizontal: false, vertical: true)
@@ -45,6 +47,8 @@ struct NutritionTab: View {
                 .padding(.bottom, 110)
             }
             .scrollIndicators(.hidden)
+            // test builds: `-route tab:nutrition:bottom` opens scrolled to the end, for screenshots of the lower half
+            .defaultScrollAnchor(DebugRoute.parts.contains("bottom") ? .bottom : .top)
             .tabRoot("Nutrition")
             .page()
             .overlay(alignment: .bottomTrailing) {
@@ -211,7 +215,7 @@ struct NutritionTab: View {
     private func meals(_ d: FuelDay) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             Text(isToday ? "Today's meals" : "\(FULL_DAY[day]?.capitalized ?? day)'s meals")
-                .font(.system(size: 20, weight: .heavy)).foregroundStyle(C.creme)
+                .font(.system(size: 18, weight: .bold)).foregroundStyle(C.creme)
             if d.entries.isEmpty {
                 LabPanel(padding: 22) {
                     VStack(spacing: 10) {
@@ -220,7 +224,7 @@ struct NutritionTab: View {
                             .background(Circle().fill(C.brand.opacity(0.16)))
                             .shadow(color: C.brand.opacity(0.5), radius: 14)
                         Text(isToday ? "No meals logged yet" : "Nothing was logged").font(F.round(17, .bold)).foregroundStyle(C.creme)
-                        Text(isToday ? "Add what you eat, or log a ready-made meal in one tap." : "Pick today to log food.")
+                        Text(isToday ? "Add what you eat, or log a meal plan below in one tap." : "Pick today to log food.")
                             .font(F.round(14, .medium)).foregroundStyle(C.muted).multilineTextAlignment(.center)
                         if isToday {
                             Button { adding = true } label: { Label("Add food", systemImage: "plus") }
@@ -262,77 +266,234 @@ struct NutritionTab: View {
         }
     }
 
-    // MARK: quick meals
+    // MARK: coach tip
 
-    private var quickMeals: some View {
+    /// One line of advice from today's numbers: the biggest gap, and food that closes it.
+    private func tip(_ d: FuelDay, _ goal: FuelTargets) -> some View {
+        let hour = Calendar.current.component(.hour, from: Date())
+        let proteinLeft = goal.protein - Int(d.protein.rounded())
+        let carbsLeft = goal.carbs - Int(d.carbs.rounded())
+        let kcalLeft = goal.kcal - d.kcal
+        var text = "You're on track today. Keep the water going."
+        var icon = "checkmark.seal.fill"
+        if d.entries.isEmpty {
+            text = hour < 11 ? "Start with breakfast. Oats, a banana and milk give you energy for the day."
+                             : "Nothing logged yet. Add what you've eaten so your targets mean something."
+            icon = "sunrise.fill"
+        } else if kcalLeft < -200 {
+            text = "You're past your target. That's fine on a heavy training day; ease off the snacks tonight."
+            icon = "exclamationmark.circle.fill"
+        } else if d.water < goal.water / 2 && hour >= 14 {
+            text = "You're behind on water. Have two glasses now and one with each meal."
+            icon = "drop.fill"
+        } else if proteinLeft > 40 {
+            text = "You're \(proteinLeft) g short on protein. A chicken breast and a yogurt would cover most of it."
+            icon = "dumbbell.fill"
+        } else if carbsLeft > 120 && hour < 18 {
+            text = "You have \(carbsLeft) g of carbs left. Rice, pasta or bread before training will top you up."
+            icon = "bolt.fill"
+        }
+        return HStack(alignment: .top, spacing: 12) {
+            Image(systemName: icon).font(.system(size: 15, weight: .bold)).foregroundStyle(C.brandHi)
+                .frame(width: 38, height: 38)
+                .background(RoundedRectangle(cornerRadius: 11, style: .continuous).fill(C.brand.opacity(0.18)))
+            VStack(alignment: .leading, spacing: 3) {
+                Text("COACH TIP").font(F.round(11, .bold)).kerning(1.4).foregroundStyle(C.brandHi)
+                Text(text).font(F.round(14, .medium)).foregroundStyle(C.creme)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.brand.opacity(0.08))
+                .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(C.brand.opacity(0.35), lineWidth: 1))
+        )
+        .accessibilityElement(children: .combine)
+    }
+
+    // MARK: meal plans
+
+    private var mealPlans: some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
-                Text("Quick meals").font(.system(size: 20, weight: .heavy)).foregroundStyle(C.creme)
-                Text("Built for training days. One tap logs the whole meal.").font(F.round(13, .medium)).foregroundStyle(C.muted)
+                Text("Meal plans").font(.system(size: 18, weight: .bold)).foregroundStyle(C.creme)
+                Text(isToday ? "Pick the moment. One tap logs the whole plan." : "Pick today to log a plan.")
+                    .font(F.round(13, .medium)).foregroundStyle(C.muted)
             }
             ScrollView(.horizontal) {
-                HStack(spacing: 10) {
-                    ForEach(QuickMeal.all) { m in
-                        Button {
-                            lab.eat(meal: m)
-                            Haptics.play(.goal)
-                        } label: {
-                            VStack(alignment: .leading, spacing: 10) {
-                                Image(systemName: m.icon).font(.system(size: 17, weight: .bold)).foregroundStyle(m.tint)
-                                    .frame(width: 42, height: 42)
-                                    .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(m.tint.opacity(0.16)))
-                                Text(m.name).font(F.round(16, .bold)).foregroundStyle(C.creme)
-                                Text(m.when).font(F.round(12, .semibold)).foregroundStyle(m.tint)
-                                Text(m.foods.joined(separator: ", ")).font(F.round(12, .medium)).foregroundStyle(C.muted)
-                                    .lineLimit(2).fixedSize(horizontal: false, vertical: true)
-                                Spacer(minLength: 0)
-                                HStack {
-                                    Text("\(m.kcal) kcal").font(F.round(13, .bold)).foregroundStyle(C.creme2)
-                                    Spacer()
-                                    Image(systemName: "plus.circle.fill").font(.system(size: 22, weight: .bold)).foregroundStyle(C.brand)
-                                }
-                            }
-                            .padding(14)
-                            .frame(width: 190, height: 214, alignment: .topLeading)
-                            .background(
-                                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                                    .fill(LinearGradient(colors: [m.tint.opacity(0.10), C.char800], startPoint: .topLeading, endPoint: .bottomTrailing))
-                                    .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.line, lineWidth: 1))
-                            )
+                HStack(spacing: 8) {
+                    ForEach(MealPlan.categories, id: \.self) { c in
+                        let on = c == planCategory
+                        Button { planCategory = c; Haptics.play(.stud) } label: {
+                            Label(c, systemImage: MealPlan.icon(c))
+                                .font(F.round(13, .semibold))
+                                .foregroundStyle(on ? Color.white : C.creme2)
+                                .padding(.horizontal, 14).frame(height: 38)
+                                .background(Capsule().fill(on ? C.brand : C.char800).overlay(Capsule().stroke(on ? Color.clear : C.line, lineWidth: 1)))
                         }
-                        .buttonStyle(.press(.stud))
-                        .accessibilityLabel("Log \(m.name): \(m.foods.joined(separator: ", ")), \(m.kcal) calories")
+                        .buttonStyle(.plain)
+                        .accessibilityAddTraits(on ? .isSelected : [])
                     }
                 }
             }
             .scrollIndicators(.hidden)
+            VStack(spacing: 10) {
+                ForEach(MealPlan.all.filter { $0.category == planCategory }) { m in planRow(m) }
+            }
         }
+    }
+
+    private func planRow(_ m: MealPlan) -> some View {
+        let tint = MealPlan.tint(m.category)
+        return VStack(alignment: .leading, spacing: 10) {
+            HStack(alignment: .top, spacing: 12) {
+                Image(systemName: m.icon).font(.system(size: 16, weight: .bold)).foregroundStyle(tint)
+                    .frame(width: 42, height: 42)
+                    .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(tint.opacity(0.16)))
+                VStack(alignment: .leading, spacing: 3) {
+                    Text(m.name).font(F.round(16, .semibold)).foregroundStyle(C.creme)
+                    Text(m.when).font(F.round(12, .semibold)).foregroundStyle(tint)
+                }
+                Spacer(minLength: 0)
+                if m.kcal > 0 {
+                    VStack(alignment: .trailing, spacing: 1) {
+                        Text("\(m.kcal)").font(.system(size: 16, weight: .bold)).foregroundStyle(C.creme)
+                        Text("kcal").font(F.round(11, .semibold)).foregroundStyle(C.muted)
+                    }
+                }
+            }
+            VStack(alignment: .leading, spacing: 5) {
+                ForEach(m.lines, id: \.self) { line in
+                    HStack(alignment: .top, spacing: 8) {
+                        Circle().fill(tint).frame(width: 5, height: 5).padding(.top, 6)
+                        Text(line).font(F.round(13, .medium)).foregroundStyle(C.creme2)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+            if m.kcal > 0 {
+                HStack(spacing: 14) {
+                    Text("P \(Int(m.protein.rounded()))g").foregroundStyle(labSkillColor("Stretching"))
+                    Text("C \(Int(m.carbs.rounded()))g").foregroundStyle(C.gold)
+                    Text("F \(Int(m.fat.rounded()))g").foregroundStyle(labSkillColor("Defending"))
+                    if m.water > 0 { Label("\(m.water)", systemImage: "drop.fill").foregroundStyle(C.brandHi) }
+                }
+                .font(F.round(12, .bold))
+            }
+            if isToday {
+                Button {
+                    lab.eat(plan: m)
+                    Haptics.play(.goal)
+                } label: {
+                    Label(m.kcal > 0 ? "Log this plan" : "Log \(m.water) glass\(m.water == 1 ? "" : "es") of water", systemImage: "plus")
+                }
+                .buttonStyle(.game(.charcoal, height: 42, font: 20))
+            }
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 20, style: .continuous)
+                .fill(LinearGradient(colors: [tint.opacity(0.08), C.char800], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.line, lineWidth: 1))
+        )
     }
 }
 
-/// A ready-made meal: a few items from the food list, logged together.
-struct QuickMeal: Identifiable {
+/// A ready-made plan for one moment of the football week: food from the list (logged together), glasses of water,
+/// or both. Hydration plans are water and timing only.
+struct MealPlan: Identifiable {
     let id: String
+    let category: String
     let name: String
     let when: String
     let icon: String
-    let tint: Color
+    /// Names from Foods.all.
     let foods: [String]
+    /// Glasses of water (250 ml) the plan adds.
+    var water = 0
+    /// Extra guidance shown under the foods (timing, what to avoid).
+    var notes: [String] = []
 
     var items: [FoodItem] { foods.compactMap { n in Foods.all.first { $0.name == n } } }
     var kcal: Int { items.reduce(0) { $0 + $1.kcal } }
+    var protein: Double { items.reduce(0) { $0 + $1.protein } }
+    var carbs: Double { items.reduce(0) { $0 + $1.carbs } }
+    var fat: Double { items.reduce(0) { $0 + $1.fat } }
+    var lines: [String] { items.map { "\($0.name), \($0.serving)" } + notes }
 
-    static let all: [QuickMeal] = [
-        QuickMeal(id: "breakfast", name: "Training breakfast", when: "Morning of a session", icon: "sunrise.fill", tint: C.gold,
-                  foods: ["Oats", "Banana", "Milk"]),
-        QuickMeal(id: "pre", name: "Pre-match plate", when: "3 hours before kick-off", icon: "bolt.fill", tint: labSkillColor("Runs"),
-                  foods: ["Pasta with tomato sauce", "Chicken breast", "Orange juice"]),
-        QuickMeal(id: "post", name: "Recovery meal", when: "Within an hour after", icon: "arrow.triangle.2.circlepath", tint: labSkillColor("Stretching"),
-                  foods: ["Chicken and rice", "Chocolate milk"]),
-        QuickMeal(id: "snack", name: "Half-time style snack", when: "Quick energy", icon: "leaf.fill", tint: labSkillColor("Passing"),
-                  foods: ["Banana", "Granola bar"]),
-        QuickMeal(id: "rest", name: "Rest day dinner", when: "Lighter on carbs", icon: "moon.fill", tint: labSkillColor("Defending"),
-                  foods: ["Salmon", "Potato", "Cooked vegetables"]),
+    static let categories = ["Pre-match", "Recovery", "Training", "Snacks", "Hydration"]
+    static func icon(_ c: String) -> String {
+        switch c {
+        case "Pre-match": return "bolt.fill"
+        case "Recovery": return "arrow.triangle.2.circlepath"
+        case "Training": return "figure.soccer"
+        case "Snacks": return "leaf.fill"
+        default: return "drop.fill"
+        }
+    }
+    static func tint(_ c: String) -> Color {
+        switch c {
+        case "Pre-match": return labSkillColor("Runs")
+        case "Recovery": return labSkillColor("Stretching")
+        case "Training": return C.gold
+        case "Snacks": return labSkillColor("Passing")
+        default: return C.brandHi
+        }
+    }
+
+    static let all: [MealPlan] = [
+        MealPlan(id: "pre-main", category: "Pre-match", name: "Match-day plate", when: "3 to 4 hours before kick-off", icon: "bolt.fill",
+                 foods: ["Pasta with tomato sauce", "Chicken breast", "Orange juice"], water: 2,
+                 notes: ["Mostly carbs, some protein, little fat. Nothing new on match day."]),
+        MealPlan(id: "pre-light", category: "Pre-match", name: "Light and early", when: "Morning kick-off", icon: "sunrise.fill",
+                 foods: ["Oats", "Banana", "Bread"], water: 2,
+                 notes: ["Finish eating at least 2 hours before you play."]),
+        MealPlan(id: "pre-top", category: "Pre-match", name: "Top-up", when: "60 minutes before", icon: "timer",
+                 foods: ["Banana", "Dates"], water: 1,
+                 notes: ["Small and quick to digest. Skip it if your stomach feels full."]),
+
+        MealPlan(id: "rec-meal", category: "Recovery", name: "Recovery meal", when: "Within 1 to 2 hours after", icon: "arrow.triangle.2.circlepath",
+                 foods: ["Chicken and rice", "Cooked vegetables", "Chocolate milk"], water: 2,
+                 notes: ["Carbs refill your legs, protein repairs them."]),
+        MealPlan(id: "rec-fast", category: "Recovery", name: "Straight after", when: "In the first 30 minutes", icon: "clock.fill",
+                 foods: ["Chocolate milk", "Banana"], water: 2,
+                 notes: ["Easy to get down when you're not hungry yet."]),
+        MealPlan(id: "rec-veg", category: "Recovery", name: "No-meat recovery", when: "Within 1 to 2 hours after", icon: "leaf.fill",
+                 foods: ["Rice and beans", "Eggs", "Mixed salad"], water: 2),
+
+        MealPlan(id: "tr-breakfast", category: "Training", name: "Training breakfast", when: "Morning of a session", icon: "sunrise.fill",
+                 foods: ["Oats", "Eggs", "Orange juice"], water: 1),
+        MealPlan(id: "tr-lunch", category: "Training", name: "Training-day lunch", when: "3 hours before training", icon: "fork.knife",
+                 foods: ["Chicken wrap", "Apple", "Greek yogurt"], water: 2),
+        MealPlan(id: "tr-dinner", category: "Training", name: "Training-day dinner", when: "After an evening session", icon: "moon.fill",
+                 foods: ["Salmon", "Potato", "Cooked vegetables"], water: 2),
+        MealPlan(id: "tr-rest", category: "Training", name: "Rest-day plate", when: "No training today", icon: "bed.double.fill",
+                 foods: ["Omelette", "Mixed salad", "Bread"], water: 1,
+                 notes: ["A little lighter on carbs, the same protein."]),
+
+        MealPlan(id: "sn-energy", category: "Snacks", name: "Quick energy", when: "30 to 60 minutes before", icon: "bolt.fill",
+                 foods: ["Banana", "Granola bar"]),
+        MealPlan(id: "sn-protein", category: "Snacks", name: "Protein snack", when: "Between meals", icon: "dumbbell.fill",
+                 foods: ["Greek yogurt", "Mixed nuts"]),
+        MealPlan(id: "sn-half", category: "Snacks", name: "Half-time", when: "At the break", icon: "pause.circle.fill",
+                 foods: ["Orange", "Dates"], water: 1,
+                 notes: ["Small bites and a few sips. Not a meal."]),
+        MealPlan(id: "sn-bed", category: "Snacks", name: "Before bed", when: "After a late game", icon: "moon.stars.fill",
+                 foods: ["Milk", "Peanut butter toast"]),
+
+        MealPlan(id: "hy-match", category: "Hydration", name: "Match-day water", when: "From waking up to kick-off", icon: "drop.fill",
+                 foods: [], water: 4,
+                 notes: ["Two glasses with breakfast.", "One glass 2 hours before.", "One glass in the warm-up, in sips."]),
+        MealPlan(id: "hy-during", category: "Hydration", name: "During the game", when: "Breaks and half-time", icon: "pause.circle.fill",
+                 foods: [], water: 2,
+                 notes: ["A few mouthfuls at every break.", "On a hot day, add a sports drink at half-time."]),
+        MealPlan(id: "hy-after", category: "Hydration", name: "After the whistle", when: "In the 2 hours after", icon: "arrow.triangle.2.circlepath",
+                 foods: [], water: 3,
+                 notes: ["Drink steadily, not all at once.", "Pale yellow urine means you've caught up."]),
+        MealPlan(id: "hy-daily", category: "Hydration", name: "Everyday habit", when: "Any day", icon: "calendar",
+                 foods: [], water: 1,
+                 notes: ["A glass when you wake up.", "A glass with every meal.", "Keep a bottle in your bag."]),
     ]
 }
 

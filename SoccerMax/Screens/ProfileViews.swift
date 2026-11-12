@@ -43,12 +43,14 @@ struct ProfileTab: View {
                     }
                     identity
                     numbers
+                    SkillMapCard()
                     // the big flame is gone (2026-11-13): the streak is the first tile above
                     // v3 (2026-11-08, user): no rank card; tap the level bar ? every level
                     Button { showBadges = true } label: { LevelBar(level: store.level, showsMore: true) }
                         .buttonStyle(.press)
+                    CareerCard()
+                    AchievementsCard()
                     TrainingChart()
-                    StatsPair(best: store.air.best)   // all time + this month, side by side
                 }
                 .padding(.horizontal, 16)
                 .padding(.bottom, 30)

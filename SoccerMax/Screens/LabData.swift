@@ -603,12 +603,13 @@ final class Lab {
         fuel[today] = day
         trimFuel()
     }
-    /// Log every item of a ready-made meal (Screens/NutritionTab.swift QuickMeal).
-    func eat(meal: QuickMeal) {
+    /// Log a meal plan: every food in it, and its glasses of water (Screens/NutritionTab.swift MealPlan).
+    func eat(plan: MealPlan) {
         var day = fuelToday
-        for f in meal.items {
+        for f in plan.items {
             day.entries.append(FoodEntry(name: f.name, kcal: f.kcal, protein: f.protein, carbs: f.carbs, fat: f.fat))
         }
+        day.water = min(30, day.water + plan.water)
         fuel[today] = day
         trimFuel()
     }

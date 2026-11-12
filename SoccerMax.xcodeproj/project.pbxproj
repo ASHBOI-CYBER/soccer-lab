@@ -61,6 +61,7 @@
 		9A3C9C849F063C4E08F0480E /* Matchday.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25C20692BD219DE50953FB6 /* Matchday.swift */; };
 		9A6DD11E33BA2F2210B53C87 /* ProfileViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321081A7E10807BC492CE684 /* ProfileViews.swift */; };
 		9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B54515A513BD184531E29 /* MapTab.swift */; };
+		BFEBEC8F441092222A02A504 /* ProfileExtras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231677850EE09D11BFEBEC8F /* ProfileExtras.swift */; };
 		1D51485E9EB0BB8778345F51 /* HomeTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF69814F624DBD21D51485E /* HomeTab.swift */; };
 		A3412D39CA7A9C38DD62ED61 /* RunTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = A4D088152467966DA3412D39 /* RunTracker.swift */; };
 		A3DA36B2E4E17119BA2A4C1C /* NutritionTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266682EDB4B2C837A3DA36B2 /* NutritionTab.swift */; };
@@ -124,6 +125,7 @@
 
 /* Begin PBXFileReference section */
 		008B54515A513BD184531E29 /* MapTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTab.swift; sourceTree = "<group>"; };
+		231677850EE09D11BFEBEC8F /* ProfileExtras.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileExtras.swift; sourceTree = "<group>"; };
 		DAF69814F624DBD21D51485E /* HomeTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HomeTab.swift; sourceTree = "<group>"; };
 		A4D088152467966DA3412D39 /* RunTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RunTracker.swift; sourceTree = "<group>"; };
 		266682EDB4B2C837A3DA36B2 /* NutritionTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionTab.swift; sourceTree = "<group>"; };
@@ -315,6 +317,7 @@
 				84384AF82E40D2BD83DFB35E /* LocalTeamViews.swift */,
 				457EAABAD4522119C8D6381B /* LoggedViews.swift */,
 				008B54515A513BD184531E29 /* MapTab.swift */,
+				231677850EE09D11BFEBEC8F /* ProfileExtras.swift */,
 				DAF69814F624DBD21D51485E /* HomeTab.swift */,
 				A4D088152467966DA3412D39 /* RunTracker.swift */,
 				266682EDB4B2C837A3DA36B2 /* NutritionTab.swift */,
@@ -558,6 +561,7 @@
 				410B5D77DB3B7434D4C9F886 /* LocalTeams.swift in Sources */,
 				2A313F5883861E364088C2C7 /* LoggedViews.swift in Sources */,
 				9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */,
+				BFEBEC8F441092222A02A504 /* ProfileExtras.swift in Sources */,
 				1D51485E9EB0BB8778345F51 /* HomeTab.swift in Sources */,
 				A3412D39CA7A9C38DD62ED61 /* RunTracker.swift in Sources */,
 				A3DA36B2E4E17119BA2A4C1C /* NutritionTab.swift in Sources */,
