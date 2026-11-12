@@ -345,5 +345,5 @@ func dayNumber(_ day: String) -> Int { Calendar.current.component(.day, from: da
 /// "OCT 19 ? 25", or "SEP 28 ? OCT 4" across a month.
 func weekRange() -> String {
     let a = shortDate("Mon"), b = shortDate("Sun")
-    return a.prefix(3) == b.prefix(3) ? "\(a) — \(dayNumber("Sun"))" : "\(a) — \(b)"
+    return a.prefix(3) == b.prefix(3) ? "\(a)–\(dayNumber("Sun"))" : "\(a) – \(b)"
 }

@@ -1835,7 +1835,7 @@ private struct SafetyButtons: View {
             }
             Button("Cancel", role: .cancel) {}
         }
-        .confirmationDialog("Block \(member.name.hasSuffix(".") — member.name : member.name + "?")", isPresented: $confirmBlock, titleVisibility: .visible) {
+        .confirmationDialog("Block \(member.name.hasSuffix(".") ? member.name : member.name + "?")", isPresented: $confirmBlock, titleVisibility: .visible) {
             Button("Block", role: .destructive) { Task { await team.block(member.id) } }
         } message: { Text("You won't see their messages or activity in any team. They won't be told.") }
         .alert(reported == false ? "Couldn't send the report" : "Thanks for telling us",

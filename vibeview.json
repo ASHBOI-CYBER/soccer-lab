@@ -1,0 +1,15 @@
+{
+  "defaultPlatform": "ios",
+  "platforms": {
+    "ios": {
+      "build": {
+        "profiles": {
+          "development": {
+            "command": "xcodebuild -project SoccerMax.xcodeproj -scheme SoccerMax -configuration Debug -sdk iphonesimulator -arch arm64 -derivedDataPath build -skipPackagePluginValidation -skipMacroValidation CODE_SIGN_IDENTITY=-",
+            "artifact": "build/Build/Products/Debug-iphonesimulator/SoccerMax.app"
+          }
+        }
+      }
+    }
+  }
+}

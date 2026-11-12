@@ -1212,7 +1212,7 @@ struct ScoreBug: View {
             HStack(spacing: 8) {
                 CrestImage(url: tape.home.logo, size: 26)
                 Text(abbr(tape.home.name)).font(F.display(15)).foregroundStyle(C.creme)
-                Text("\(score.0) — \(score.1)")
+                Text("\(score.0) – \(score.1)")
                     .font(F.display(20)).foregroundStyle(C.charInk)
                     .padding(.horizontal, 9).padding(.vertical, 2)
                     .background(RoundedRectangle(cornerRadius: 6).fill(C.creme))
