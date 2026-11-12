@@ -169,10 +169,30 @@ struct NutritionTab: View {
     private func water(_ d: FuelDay, _ goal: FuelTargets) -> some View {
         LabPanel {
             VStack(alignment: .leading, spacing: 12) {
-                HStack {
-                    Label("Water", systemImage: "drop.fill").font(F.round(16, .bold)).foregroundStyle(C.creme)
-                    Spacer()
-                    Text("\(d.water) of \(goal.water) glasses").font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                HStack(spacing: 10) {
+                    VStack(alignment: .leading, spacing: 2) {
+                        Label("Water", systemImage: "drop.fill").font(F.round(16, .bold)).foregroundStyle(C.creme)
+                        Text("\(d.water) of \(goal.water) glasses").font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                    }
+                    Spacer(minLength: 0)
+                    if isToday {
+                        Button { lab.water(-1); Haptics.play(.stud) } label: {
+                            Image(systemName: "minus").font(.system(size: 15, weight: .heavy)).foregroundStyle(d.water == 0 ? C.muted : C.creme)
+                                .frame(width: 44, height: 44)
+                                .background(Circle().fill(C.char700).overlay(Circle().stroke(C.line, lineWidth: 1)))
+                        }
+                        .buttonStyle(.plain)
+                        .disabled(d.water == 0)
+                        .accessibilityLabel("One glass less")
+                        Button { lab.water(1); Haptics.play(.pop) } label: {
+                            Image(systemName: "plus").font(.system(size: 15, weight: .heavy)).foregroundStyle(.white)
+                                .frame(width: 44, height: 44)
+                                .background(Circle().fill(LinearGradient(colors: [C.brandHi, C.brand], startPoint: .top, endPoint: .bottom)))
+                                .shadow(color: C.brand.opacity(0.6), radius: 8)
+                        }
+                        .buttonStyle(.plain)
+                        .accessibilityLabel("Add a glass of water")
+                    }
                 }
                 HStack(spacing: 5) {
                     ForEach(0..<goal.water, id: \.self) { i in
@@ -182,17 +202,6 @@ struct NutritionTab: View {
                     }
                 }
                 .accessibilityHidden(true)
-                if isToday {
-                    HStack(spacing: 10) {
-                        Button { lab.water(-1); Haptics.play(.stud) } label: { Image(systemName: "minus") }
-                            .buttonStyle(.game(.charcoal, height: 44, font: 22))
-                            .disabled(d.water == 0)
-                            .accessibilityLabel("One glass less")
-                        Button { lab.water(1); Haptics.play(.pop) } label: { Label("Add a glass", systemImage: "plus") }
-                            .buttonStyle(.game(.brand, height: 44, font: 22))
-                            .accessibilityLabel("Add a glass of water")
-                    }
-                }
             }
         }
     }
