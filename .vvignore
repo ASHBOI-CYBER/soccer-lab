@@ -1,0 +1,6 @@
+# not needed to build the app: keep them out of the cloud build upload
+asc/
+site/
+supabase/
+content/
+set-identity.py

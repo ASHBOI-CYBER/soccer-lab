@@ -1,0 +1,892 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		004B2D8639EF32D4F25A49CD /* StatsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 86C7F5F2B7F9167160A08560 /* StatsViews.swift */; };
+		0347330A1BAA039C2DB1704A /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 07CBEE73F8A1EB4E5DFFC025 /* Assets.xcassets */; };
+		0624BA16D28C64347DD497B4 /* DrillsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = EEE9E1E1AA16C79912CA8B96 /* DrillsViews.swift */; };
+		06B8AEF8C191D8760F613A9A /* Reminders.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B3FD6750C53E2616089974E /* Reminders.swift */; };
+		0A8DA6561A6B09CB3AB26877 /* Streak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B25D0E9E4EB55D4FABA829A /* Streak.swift */; };
+		1093AADFC9187DBF24A62039 /* PostHog in Frameworks */ = {isa = PBXBuildFile; productRef = DDB5238B496BF0B4298D64AA /* PostHog */; };
+		11377D95022A3F427D2661F8 /* PlanViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 74F9A24ACA09BFCC1A5D026A /* PlanViews.swift */; };
+		145F0C932B5AF2C5DFD65023 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD070F340C57D559BFF199A /* WidgetSnapshot.swift */; };
+		1A3AE49BCCC8B222A8226D0D /* RevenueCat in Frameworks */ = {isa = PBXBuildFile; productRef = AC1B4EFB2AB1F4F3F926E79A /* RevenueCat */; };
+		243957D6EABC5EC248ECF8A8 /* Streak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7B25D0E9E4EB55D4FABA829A /* Streak.swift */; };
+		254283F73B0C082FDF1BED88 /* Technique in Resources */ = {isa = PBXBuildFile; fileRef = 9F5DC645DA6786DB14DE6C88 /* Technique */; };
+		2603FE7FEE423130608F8E46 /* portrait-max.png in Resources */ = {isa = PBXBuildFile; fileRef = 1406559C09C85683FB004411 /* portrait-max.png */; };
+		2862AA0A4913B78B3E9051E5 /* LevelBar.swift in Sources */ = {isa = PBXBuildFile; fileRef = 90B8F65FA2FD91F3E5A5007D /* LevelBar.swift */; };
+		2864B431DE3EC2A7D4891164 /* ProViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = CA8AF07EB030F4003A60A2F2 /* ProViews.swift */; };
+		2A313F5883861E364088C2C7 /* LoggedViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 457EAABAD4522119C8D6381B /* LoggedViews.swift */; };
+		2C9C2B0C345CBD4544BB0281 /* StreakFire.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6F16AA4E6F16688C0BB2F62C /* StreakFire.swift */; };
+		2D61AC0B3CFCD8EB2FD66D69 /* WidgetSync.swift in Sources */ = {isa = PBXBuildFile; fileRef = 12C7036E7018E21A68BFC388 /* WidgetSync.swift */; };
+		2DB37E3891083FFBDC54B94C /* Purchases.swift in Sources */ = {isa = PBXBuildFile; fileRef = 25605FF8D095F9662C0626A0 /* Purchases.swift */; };
+		2E8ED4D6B823229D96DB5DE1 /* Gear in Resources */ = {isa = PBXBuildFile; fileRef = 817FE338D80200657BCB3875 /* Gear */; };
+		30256EC28A992568533E9B2C /* Controls.swift in Sources */ = {isa = PBXBuildFile; fileRef = 91CA0550007958F61D002BA1 /* Controls.swift */; };
+		337D2A04C61E91595395FE43 /* StreakFire.metal in Sources */ = {isa = PBXBuildFile; fileRef = C3891C0E218DA99968FB5F5B /* StreakFire.metal */; };
+		36295D41EFDF9FFFFEEC984D /* Stage3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = E26A16887D8DF99535567C95 /* Stage3DView.swift */; };
+		3BC27C370DEEC5AEAE024C96 /* PlanCards.swift in Sources */ = {isa = PBXBuildFile; fileRef = C2BCA943B74D0442D05A583A /* PlanCards.swift */; };
+		410B5D77DB3B7434D4C9F886 /* LocalTeams.swift in Sources */ = {isa = PBXBuildFile; fileRef = 28F569E1AE867C137CEBB4C4 /* LocalTeams.swift */; };
+		420D7B62CE8D0884711BB67E /* Stage in Resources */ = {isa = PBXBuildFile; fileRef = F3B5B8B410D2947C30C0E2A3 /* Stage */; };
+		42F2BF0C2E08168F864C686F /* SessionsTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 431711D1C97955499F9DECE6 /* SessionsTab.swift */; };
+		44C4551A57E1A2255CD20D47 /* FutCard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CDCD1C05E43B8BE8A68C907 /* FutCard.swift */; };
+		46413E94E56AD3C8EE1A31A9 /* DrillVideo.swift in Sources */ = {isa = PBXBuildFile; fileRef = 550AD0E4AA431F47B8EF27F4 /* DrillVideo.swift */; };
+		479C8212FF9B644EC2940D03 /* Haptics.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1AD558C838C0EC14D7FEB106 /* Haptics.swift */; };
+		491DFEF713E2CCF14E0EA3C8 /* SessionActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F177A4660B99D884B030BC /* SessionActivity.swift */; };
+		4C5F814D437F431CEC5E5A36 /* library.json in Resources */ = {isa = PBXBuildFile; fileRef = 45B6D9E7D9276BDE7146C0F1 /* library.json */; };
+		4C80A30752B8BB54C2EA1CA9 /* LevelViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0ABD893F4EE5E5B098C82B5 /* LevelViews.swift */; };
+		4EECC384D91D61460C410230 /* Paywall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2748F46C540BB6E04A5675DE /* Paywall.swift */; };
+		5403D47CAEA394A6F6D0D74F /* Fredoka-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B00987B9B227F3CDA09128FC /* Fredoka-Bold.ttf */; };
+		54ADF7C94D500113238A3DCD /* Bundle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 54ADD917246DA981897EFCAB /* Bundle.swift */; };
+		5B4BEC359CF60DD61B1A1207 /* MatchdayViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A76DF16E791192BA9B456B48 /* MatchdayViews.swift */; };
+		5C385254F5F13C1E03241842 /* SoccerMaxWidgets.appex in Embed Foundation Extensions */ = {isa = PBXBuildFile; fileRef = 018E38CA7AB3C52B22B95146 /* SoccerMaxWidgets.appex */; settings = {ATTRIBUTES = (RemoveHeadersOnCopy, ); }; };
+		5E91239F73E6D3E7681E498C /* SessionActivity.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4F177A4660B99D884B030BC /* SessionActivity.swift */; };
+		5F9C1646F726F5E00307FB76 /* SessionSpot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2340A875DC2502A8606B3E1D /* SessionSpot.swift */; };
+		65759D7A87F4186614909609 /* WidgetSnapshot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8FD070F340C57D559BFF199A /* WidgetSnapshot.swift */; };
+		6D6E8908DC19F08ED7EF4DF8 /* Theme.swift in Sources */ = {isa = PBXBuildFile; fileRef = F02DCE020BFB31DD44CAE21D /* Theme.swift */; };
+		70AD5E1DD43E8EFEBC13622C /* Mascot in Resources */ = {isa = PBXBuildFile; fileRef = E4AF4D27989EF6AB8F30828D /* Mascot */; };
+		7F64F4D42DCE4A6940113BA6 /* SessionPlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5259260BE45F947D670E6A9D /* SessionPlayer.swift */; };
+		807D3D3A802B3BBD7D4D4462 /* Library.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4600968936109CB1957395B0 /* Library.swift */; };
+		81499527E92C723E966D23E2 /* DrillVideos in Resources */ = {isa = PBXBuildFile; fileRef = BD53E79884137D7F8B8C7464 /* DrillVideos */; };
+		8D55CF98DC02BD6BA2DC3D3E /* Team.swift in Sources */ = {isa = PBXBuildFile; fileRef = D056A802ABDE8AD3A8962A71 /* Team.swift */; };
+		8D7F19215E3AC73FB4E46730 /* Matchday in Resources */ = {isa = PBXBuildFile; fileRef = 1051E08B27073BF75D4803DB /* Matchday */; };
+		8F6786EBB718C613F8ED729D /* LuckiestGuy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 03E7A1D9593EA509590695D1 /* LuckiestGuy-Regular.ttf */; };
+		8FC9D35BDA35DAB187F78BF5 /* TouchGlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1CEAB360034CAFC839FE94EE /* TouchGlow.swift */; };
+		921B0A9FA53ACB8DD4689408 /* TeamViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = A5917482550EB2B35CBB4747 /* TeamViews.swift */; };
+		92BEDF19307049B538257E03 /* CardViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = E47858343E79EA3858504E10 /* CardViews.swift */; };
+		9A3C9C849F063C4E08F0480E /* Matchday.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25C20692BD219DE50953FB6 /* Matchday.swift */; };
+		9A6DD11E33BA2F2210B53C87 /* ProfileViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321081A7E10807BC492CE684 /* ProfileViews.swift */; };
+		9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B54515A513BD184531E29 /* MapTab.swift */; };
+		9FAD9F2B042C69342C524266 /* Stats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85011D59A551EBD0F6D7DD37 /* Stats.swift */; };
+		A412732D2B1C53B075E6DB21 /* DrillBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71CAD9222AFE342FFEFB9B4 /* DrillBoard.swift */; };
+		A4861DCB424CA14AAEBA4BF0 /* CancelFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476F520BFD510D205AFF537F /* CancelFlow.swift */; };
+		ACED8EF03AFD8668EAF6AFFC /* Club.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1F234BE17A8259B25B70470C /* Club.swift */; };
+		B0ABE725D84EEFCEB5B9BFCC /* Stadiums in Resources */ = {isa = PBXBuildFile; fileRef = 034846459EF50CAD0C01EF76 /* Stadiums */; };
+		B300E0D1D24B4FDCA4BC7D75 /* FreeSession.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7F23C3D5E95BCFD80F5C4017 /* FreeSession.swift */; };
+		B5EB8E99D2DE5C76C4654DEE /* SessionsViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 2F97AF28AFA0AD6850EE7D97 /* SessionsViews.swift */; };
+		B8078286182F5521AB04A0E1 /* OnboardingFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 641682BE7A00217929392F21 /* OnboardingFlow.swift */; };
+		BA73CD8033035D174FB7E1FA /* Fredoka-Bold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = B00987B9B227F3CDA09128FC /* Fredoka-Bold.ttf */; };
+		BC54C465AB81456F49283E2D /* ShareLinks.swift in Sources */ = {isa = PBXBuildFile; fileRef = BB05FA442C55F9BD37F8019E /* ShareLinks.swift */; };
+		BC629F144A14F74ECD90A23E /* Mascot.swift in Sources */ = {isa = PBXBuildFile; fileRef = 064CFB3C085FD292BEA04A81 /* Mascot.swift */; };
+		C0C1DED388CA1F2D3193F5C7 /* ProPhoto.swift in Sources */ = {isa = PBXBuildFile; fileRef = 50F82CABA29C9BA5059EF805 /* ProPhoto.swift */; };
+		C2476FEF4B6822FB8C3C933A /* Fredoka-Medium.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 994B7A0EE3B14AF23E4BAACA /* Fredoka-Medium.ttf */; };
+		C50A6110BE50AA80071AA153 /* StayOffer.swift in Sources */ = {isa = PBXBuildFile; fileRef = B435D80AA02983AC7A69002D /* StayOffer.swift */; };
+		C5B22D085D2F52B298877501 /* Backup.swift in Sources */ = {isa = PBXBuildFile; fileRef = 08BE223178BC6C87607A9FEF /* Backup.swift */; };
+		CB459752BA6FA71289DCFEDE /* TapePlayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8AEF69B3F1D425BC57BB40C0 /* TapePlayer.swift */; };
+		CBE5CEA6865D4967D538B83C /* Fredoka-SemiBold.ttf in Resources */ = {isa = PBXBuildFile; fileRef = D91728863FC0698B947283B6 /* Fredoka-SemiBold.ttf */; };
+		D2CD03F7F2678E4DD7E54A4F /* SessionLive.swift in Sources */ = {isa = PBXBuildFile; fileRef = 06D1176143C891A8AAF33D48 /* SessionLive.swift */; };
+		D4146C02523FB613E47660BB /* Widgets.swift in Sources */ = {isa = PBXBuildFile; fileRef = FC56035B1CD683870DA33460 /* Widgets.swift */; };
+		DA8BC6F1DF0E1284F5D537FC /* SpiderGraph.swift in Sources */ = {isa = PBXBuildFile; fileRef = 6CF1B29406288B4207DF9BF1 /* SpiderGraph.swift */; };
+		DBA8222B00EA228ACF02D2B5 /* Players in Resources */ = {isa = PBXBuildFile; fileRef = 030B35341F13A9C0584E3325 /* Players */; };
+		DD6AF942B3AFFC763570D014 /* WeekBall.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0F00AD45CC9512EA06DD1BF8 /* WeekBall.swift */; };
+		E1104930A3DDB3417EC88165 /* Store.swift in Sources */ = {isa = PBXBuildFile; fileRef = C03AA7D49AD76BFBE5DD20DF /* Store.swift */; };
+		E8FC999923AFC7BCA2C4D6C4 /* App.swift in Sources */ = {isa = PBXBuildFile; fileRef = ADE34E7499E731DA1EFD3285 /* App.swift */; };
+		EC961F339BDBD87BFEBCD663 /* LocalTeamViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 84384AF82E40D2BD83DFB35E /* LocalTeamViews.swift */; };
+		EE1BFF22E45256693D5FAC32 /* portrait-gold.png in Resources */ = {isa = PBXBuildFile; fileRef = 5153E6E608B5C369C6F6BD4B /* portrait-gold.png */; };
+		F8EED5FBDF719C7186F686EE /* Covers in Resources */ = {isa = PBXBuildFile; fileRef = 2AD758A1296284C04FA9B89D /* Covers */; };
+		FB59E7F6D55F33982B1ACB40 /* LuckiestGuy-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 03E7A1D9593EA509590695D1 /* LuckiestGuy-Regular.ttf */; };
+		FE850C606E068447895F755A /* RevenueCatUI in Frameworks */ = {isa = PBXBuildFile; productRef = 691D582C8A6655AB505EF321 /* RevenueCatUI */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		092B5DC5AEEE1E3AD2B0D940 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 44A0A58531E4772BBF1DD695 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = FE6BB14C180B6961ADF75C50;
+			remoteInfo = SoccerMaxWidgets;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		5C54B0BB11339E682C745FFC /* Embed Foundation Extensions */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "";
+			dstSubfolderSpec = 13;
+			files = (
+				5C385254F5F13C1E03241842 /* SoccerMaxWidgets.appex in Embed Foundation Extensions */,
+			);
+			name = "Embed Foundation Extensions";
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		008B54515A513BD184531E29 /* MapTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTab.swift; sourceTree = "<group>"; };
+		018E38CA7AB3C52B22B95146 /* SoccerMaxWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SoccerMaxWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
+		030B35341F13A9C0584E3325 /* Players */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Players; path = SoccerMax/Resources/Players; sourceTree = SOURCE_ROOT; };
+		034846459EF50CAD0C01EF76 /* Stadiums */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Stadiums; path = SoccerMax/Resources/Stadiums; sourceTree = SOURCE_ROOT; };
+		03E7A1D9593EA509590695D1 /* LuckiestGuy-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LuckiestGuy-Regular.ttf"; sourceTree = "<group>"; };
+		064CFB3C085FD292BEA04A81 /* Mascot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Mascot.swift; sourceTree = "<group>"; };
+		06D1176143C891A8AAF33D48 /* SessionLive.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionLive.swift; sourceTree = "<group>"; };
+		07CBEE73F8A1EB4E5DFFC025 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		08BE223178BC6C87607A9FEF /* Backup.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Backup.swift; sourceTree = "<group>"; };
+		0F00AD45CC9512EA06DD1BF8 /* WeekBall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WeekBall.swift; sourceTree = "<group>"; };
+		1051E08B27073BF75D4803DB /* Matchday */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Matchday; path = SoccerMax/Resources/Matchday; sourceTree = SOURCE_ROOT; };
+		12C7036E7018E21A68BFC388 /* WidgetSync.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSync.swift; sourceTree = "<group>"; };
+		1406559C09C85683FB004411 /* portrait-max.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "portrait-max.png"; sourceTree = "<group>"; };
+		1AD558C838C0EC14D7FEB106 /* Haptics.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Haptics.swift; sourceTree = "<group>"; };
+		1CDCD1C05E43B8BE8A68C907 /* FutCard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FutCard.swift; sourceTree = "<group>"; };
+		1CEAB360034CAFC839FE94EE /* TouchGlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TouchGlow.swift; sourceTree = "<group>"; };
+		1F234BE17A8259B25B70470C /* Club.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Club.swift; sourceTree = "<group>"; };
+		2340A875DC2502A8606B3E1D /* SessionSpot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionSpot.swift; sourceTree = "<group>"; };
+		25605FF8D095F9662C0626A0 /* Purchases.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Purchases.swift; sourceTree = "<group>"; };
+		2748F46C540BB6E04A5675DE /* Paywall.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Paywall.swift; sourceTree = "<group>"; };
+		28F569E1AE867C137CEBB4C4 /* LocalTeams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTeams.swift; sourceTree = "<group>"; };
+		2AD758A1296284C04FA9B89D /* Covers */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Covers; path = SoccerMax/Resources/Covers; sourceTree = SOURCE_ROOT; };
+		2F97AF28AFA0AD6850EE7D97 /* SessionsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsViews.swift; sourceTree = "<group>"; };
+		321081A7E10807BC492CE684 /* ProfileViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileViews.swift; sourceTree = "<group>"; };
+		431711D1C97955499F9DECE6 /* SessionsTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionsTab.swift; sourceTree = "<group>"; };
+		457EAABAD4522119C8D6381B /* LoggedViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoggedViews.swift; sourceTree = "<group>"; };
+		45B6D9E7D9276BDE7146C0F1 /* library.json */ = {isa = PBXFileReference; lastKnownFileType = text.json; path = library.json; sourceTree = "<group>"; };
+		4600968936109CB1957395B0 /* Library.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Library.swift; sourceTree = "<group>"; };
+		476F520BFD510D205AFF537F /* CancelFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CancelFlow.swift; sourceTree = "<group>"; };
+		50F82CABA29C9BA5059EF805 /* ProPhoto.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProPhoto.swift; sourceTree = "<group>"; };
+		5153E6E608B5C369C6F6BD4B /* portrait-gold.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "portrait-gold.png"; sourceTree = "<group>"; };
+		5259260BE45F947D670E6A9D /* SessionPlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionPlayer.swift; sourceTree = "<group>"; };
+		54ADD917246DA981897EFCAB /* Bundle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bundle.swift; sourceTree = "<group>"; };
+		550AD0E4AA431F47B8EF27F4 /* DrillVideo.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrillVideo.swift; sourceTree = "<group>"; };
+		641682BE7A00217929392F21 /* OnboardingFlow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingFlow.swift; sourceTree = "<group>"; };
+		6CF1B29406288B4207DF9BF1 /* SpiderGraph.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SpiderGraph.swift; sourceTree = "<group>"; };
+		6F16AA4E6F16688C0BB2F62C /* StreakFire.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StreakFire.swift; sourceTree = "<group>"; };
+		74F9A24ACA09BFCC1A5D026A /* PlanViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanViews.swift; sourceTree = "<group>"; };
+		7B25D0E9E4EB55D4FABA829A /* Streak.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Streak.swift; sourceTree = "<group>"; };
+		7B3FD6750C53E2616089974E /* Reminders.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Reminders.swift; sourceTree = "<group>"; };
+		7F23C3D5E95BCFD80F5C4017 /* FreeSession.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FreeSession.swift; sourceTree = "<group>"; };
+		817FE338D80200657BCB3875 /* Gear */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Gear; path = SoccerMax/Resources/Gear; sourceTree = SOURCE_ROOT; };
+		84384AF82E40D2BD83DFB35E /* LocalTeamViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocalTeamViews.swift; sourceTree = "<group>"; };
+		85011D59A551EBD0F6D7DD37 /* Stats.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stats.swift; sourceTree = "<group>"; };
+		86C7F5F2B7F9167160A08560 /* StatsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatsViews.swift; sourceTree = "<group>"; };
+		89BBA4630B0664432FC29B78 /* SoccerMax.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = SoccerMax.entitlements; sourceTree = "<group>"; };
+		8AEF69B3F1D425BC57BB40C0 /* TapePlayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TapePlayer.swift; sourceTree = "<group>"; };
+		8FD070F340C57D559BFF199A /* WidgetSnapshot.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WidgetSnapshot.swift; sourceTree = "<group>"; };
+		90B8F65FA2FD91F3E5A5007D /* LevelBar.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelBar.swift; sourceTree = "<group>"; };
+		91CA0550007958F61D002BA1 /* Controls.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Controls.swift; sourceTree = "<group>"; };
+		994B7A0EE3B14AF23E4BAACA /* Fredoka-Medium.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Fredoka-Medium.ttf"; sourceTree = "<group>"; };
+		9F5DC645DA6786DB14DE6C88 /* Technique */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Technique; path = SoccerMax/Resources/Technique; sourceTree = SOURCE_ROOT; };
+		A5917482550EB2B35CBB4747 /* TeamViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TeamViews.swift; sourceTree = "<group>"; };
+		A71CAD9222AFE342FFEFB9B4 /* DrillBoard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrillBoard.swift; sourceTree = "<group>"; };
+		A76DF16E791192BA9B456B48 /* MatchdayViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MatchdayViews.swift; sourceTree = "<group>"; };
+		ADE34E7499E731DA1EFD3285 /* App.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App.swift; sourceTree = "<group>"; };
+		B00987B9B227F3CDA09128FC /* Fredoka-Bold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Fredoka-Bold.ttf"; sourceTree = "<group>"; };
+		B0ABD893F4EE5E5B098C82B5 /* LevelViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LevelViews.swift; sourceTree = "<group>"; };
+		B435D80AA02983AC7A69002D /* StayOffer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StayOffer.swift; sourceTree = "<group>"; };
+		BB05FA442C55F9BD37F8019E /* ShareLinks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShareLinks.swift; sourceTree = "<group>"; };
+		BD53E79884137D7F8B8C7464 /* DrillVideos */ = {isa = PBXFileReference; lastKnownFileType = folder; name = DrillVideos; path = SoccerMax/Resources/DrillVideos; sourceTree = SOURCE_ROOT; };
+		C03AA7D49AD76BFBE5DD20DF /* Store.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Store.swift; sourceTree = "<group>"; };
+		C2BCA943B74D0442D05A583A /* PlanCards.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanCards.swift; sourceTree = "<group>"; };
+		C3891C0E218DA99968FB5F5B /* StreakFire.metal */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.metal; path = StreakFire.metal; sourceTree = "<group>"; };
+		C4F177A4660B99D884B030BC /* SessionActivity.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SessionActivity.swift; sourceTree = "<group>"; };
+		CA8AF07EB030F4003A60A2F2 /* ProViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProViews.swift; sourceTree = "<group>"; };
+		D056A802ABDE8AD3A8962A71 /* Team.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Team.swift; sourceTree = "<group>"; };
+		D25C20692BD219DE50953FB6 /* Matchday.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matchday.swift; sourceTree = "<group>"; };
+		D5A1F46D6599CCAAA39DABA4 /* SoccerMax.app */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = wrapper.application; path = SoccerMax.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		D91728863FC0698B947283B6 /* Fredoka-SemiBold.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "Fredoka-SemiBold.ttf"; sourceTree = "<group>"; };
+		E26A16887D8DF99535567C95 /* Stage3DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Stage3DView.swift; sourceTree = "<group>"; };
+		E3BB3AAFBB71EA481C6AFB61 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		E47858343E79EA3858504E10 /* CardViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CardViews.swift; sourceTree = "<group>"; };
+		E4AF4D27989EF6AB8F30828D /* Mascot */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Mascot; path = SoccerMax/Resources/Mascot; sourceTree = SOURCE_ROOT; };
+		EEE9E1E1AA16C79912CA8B96 /* DrillsViews.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrillsViews.swift; sourceTree = "<group>"; };
+		F02DCE020BFB31DD44CAE21D /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
+		F3B5B8B410D2947C30C0E2A3 /* Stage */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Stage; path = SoccerMax/Stage; sourceTree = SOURCE_ROOT; };
+		FC56035B1CD683870DA33460 /* Widgets.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Widgets.swift; sourceTree = "<group>"; };
+		"TEMP_4F1AF19C-EBAA-41E6-B5E8-BCB1E981CD3B" /* Base.xcconfig */ = {isa = PBXFileReference; lastKnownFileType = text.xcconfig; path = Base.xcconfig; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		20943F6D6E61FFA1AD2A9A1C /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1093AADFC9187DBF24A62039 /* PostHog in Frameworks */,
+				1A3AE49BCCC8B222A8226D0D /* RevenueCat in Frameworks */,
+				FE850C606E068447895F755A /* RevenueCatUI in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		10071371B22F4685CDA0B48E /* Fonts */ = {
+			isa = PBXGroup;
+			children = (
+				B00987B9B227F3CDA09128FC /* Fredoka-Bold.ttf */,
+				994B7A0EE3B14AF23E4BAACA /* Fredoka-Medium.ttf */,
+				D91728863FC0698B947283B6 /* Fredoka-SemiBold.ttf */,
+				03E7A1D9593EA509590695D1 /* LuckiestGuy-Regular.ttf */,
+			);
+			path = Fonts;
+			sourceTree = "<group>";
+		};
+		1D4AF1AB0C937FA4C38D53C8 /* Data */ = {
+			isa = PBXGroup;
+			children = (
+				08BE223178BC6C87607A9FEF /* Backup.swift */,
+				1F234BE17A8259B25B70470C /* Club.swift */,
+				4600968936109CB1957395B0 /* Library.swift */,
+				28F569E1AE867C137CEBB4C4 /* LocalTeams.swift */,
+				D25C20692BD219DE50953FB6 /* Matchday.swift */,
+				25605FF8D095F9662C0626A0 /* Purchases.swift */,
+				7B3FD6750C53E2616089974E /* Reminders.swift */,
+				2340A875DC2502A8606B3E1D /* SessionSpot.swift */,
+				BB05FA442C55F9BD37F8019E /* ShareLinks.swift */,
+				85011D59A551EBD0F6D7DD37 /* Stats.swift */,
+				C03AA7D49AD76BFBE5DD20DF /* Store.swift */,
+				D056A802ABDE8AD3A8962A71 /* Team.swift */,
+				12C7036E7018E21A68BFC388 /* WidgetSync.swift */,
+			);
+			path = Data;
+			sourceTree = "<group>";
+		};
+		3600E9B5BA66F6433F08C0DA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				07CBEE73F8A1EB4E5DFFC025 /* Assets.xcassets */,
+				2AD758A1296284C04FA9B89D /* Covers */,
+				BD53E79884137D7F8B8C7464 /* DrillVideos */,
+				817FE338D80200657BCB3875 /* Gear */,
+				45B6D9E7D9276BDE7146C0F1 /* library.json */,
+				E4AF4D27989EF6AB8F30828D /* Mascot */,
+				1051E08B27073BF75D4803DB /* Matchday */,
+				030B35341F13A9C0584E3325 /* Players */,
+				034846459EF50CAD0C01EF76 /* Stadiums */,
+				9F5DC645DA6786DB14DE6C88 /* Technique */,
+				10071371B22F4685CDA0B48E /* Fonts */,
+				6E4061706E3EF77EF093ED8A /* Portraits */,
+			);
+			path = Resources;
+			sourceTree = "<group>";
+		};
+		468CC4C7F55D05AF6690F7F5 /* UI */ = {
+			isa = PBXGroup;
+			children = (
+				A71CAD9222AFE342FFEFB9B4 /* DrillBoard.swift */,
+				550AD0E4AA431F47B8EF27F4 /* DrillVideo.swift */,
+				1AD558C838C0EC14D7FEB106 /* Haptics.swift */,
+				90B8F65FA2FD91F3E5A5007D /* LevelBar.swift */,
+				064CFB3C085FD292BEA04A81 /* Mascot.swift */,
+				50F82CABA29C9BA5059EF805 /* ProPhoto.swift */,
+				6CF1B29406288B4207DF9BF1 /* SpiderGraph.swift */,
+				E26A16887D8DF99535567C95 /* Stage3DView.swift */,
+				C3891C0E218DA99968FB5F5B /* StreakFire.metal */,
+				6F16AA4E6F16688C0BB2F62C /* StreakFire.swift */,
+				F02DCE020BFB31DD44CAE21D /* Theme.swift */,
+				1CEAB360034CAFC839FE94EE /* TouchGlow.swift */,
+				0F00AD45CC9512EA06DD1BF8 /* WeekBall.swift */,
+			);
+			path = UI;
+			sourceTree = "<group>";
+		};
+		48CC4ECD1B479CF196A91FF8 /* Shared */ = {
+			isa = PBXGroup;
+			children = (
+				C4F177A4660B99D884B030BC /* SessionActivity.swift */,
+				7B25D0E9E4EB55D4FABA829A /* Streak.swift */,
+				8FD070F340C57D559BFF199A /* WidgetSnapshot.swift */,
+			);
+			path = Shared;
+			sourceTree = "<group>";
+		};
+		60D5DD92D1949ED0522E3310 /* Screens */ = {
+			isa = PBXGroup;
+			children = (
+				476F520BFD510D205AFF537F /* CancelFlow.swift */,
+				E47858343E79EA3858504E10 /* CardViews.swift */,
+				EEE9E1E1AA16C79912CA8B96 /* DrillsViews.swift */,
+				7F23C3D5E95BCFD80F5C4017 /* FreeSession.swift */,
+				B0ABD893F4EE5E5B098C82B5 /* LevelViews.swift */,
+				84384AF82E40D2BD83DFB35E /* LocalTeamViews.swift */,
+				457EAABAD4522119C8D6381B /* LoggedViews.swift */,
+				008B54515A513BD184531E29 /* MapTab.swift */,
+				A76DF16E791192BA9B456B48 /* MatchdayViews.swift */,
+				C2BCA943B74D0442D05A583A /* PlanCards.swift */,
+				74F9A24ACA09BFCC1A5D026A /* PlanViews.swift */,
+				321081A7E10807BC492CE684 /* ProfileViews.swift */,
+				CA8AF07EB030F4003A60A2F2 /* ProViews.swift */,
+				5259260BE45F947D670E6A9D /* SessionPlayer.swift */,
+				431711D1C97955499F9DECE6 /* SessionsTab.swift */,
+				2F97AF28AFA0AD6850EE7D97 /* SessionsViews.swift */,
+				86C7F5F2B7F9167160A08560 /* StatsViews.swift */,
+				B435D80AA02983AC7A69002D /* StayOffer.swift */,
+				8AEF69B3F1D425BC57BB40C0 /* TapePlayer.swift */,
+				A5917482550EB2B35CBB4747 /* TeamViews.swift */,
+			);
+			path = Screens;
+			sourceTree = "<group>";
+		};
+		6E4061706E3EF77EF093ED8A /* Portraits */ = {
+			isa = PBXGroup;
+			children = (
+				5153E6E608B5C369C6F6BD4B /* portrait-gold.png */,
+				1406559C09C85683FB004411 /* portrait-max.png */,
+			);
+			path = Portraits;
+			sourceTree = "<group>";
+		};
+		948F1E6B457EF85766C56B10 /* SoccerMaxWidgets */ = {
+			isa = PBXGroup;
+			children = (
+				54ADD917246DA981897EFCAB /* Bundle.swift */,
+				06D1176143C891A8AAF33D48 /* SessionLive.swift */,
+				FC56035B1CD683870DA33460 /* Widgets.swift */,
+			);
+			path = SoccerMaxWidgets;
+			sourceTree = "<group>";
+		};
+		AA83CE5EBFF59BD1340C107F /* SoccerMax */ = {
+			isa = PBXGroup;
+			children = (
+				ADE34E7499E731DA1EFD3285 /* App.swift */,
+				E3BB3AAFBB71EA481C6AFB61 /* Info.plist */,
+				89BBA4630B0664432FC29B78 /* SoccerMax.entitlements */,
+				F3B5B8B410D2947C30C0E2A3 /* Stage */,
+				1D4AF1AB0C937FA4C38D53C8 /* Data */,
+				D1976C555FA534FF59657430 /* Onboarding */,
+				3600E9B5BA66F6433F08C0DA /* Resources */,
+				60D5DD92D1949ED0522E3310 /* Screens */,
+				48CC4ECD1B479CF196A91FF8 /* Shared */,
+				468CC4C7F55D05AF6690F7F5 /* UI */,
+			);
+			path = SoccerMax;
+			sourceTree = "<group>";
+		};
+		AEA5E27EF5A94DB217C828BC /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				D5A1F46D6599CCAAA39DABA4 /* SoccerMax.app */,
+				018E38CA7AB3C52B22B95146 /* SoccerMaxWidgets.appex */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		D1976C555FA534FF59657430 /* Onboarding */ = {
+			isa = PBXGroup;
+			children = (
+				91CA0550007958F61D002BA1 /* Controls.swift */,
+				1CDCD1C05E43B8BE8A68C907 /* FutCard.swift */,
+				641682BE7A00217929392F21 /* OnboardingFlow.swift */,
+				2748F46C540BB6E04A5675DE /* Paywall.swift */,
+			);
+			path = Onboarding;
+			sourceTree = "<group>";
+		};
+		EFCAF33CEDF88D0A824683F3 = {
+			isa = PBXGroup;
+			children = (
+				AA83CE5EBFF59BD1340C107F /* SoccerMax */,
+				948F1E6B457EF85766C56B10 /* SoccerMaxWidgets */,
+				AEA5E27EF5A94DB217C828BC /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		"TEMP_976CCEC9-3BF4-4F9F-8273-9C4C56AD3F39" /* native */ = {
+			isa = PBXGroup;
+			children = (
+				"TEMP_4F1AF19C-EBAA-41E6-B5E8-BCB1E981CD3B" /* Base.xcconfig */,
+			);
+			path = native;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		58BBCAC549BD273D7A94266A /* SoccerMax */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 39A51D825B3CD80D92ED6B96 /* Build configuration list for PBXNativeTarget "SoccerMax" */;
+			buildPhases = (
+				9A661B0732B2EB18814C0DD8 /* Sources */,
+				276E4B63A85D7DFD5DD866CD /* Resources */,
+				20943F6D6E61FFA1AD2A9A1C /* Frameworks */,
+				5C54B0BB11339E682C745FFC /* Embed Foundation Extensions */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5983AB9670110F9E3FD02E1A /* PBXTargetDependency */,
+			);
+			name = SoccerMax;
+			packageProductDependencies = (
+				DDB5238B496BF0B4298D64AA /* PostHog */,
+				AC1B4EFB2AB1F4F3F926E79A /* RevenueCat */,
+				691D582C8A6655AB505EF321 /* RevenueCatUI */,
+			);
+			productName = SoccerMax;
+			productReference = D5A1F46D6599CCAAA39DABA4 /* SoccerMax.app */;
+			productType = "com.apple.product-type.application";
+		};
+		FE6BB14C180B6961ADF75C50 /* SoccerMaxWidgets */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3F8093AD9695484383DBFA97 /* Build configuration list for PBXNativeTarget "SoccerMaxWidgets" */;
+			buildPhases = (
+				DA17472EE941D8B229D0544D /* Sources */,
+				2401A4456CA4E6D314C5A4AE /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = SoccerMaxWidgets;
+			packageProductDependencies = (
+			);
+			productName = SoccerMaxWidgets;
+			productReference = 018E38CA7AB3C52B22B95146 /* SoccerMaxWidgets.appex */;
+			productType = "com.apple.product-type.app-extension";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		44A0A58531E4772BBF1DD695 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = YES;
+				LastUpgradeCheck = 1430;
+				TargetAttributes = {
+					58BBCAC549BD273D7A94266A = {
+						DevelopmentTeam = M9YGAL979V;
+						ProvisioningStyle = Automatic;
+					};
+					FE6BB14C180B6961ADF75C50 = {
+						DevelopmentTeam = M9YGAL979V;
+						ProvisioningStyle = Automatic;
+					};
+				};
+			};
+			buildConfigurationList = B9B9EAC4DDCACDD4F0BEC960 /* Build configuration list for PBXProject "SoccerMax" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				Base,
+				en,
+			);
+			mainGroup = EFCAF33CEDF88D0A824683F3;
+			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				F71519109A090C878C9B1A4F /* XCRemoteSwiftPackageReference "posthog-ios" */,
+				8B1B4830ECCA2C0835ABA421 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */,
+			);
+			preferredProjectObjectVersion = 77;
+			productRefGroup = AEA5E27EF5A94DB217C828BC /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				58BBCAC549BD273D7A94266A /* SoccerMax */,
+				FE6BB14C180B6961ADF75C50 /* SoccerMaxWidgets */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		2401A4456CA4E6D314C5A4AE /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BA73CD8033035D174FB7E1FA /* Fredoka-Bold.ttf in Resources */,
+				FB59E7F6D55F33982B1ACB40 /* LuckiestGuy-Regular.ttf in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		276E4B63A85D7DFD5DD866CD /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				0347330A1BAA039C2DB1704A /* Assets.xcassets in Resources */,
+				F8EED5FBDF719C7186F686EE /* Covers in Resources */,
+				81499527E92C723E966D23E2 /* DrillVideos in Resources */,
+				5403D47CAEA394A6F6D0D74F /* Fredoka-Bold.ttf in Resources */,
+				C2476FEF4B6822FB8C3C933A /* Fredoka-Medium.ttf in Resources */,
+				CBE5CEA6865D4967D538B83C /* Fredoka-SemiBold.ttf in Resources */,
+				2E8ED4D6B823229D96DB5DE1 /* Gear in Resources */,
+				8F6786EBB718C613F8ED729D /* LuckiestGuy-Regular.ttf in Resources */,
+				70AD5E1DD43E8EFEBC13622C /* Mascot in Resources */,
+				8D7F19215E3AC73FB4E46730 /* Matchday in Resources */,
+				DBA8222B00EA228ACF02D2B5 /* Players in Resources */,
+				B0ABE725D84EEFCEB5B9BFCC /* Stadiums in Resources */,
+				420D7B62CE8D0884711BB67E /* Stage in Resources */,
+				254283F73B0C082FDF1BED88 /* Technique in Resources */,
+				4C5F814D437F431CEC5E5A36 /* library.json in Resources */,
+				EE1BFF22E45256693D5FAC32 /* portrait-gold.png in Resources */,
+				2603FE7FEE423130608F8E46 /* portrait-max.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		9A661B0732B2EB18814C0DD8 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				E8FC999923AFC7BCA2C4D6C4 /* App.swift in Sources */,
+				C5B22D085D2F52B298877501 /* Backup.swift in Sources */,
+				A4861DCB424CA14AAEBA4BF0 /* CancelFlow.swift in Sources */,
+				92BEDF19307049B538257E03 /* CardViews.swift in Sources */,
+				ACED8EF03AFD8668EAF6AFFC /* Club.swift in Sources */,
+				30256EC28A992568533E9B2C /* Controls.swift in Sources */,
+				A412732D2B1C53B075E6DB21 /* DrillBoard.swift in Sources */,
+				46413E94E56AD3C8EE1A31A9 /* DrillVideo.swift in Sources */,
+				0624BA16D28C64347DD497B4 /* DrillsViews.swift in Sources */,
+				B300E0D1D24B4FDCA4BC7D75 /* FreeSession.swift in Sources */,
+				44C4551A57E1A2255CD20D47 /* FutCard.swift in Sources */,
+				479C8212FF9B644EC2940D03 /* Haptics.swift in Sources */,
+				2862AA0A4913B78B3E9051E5 /* LevelBar.swift in Sources */,
+				4C80A30752B8BB54C2EA1CA9 /* LevelViews.swift in Sources */,
+				807D3D3A802B3BBD7D4D4462 /* Library.swift in Sources */,
+				EC961F339BDBD87BFEBCD663 /* LocalTeamViews.swift in Sources */,
+				410B5D77DB3B7434D4C9F886 /* LocalTeams.swift in Sources */,
+				2A313F5883861E364088C2C7 /* LoggedViews.swift in Sources */,
+				9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */,
+				BC629F144A14F74ECD90A23E /* Mascot.swift in Sources */,
+				9A3C9C849F063C4E08F0480E /* Matchday.swift in Sources */,
+				5B4BEC359CF60DD61B1A1207 /* MatchdayViews.swift in Sources */,
+				B8078286182F5521AB04A0E1 /* OnboardingFlow.swift in Sources */,
+				4EECC384D91D61460C410230 /* Paywall.swift in Sources */,
+				3BC27C370DEEC5AEAE024C96 /* PlanCards.swift in Sources */,
+				11377D95022A3F427D2661F8 /* PlanViews.swift in Sources */,
+				C0C1DED388CA1F2D3193F5C7 /* ProPhoto.swift in Sources */,
+				2864B431DE3EC2A7D4891164 /* ProViews.swift in Sources */,
+				9A6DD11E33BA2F2210B53C87 /* ProfileViews.swift in Sources */,
+				2DB37E3891083FFBDC54B94C /* Purchases.swift in Sources */,
+				06B8AEF8C191D8760F613A9A /* Reminders.swift in Sources */,
+				491DFEF713E2CCF14E0EA3C8 /* SessionActivity.swift in Sources */,
+				7F64F4D42DCE4A6940113BA6 /* SessionPlayer.swift in Sources */,
+				5F9C1646F726F5E00307FB76 /* SessionSpot.swift in Sources */,
+				42F2BF0C2E08168F864C686F /* SessionsTab.swift in Sources */,
+				B5EB8E99D2DE5C76C4654DEE /* SessionsViews.swift in Sources */,
+				BC54C465AB81456F49283E2D /* ShareLinks.swift in Sources */,
+				DA8BC6F1DF0E1284F5D537FC /* SpiderGraph.swift in Sources */,
+				36295D41EFDF9FFFFEEC984D /* Stage3DView.swift in Sources */,
+				9FAD9F2B042C69342C524266 /* Stats.swift in Sources */,
+				004B2D8639EF32D4F25A49CD /* StatsViews.swift in Sources */,
+				C50A6110BE50AA80071AA153 /* StayOffer.swift in Sources */,
+				E1104930A3DDB3417EC88165 /* Store.swift in Sources */,
+				243957D6EABC5EC248ECF8A8 /* Streak.swift in Sources */,
+				337D2A04C61E91595395FE43 /* StreakFire.metal in Sources */,
+				2C9C2B0C345CBD4544BB0281 /* StreakFire.swift in Sources */,
+				CB459752BA6FA71289DCFEDE /* TapePlayer.swift in Sources */,
+				8D55CF98DC02BD6BA2DC3D3E /* Team.swift in Sources */,
+				921B0A9FA53ACB8DD4689408 /* TeamViews.swift in Sources */,
+				6D6E8908DC19F08ED7EF4DF8 /* Theme.swift in Sources */,
+				8FC9D35BDA35DAB187F78BF5 /* TouchGlow.swift in Sources */,
+				DD6AF942B3AFFC763570D014 /* WeekBall.swift in Sources */,
+				145F0C932B5AF2C5DFD65023 /* WidgetSnapshot.swift in Sources */,
+				2D61AC0B3CFCD8EB2FD66D69 /* WidgetSync.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		DA17472EE941D8B229D0544D /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				54ADF7C94D500113238A3DCD /* Bundle.swift in Sources */,
+				5E91239F73E6D3E7681E498C /* SessionActivity.swift in Sources */,
+				D2CD03F7F2678E4DD7E54A4F /* SessionLive.swift in Sources */,
+				0A8DA6561A6B09CB3AB26877 /* Streak.swift in Sources */,
+				65759D7A87F4186614909609 /* WidgetSnapshot.swift in Sources */,
+				D4146C02523FB613E47660BB /* Widgets.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5983AB9670110F9E3FD02E1A /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = FE6BB14C180B6961ADF75C50 /* SoccerMaxWidgets */;
+			targetProxy = 092B5DC5AEEE1E3AD2B0D940 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		69A969BD01B27A7188C56015 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = SoccerMaxWidgets/SoccerMaxWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = M9YGAL979V;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SoccerMaxWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacksteiner.soccermax.widgets;
+				PRODUCT_NAME = SoccerMaxWidgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		748C10985798270B9874C25F /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = "TEMP_4F1AF19C-EBAA-41E6-B5E8-BCB1E981CD3B" /* Base.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SoccerMax/SoccerMax.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = M9YGAL979V;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SoccerMax/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacksteiner.soccermax;
+				PRODUCT_NAME = SoccerMax;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		AEAFEB905FA177E35396A69C /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Release;
+		};
+		CAF365CD47F460320B3EAF98 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_ENTITLEMENTS = SoccerMaxWidgets/SoccerMaxWidgets.entitlements;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = M9YGAL979V;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SoccerMaxWidgets/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@executable_path/../../Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacksteiner.soccermax.widgets;
+				PRODUCT_NAME = SoccerMaxWidgets;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		CF960D558EBBA5CBE1505EC0 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"$(inherited)",
+					"DEBUG=1",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+			};
+			name = Debug;
+		};
+		F40D5E9ABE830730DCF54D64 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = "TEMP_4F1AF19C-EBAA-41E6-B5E8-BCB1E981CD3B" /* Base.xcconfig */;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = SoccerMax/SoccerMax.entitlements;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 5;
+				DEVELOPMENT_TEAM = M9YGAL979V;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = SoccerMax/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.jacksteiner.soccermax;
+				PRODUCT_NAME = SoccerMax;
+				SDKROOT = iphoneos;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		39A51D825B3CD80D92ED6B96 /* Build configuration list for PBXNativeTarget "SoccerMax" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F40D5E9ABE830730DCF54D64 /* Debug */,
+				748C10985798270B9874C25F /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		3F8093AD9695484383DBFA97 /* Build configuration list for PBXNativeTarget "SoccerMaxWidgets" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				69A969BD01B27A7188C56015 /* Debug */,
+				CAF365CD47F460320B3EAF98 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+		B9B9EAC4DDCACDD4F0BEC960 /* Build configuration list for PBXProject "SoccerMax" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				CF960D558EBBA5CBE1505EC0 /* Debug */,
+				AEAFEB905FA177E35396A69C /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Debug;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		8B1B4830ECCA2C0835ABA421 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/RevenueCat/purchases-ios-spm.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.99.2;
+			};
+		};
+		F71519109A090C878C9B1A4F /* XCRemoteSwiftPackageReference "posthog-ios" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/PostHog/posthog-ios.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 3.59.3;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		691D582C8A6655AB505EF321 /* RevenueCatUI */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8B1B4830ECCA2C0835ABA421 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCatUI;
+		};
+		AC1B4EFB2AB1F4F3F926E79A /* RevenueCat */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 8B1B4830ECCA2C0835ABA421 /* XCRemoteSwiftPackageReference "purchases-ios-spm" */;
+			productName = RevenueCat;
+		};
+		DDB5238B496BF0B4298D64AA /* PostHog */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = F71519109A090C878C9B1A4F /* XCRemoteSwiftPackageReference "posthog-ios" */;
+			productName = PostHog;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 44A0A58531E4772BBF1DD695 /* Project object */;
+}

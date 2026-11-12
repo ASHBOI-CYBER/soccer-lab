@@ -1,0 +1,4748 @@
+{
+ "categories": [
+  "Ball mastery",
+  "Dribbling",
+  "First touch",
+  "Passing",
+  "Shooting",
+  "Defending",
+  "Awareness",
+  "Goalkeeping",
+  "Fitness",
+  "Runs",
+  "Core",
+  "Stretching"
+ ],
+ "levelNames": [
+  "Starter",
+  "Park",
+  "Club",
+  "Academy",
+  "Pro",
+  "World Class"
+ ],
+ "drills": [
+  {
+   "id": "toe-taps",
+   "name": "Toe Taps",
+   "skill": "Ball mastery",
+   "level": 1,
+   "who": "Solo",
+   "min": 3,
+   "space": "2 m square",
+   "gear": [
+    "Ball"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Stand over the ball in a small space.",
+   "how": [
+    "Tap the top of the ball with the sole of one foot.",
+    "Hop and swap so the other foot taps.",
+    "Keep swapping in a steady rhythm, staying on the balls of your feet.",
+    "Speed up only when the ball stays still."
+   ],
+   "reps": "3 × 30 s",
+   "points": [
+    "Light touches: the ball should hardly move.",
+    "Knees soft, arms out for balance.",
+    "Eyes up for a second every few taps."
+   ],
+   "progression": "Travel forward and backward while you tap.",
+   "stats": [
+    "BC",
+    "DRI"
+   ],
+   "fixes": [
+    "Ball control",
+    "First touch"
+   ],
+   "tags": [
+    "warm-up",
+    "quick feet"
+   ],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 1,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.2,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      -0.2
+     ]
+    ],
+    "paths": []
+   }
+  },
+  {
+   "id": "foundations",
+   "name": "Foundations",
+   "skill": "Ball mastery",
+   "level": 1,
+   "who": "Solo",
+   "min": 3,
+   "space": "2 m square",
+   "gear": [
+    "Ball"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Stand with the ball between your feet, feet a little wider than your hips.",
+   "how": [
+    "Knock the ball from the inside of one foot to the inside of the other.",
+    "Bounce lightly between every touch.",
+    "Keep the ball moving side to side under your body.",
+    "Count your touches and try to beat the count each set."
+   ],
+   "reps": "3 × 30 s",
+   "points": [
+    "Use the inside of the foot, just below the ankle.",
+    "Stay low with your knees bent.",
+    "Small touches beat big ones."
+   ],
+   "progression": "Move forward with the ball while it goes side to side.",
+   "stats": [
+    "BC",
+    "DRI"
+   ],
+   "fixes": [
+    "Ball control",
+    "Weak foot"
+   ],
+   "tags": [
+    "warm-up",
+    "both feet"
+   ],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 1,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.2,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      -0.2
+     ]
+    ],
+    "paths": []
+   }
+  },
+  {
+   "id": "sole-rolls",
+   "name": "Sole Rolls",
+   "skill": "Ball mastery",
+   "level": 1,
+   "who": "Solo",
+   "min": 3,
+   "space": "2 m square",
+   "gear": [
+    "Ball"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Stand side-on to the ball with one foot resting on top of it.",
+   "how": [
+    "Roll the ball across your body with the sole of your foot.",
+    "Stop it with the inside of the other foot.",
+    "Roll it back the other way with the other sole.",
+    "Keep going without letting the ball run away."
+   ],
+   "reps": "3 × 30 s",
+   "points": [
+    "Roll, don't push: the sole stays in contact.",
+    "Stay on your toes between rolls.",
+    "Keep your chest over the ball."
+   ],
+   "progression": "Add a step-over before each roll.",
+   "stats": [
+    "BC"
+   ],
+   "fixes": [
+    "Ball control"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 1,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.2,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      -0.2
+     ]
+    ],
+    "paths": []
+   }
+  },
+  {
+   "id": "figure-8",
+   "name": "Figure 8",
+   "skill": "Ball mastery",
+   "level": 2,
+   "who": "Solo",
+   "min": 4,
+   "space": "4 m by 3 m",
+   "gear": [
+    "Ball",
+    "2 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "2 cones"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Put two cones about 2 m apart.",
+   "how": [
+    "Dribble around one cone, then cut across the middle to the other.",
+    "Go around the second cone the opposite way, so your path draws an 8.",
+    "Use the inside of your foot to turn in and the outside to turn out.",
+    "Change direction every set."
+   ],
+   "reps": "3 × 45 s",
+   "points": [
+    "Many small touches as you go around a cone.",
+    "Drop your shoulder into each turn.",
+    "Use both feet: don't let one do all the work."
+   ],
+   "progression": "Weak foot only.",
+   "stats": [
+    "DRI",
+    "BC"
+   ],
+   "fixes": [
+    "Dribbling",
+    "Weak foot",
+    "Ball control"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 0,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": -1,
+      "z": 1.2,
+      "yaw": 1.57
+     }
+    ],
+    "balls": [
+     [
+      -0.7,
+      1.2
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        -1,
+        1.2
+       ],
+       [
+        -2,
+        0
+       ],
+       [
+        -1,
+        -1
+       ],
+       [
+        0,
+        0
+       ],
+       [
+        1,
+        1
+       ],
+       [
+        2,
+        0
+       ],
+       [
+        1,
+        -1
+       ],
+       [
+        0,
+        0
+       ],
+       [
+        -1,
+        1.2
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "juggling",
+   "name": "Juggling",
+   "skill": "Ball mastery",
+   "level": 2,
+   "who": "Solo",
+   "min": 5,
+   "space": "2 m square",
+   "gear": [
+    "Ball"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Stand in open space with the ball in your hands.",
+   "how": [
+    "Drop the ball and kick it up with your laces to waist height.",
+    "Catch it. Repeat ten times on each foot.",
+    "Now let it bounce once between kicks instead of catching.",
+    "Then keep it up without the bounce and count."
+   ],
+   "reps": "3 × 60 s",
+   "points": [
+    "Lock your ankle and point your toes slightly up.",
+    "Keep the ball below your waist.",
+    "Tiny steps to stay under it."
+   ],
+   "progression": "Alternate feet, then add thighs.",
+   "stats": [
+    "BC"
+   ],
+   "fixes": [
+    "Ball control",
+    "First touch",
+    "Composure"
+   ],
+   "tags": [
+    "touch",
+    "anywhere"
+   ],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 1,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.2,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      -0.2
+     ]
+    ],
+    "paths": []
+   }
+  },
+  {
+   "id": "inside-outside",
+   "name": "Inside Outside",
+   "skill": "Ball mastery",
+   "level": 2,
+   "who": "Solo",
+   "min": 4,
+   "space": "2 m square",
+   "gear": [
+    "Ball"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Stand behind the ball with room to move a few steps forward.",
+   "how": [
+    "Push the ball across with the inside of your right foot.",
+    "Take it back with the outside of the same foot.",
+    "Do that for five touches, then switch to the left.",
+    "Then walk forward while you do it."
+   ],
+   "reps": "3 × 40 s",
+   "points": [
+    "The ball stays within one step of you.",
+    "Bend the standing knee.",
+    "Keep the rhythm even on both feet."
+   ],
+   "progression": "Jog forward for 10 m while you do it.",
+   "stats": [
+    "BC",
+    "DRI"
+   ],
+   "fixes": [
+    "Ball control",
+    "Weak foot"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 1,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.2,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      -0.2
+     ]
+    ],
+    "paths": []
+   }
+  },
+  {
+   "id": "cone-slalom",
+   "name": "Cone Slalom",
+   "skill": "Dribbling",
+   "level": 2,
+   "who": "Solo",
+   "min": 5,
+   "space": "8 m long",
+   "gear": [
+    "Ball",
+    "6 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "6 cones"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Put six cones in a line, one big step apart.",
+   "how": [
+    "Dribble in and out of the cones to the end.",
+    "Turn around the last cone and weave back.",
+    "First set: right foot only. Second: left only.",
+    "Last two sets: both feet, as quick as you can keep the ball close."
+   ],
+   "reps": "4 × 2 runs",
+   "points": [
+    "One touch between each pair of cones.",
+    "Use the inside and the outside of the foot.",
+    "Head up as you pass each cone."
+   ],
+   "progression": "Move the cones closer together.",
+   "stats": [
+    "DRI",
+    "BC"
+   ],
+   "fixes": [
+    "Dribbling",
+    "Ball control",
+    "1v1s"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": 0,
+      "z": -1,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0,
+      "z": -2,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0,
+      "z": -3,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0,
+      "z": -5,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0,
+      "z": -6,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.6,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0.2,
+      0.2
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0.6
+       ],
+       [
+        0.6,
+        -1
+       ],
+       [
+        -0.6,
+        -2
+       ],
+       [
+        0.6,
+        -3
+       ],
+       [
+        -0.6,
+        -4
+       ],
+       [
+        0.6,
+        -5
+       ],
+       [
+        -0.6,
+        -6
+       ],
+       [
+        0,
+        -6.8
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "speed-dribble",
+   "name": "Speed Dribble",
+   "skill": "Dribbling",
+   "level": 2,
+   "who": "Solo",
+   "min": 4,
+   "space": "20 m lane",
+   "gear": [
+    "Ball",
+    "4 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "4 cones"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Mark a 20 m lane with a cone at each end.",
+   "how": [
+    "Dribble to the far cone at three-quarter speed.",
+    "Push the ball ahead with your laces, one touch every two or three steps.",
+    "Stop the ball dead on the far line with your sole.",
+    "Walk back and go again, a little faster."
+   ],
+   "reps": "3 × 4 runs",
+   "points": [
+    "Bigger touches in open space, small ones near the line.",
+    "Lean forward and run on your toes.",
+    "Look up between touches."
+   ],
+   "progression": "Race a timer and try to beat it.",
+   "stats": [
+    "DRI",
+    "PHY"
+   ],
+   "fixes": [
+    "Dribbling",
+    "Speed"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -20.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -20.0,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.6,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      0.2
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0.6
+       ],
+       [
+        0,
+        -20
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "stop-and-go",
+   "name": "Stop and Go",
+   "skill": "Dribbling",
+   "level": 3,
+   "who": "Solo",
+   "min": 4,
+   "space": "15 m lane",
+   "gear": [
+    "Ball",
+    "5 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "5 cones"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Mark a 15 m lane with a cone in the middle.",
+   "how": [
+    "Dribble toward the middle cone at jogging speed.",
+    "At the cone, stop the ball with your sole for a split second.",
+    "Explode away with a big first touch.",
+    "Slow down again before the end and walk back."
+   ],
+   "reps": "3 × 4 runs",
+   "points": [
+    "The change of speed is the move: slow, stop, fast.",
+    "Push off the foot that is behind you.",
+    "First touch after the stop goes past the cone, not into it."
+   ],
+   "progression": "Add a body feint before you go.",
+   "stats": [
+    "DRI",
+    "PHY"
+   ],
+   "fixes": [
+    "1v1s",
+    "Dribbling",
+    "Speed"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0,
+      "z": -7,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -15,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -15,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.6,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      0.2
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0.6
+       ],
+       [
+        0,
+        -6.4
+       ]
+      ]
+     },
+     {
+      "pts": [
+       [
+        0.6,
+        -7.2
+       ],
+       [
+        0.6,
+        -15
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "wall-passes",
+   "name": "Wall Passes",
+   "skill": "Passing",
+   "level": 1,
+   "who": "Solo",
+   "min": 5,
+   "space": "A wall and 4 m",
+   "gear": [
+    "Ball",
+    "Wall"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "Wall"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Stand 3 m from a wall or a rebounder.",
+   "how": [
+    "Pass the ball firmly against the wall with the inside of your foot.",
+    "Control the rebound with one touch.",
+    "Pass again with your second touch.",
+    "Swap feet every ten passes."
+   ],
+   "reps": "3 × 20 passes",
+   "points": [
+    "Plant your standing foot beside the ball, pointing at the target.",
+    "Strike through the middle of the ball.",
+    "Be on your toes before the ball comes back."
+   ],
+   "progression": "One touch only: pass it straight back.",
+   "stats": [
+    "PAS",
+    "BC"
+   ],
+   "fixes": [
+    "Passing",
+    "First touch",
+    "Weak foot"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -2.0,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.0,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -0.5,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.0,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.5,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.0,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 2.0,
+      "z": -3.0,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.4,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      0
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        -2.8
+       ]
+      ],
+      "ball": true,
+      "both": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "wall-first-touch",
+   "name": "Open-Up Touch",
+   "skill": "First touch",
+   "level": 2,
+   "who": "Solo",
+   "min": 5,
+   "space": "A wall and 5 m",
+   "gear": [
+    "Ball",
+    "Wall",
+    "2 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "Wall"
+    },
+    {
+     "item": null,
+     "label": "2 cones"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Stand 4 m from a wall with a cone 2 m to each side of you.",
+   "how": [
+    "Pass against the wall.",
+    "Take your first touch sideways, toward one of the cones.",
+    "Dribble around that cone and pass again.",
+    "Go to the other cone next time."
+   ],
+   "reps": "3 × 12 passes",
+   "points": [
+    "Open your hips so the touch takes you where you want to go.",
+    "First touch travels about a metre, no more.",
+    "Check your shoulder before the ball arrives."
+   ],
+   "progression": "Take the touch with the foot furthest from the ball.",
+   "stats": [
+    "BC",
+    "PAS"
+   ],
+   "fixes": [
+    "First touch",
+    "Ball control",
+    "Vision"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -2.0,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.0,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -0.5,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.0,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.5,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.0,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 2.0,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -2,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 2,
+      "z": 0,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.4,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      0
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        -3.8
+       ]
+      ],
+      "ball": true,
+      "both": true
+     },
+     {
+      "pts": [
+       [
+        0,
+        0.4
+       ],
+       [
+        -2,
+        0.6
+       ],
+       [
+        -2.6,
+        0
+       ],
+       [
+        -2,
+        -0.6
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "weak-foot-laces",
+   "name": "Weak Foot Strikes",
+   "skill": "Passing",
+   "level": 2,
+   "who": "Solo",
+   "min": 5,
+   "space": "A wall and 6 m",
+   "gear": [
+    "Ball",
+    "Wall"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "Wall"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Stand 5 m from a wall. Use your weaker foot only.",
+   "how": [
+    "Roll the ball a step in front of you.",
+    "Strike it against the wall with the laces of your weaker foot.",
+    "Trap the rebound with the same foot.",
+    "Reset and go again."
+   ],
+   "reps": "3 × 10 passes",
+   "points": [
+    "Toes down, ankle locked.",
+    "Lean over the ball so it stays low.",
+    "Follow through toward the target."
+   ],
+   "progression": "Step back to 8 m.",
+   "stats": [
+    "PAS",
+    "SHO"
+   ],
+   "fixes": [
+    "Weak foot",
+    "Passing",
+    "Shooting"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -2.0,
+      "z": -5,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -5,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.0,
+      "z": -5,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -0.5,
+      "z": -5,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.0,
+      "z": -5,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.5,
+      "z": -5,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.0,
+      "z": -5,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -5,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 2.0,
+      "z": -5,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.4,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      0
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        -4.8
+       ]
+      ],
+      "ball": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "long-pass-target",
+   "name": "Long Pass to a Target",
+   "skill": "Passing",
+   "level": 3,
+   "who": "Solo",
+   "min": 6,
+   "space": "25 m",
+   "gear": [
+    "Ball",
+    "2 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "2 cones"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Put two cones 2 m apart as a gate, 20 m away.",
+   "how": [
+    "Take a short run-up from a slight angle.",
+    "Strike the bottom half of the ball with the inside of your laces.",
+    "Try to land it through the gate.",
+    "Fetch it, dribble back and go again."
+   ],
+   "reps": "3 × 8 passes",
+   "points": [
+    "Standing foot beside the ball, a little behind it.",
+    "Lean back slightly to lift it.",
+    "Finish with your kicking leg high."
+   ],
+   "progression": "Make the gate 1 m wide.",
+   "stats": [
+    "PAS"
+   ],
+   "fixes": [
+    "Long balls",
+    "Passing",
+    "Crossing"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -20,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -20,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0.6,
+      "z": 0.6,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      0
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        -20
+       ]
+      ],
+      "ball": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "laces-strike",
+   "name": "Laces Strike",
+   "skill": "Shooting",
+   "level": 2,
+   "who": "Solo",
+   "min": 6,
+   "space": "15 m and a goal",
+   "gear": [
+    "Ball",
+    "Goal or wall target"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "Goal or wall target"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Put the ball 12 m from a goal or a marked target on a wall.",
+   "how": [
+    "Take three steps back and one to the side.",
+    "Run up and plant your standing foot beside the ball.",
+    "Strike the middle of the ball with your laces.",
+    "Land on your kicking foot."
+   ],
+   "reps": "3 × 8 shots",
+   "points": [
+    "Head and chest over the ball.",
+    "Ankle locked, toes pointing down.",
+    "Aim for a corner, not the middle."
+   ],
+   "progression": "Shoot after one touch out of your feet.",
+   "stats": [
+    "SHO"
+   ],
+   "fixes": [
+    "Shooting",
+    "Finishing"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "goal",
+      "x": 0,
+      "z": -12,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0.8,
+      "z": 1.2,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      0
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0.8,
+        1.2
+       ],
+       [
+        0.2,
+        0.2
+       ]
+      ]
+     },
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        -2.6,
+        -12
+       ]
+      ],
+      "ball": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "touch-and-finish",
+   "name": "Touch and Finish",
+   "skill": "Shooting",
+   "level": 3,
+   "who": "Solo",
+   "min": 6,
+   "space": "20 m and a goal",
+   "gear": [
+    "Ball",
+    "Goal or wall target",
+    "1 cone"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "Goal or wall target"
+    },
+    {
+     "item": null,
+     "label": "1 cone"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Put a cone 14 m from goal. Start 4 m behind it with the ball.",
+   "how": [
+    "Dribble at the cone.",
+    "Take a touch past it to one side.",
+    "Shoot with your next touch.",
+    "Alternate sides."
+   ],
+   "reps": "3 × 6 shots",
+   "points": [
+    "The touch past the cone sets up the shot: not too close to your feet.",
+    "Pick your corner before you shoot.",
+    "Low and hard beats high and hopeful."
+   ],
+   "progression": "Finish with your weaker foot.",
+   "stats": [
+    "SHO",
+    "DRI"
+   ],
+   "fixes": [
+    "Finishing",
+    "Shooting",
+    "1v1s"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "goal",
+      "x": 0,
+      "z": -14,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0,
+      "z": 0,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 4,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      3.6
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        4
+       ],
+       [
+        0,
+        0.8
+       ],
+       [
+        1.4,
+        -1
+       ]
+      ]
+     },
+     {
+      "pts": [
+       [
+        1.4,
+        -1
+       ],
+       [
+        3,
+        -14
+       ]
+      ],
+      "ball": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "jockey-shuffle",
+   "name": "Jockey Shuffle",
+   "skill": "Defending",
+   "level": 2,
+   "who": "Solo",
+   "min": 4,
+   "space": "6 m wide",
+   "gear": [
+    "2 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "2 cones"
+    }
+   ],
+   "needs": [],
+   "setup": "Put two cones 6 m apart. No ball needed.",
+   "how": [
+    "Stand side-on between the cones, knees bent.",
+    "Shuffle backward and sideways toward one cone.",
+    "Touch level with the cone, then switch your front foot and go to the other.",
+    "Stay low the whole time."
+   ],
+   "reps": "3 × 30 s",
+   "points": [
+    "Side-on, never square.",
+    "Small quick steps: feet never cross.",
+    "Weight on the balls of your feet."
+   ],
+   "progression": "Have someone point left or right and react.",
+   "stats": [
+    "DEF",
+    "PHY"
+   ],
+   "fixes": [
+    "Defending",
+    "Positioning",
+    "1v1s"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -3,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 3,
+      "z": 0,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0,
+      "yaw": 1.57
+     }
+    ],
+    "balls": [],
+    "paths": [
+     {
+      "pts": [
+       [
+        -2.6,
+        0
+       ],
+       [
+        2.6,
+        0
+       ]
+      ],
+      "both": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "recovery-run",
+   "name": "Recovery Run",
+   "skill": "Defending",
+   "level": 3,
+   "who": "Solo",
+   "min": 5,
+   "space": "15 m",
+   "gear": [
+    "2 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "2 cones"
+    }
+   ],
+   "needs": [],
+   "setup": "Put a cone 15 m away and a second one 5 m to its side. No ball needed.",
+   "how": [
+    "Face away from the cones.",
+    "Turn and sprint to the far cone.",
+    "Slow down in the last three steps and get side-on.",
+    "Shuffle across to the second cone, then walk back."
+   ],
+   "reps": "3 × 4 runs",
+   "points": [
+    "Turn with a drop step, not a spin on the spot.",
+    "Chop your steps as you arrive.",
+    "Finish low and balanced, ready to tackle."
+   ],
+   "progression": "Start lying on your front.",
+   "stats": [
+    "DEF",
+    "PHY"
+   ],
+   "fixes": [
+    "Defending",
+    "Speed",
+    "Positioning"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": 0,
+      "z": -15,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 5,
+      "z": -15,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0,
+      "yaw": 0
+     }
+    ],
+    "balls": [],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        -14.4
+       ]
+      ]
+     },
+     {
+      "pts": [
+       [
+        0.4,
+        -15
+       ],
+       [
+        4.6,
+        -15
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "scan-and-turn",
+   "name": "Scan and Turn",
+   "skill": "Awareness",
+   "level": 2,
+   "who": "Solo",
+   "min": 5,
+   "space": "A wall and 8 m",
+   "gear": [
+    "Ball",
+    "Wall",
+    "2 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "Wall"
+    },
+    {
+     "item": null,
+     "label": "2 cones"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Stand 4 m from a wall with a cone 3 m behind you on each side.",
+   "how": [
+    "Pass against the wall.",
+    "While the ball is travelling, look over your shoulder at a cone.",
+    "Receive on the half turn and dribble to the cone you looked at.",
+    "Come back and repeat, looking the other way."
+   ],
+   "reps": "3 × 10 passes",
+   "points": [
+    "Look before the ball arrives, not after.",
+    "Receive with your back foot.",
+    "Say the colour or side out loud to prove you looked."
+   ],
+   "progression": "Take one touch to turn, the next to pass.",
+   "stats": [
+    "PAS",
+    "BC"
+   ],
+   "fixes": [
+    "Vision",
+    "First touch",
+    "Composure"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -2.0,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.0,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -0.5,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.0,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.5,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.0,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 2.0,
+      "z": -4,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -2.5,
+      "z": 3,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 2.5,
+      "z": 3,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.4,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      0
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        -3.8
+       ]
+      ],
+      "ball": true,
+      "both": true
+     },
+     {
+      "pts": [
+       [
+        0,
+        0.4
+       ],
+       [
+        2.2,
+        2.7
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "gk-set-and-catch",
+   "name": "Set and Catch",
+   "skill": "Goalkeeping",
+   "level": 1,
+   "who": "Solo",
+   "min": 5,
+   "space": "A wall and 4 m",
+   "gear": [
+    "Ball",
+    "Wall"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "Wall"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Stand 3 m from a wall with the ball in your hands.",
+   "how": [
+    "Throw the ball against the wall at chest height.",
+    "Take a small step and set your feet before it comes back.",
+    "Catch it with your hands behind the ball, thumbs together.",
+    "Bring it into your chest."
+   ],
+   "reps": "3 × 12 catches",
+   "points": [
+    "Set position: feet shoulder width, knees bent, hands ready.",
+    "Watch the ball all the way into your hands.",
+    "Soft elbows take the pace off."
+   ],
+   "progression": "Throw it lower and scoop it up.",
+   "stats": [
+    "DEF",
+    "BC"
+   ],
+   "fixes": [
+    "Positioning",
+    "Composure"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -2.0,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.0,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -0.5,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.0,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.5,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.0,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -3.0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 2.0,
+      "z": -3.0,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.4,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      0
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        -2.8
+       ]
+      ],
+      "ball": true,
+      "both": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "strides",
+   "name": "Strides",
+   "skill": "Runs",
+   "level": 1,
+   "who": "Solo",
+   "min": 4,
+   "space": "60 m",
+   "gear": [
+    "2 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "2 cones"
+    }
+   ],
+   "needs": [],
+   "setup": "Mark out about 60 m of flat ground.",
+   "how": [
+    "Build up smoothly over the first 20 m.",
+    "Hold a fast, relaxed pace for the middle 20 m.",
+    "Ease off over the last 20 m.",
+    "Walk back to recover."
+   ],
+   "reps": "4 × 60 m",
+   "points": [
+    "Tall posture, relaxed shoulders.",
+    "Fast but never straining: about 80 percent.",
+    "Land under your hips, not out in front."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Speed",
+    "Stamina"
+   ],
+   "tags": [
+    "warm-up"
+   ],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -24,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -24,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.6,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0.6
+       ],
+       [
+        0,
+        -24
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "flying-20s",
+   "name": "Flying 20s",
+   "skill": "Runs",
+   "level": 3,
+   "who": "Solo",
+   "min": 5,
+   "space": "50 m",
+   "gear": [
+    "3 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "3 cones"
+    }
+   ],
+   "needs": [],
+   "setup": "Mark three cones in a line: start, 20 m and 40 m.",
+   "how": [
+    "Jog, then build speed up to the middle cone.",
+    "Sprint flat out from the middle cone to the last one.",
+    "Slow down gradually after the last cone.",
+    "Walk back and rest a full minute."
+   ],
+   "reps": "4 × 20 m",
+   "points": [
+    "Be at top speed as you reach the middle cone.",
+    "Drive your arms from hip to cheek.",
+    "Quality only: stop when you slow down."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Speed"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -12,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -12,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -24,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -24,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.6,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0.6
+       ],
+       [
+        0,
+        -11.6
+       ]
+      ]
+     },
+     {
+      "pts": [
+       [
+        0,
+        -12.4
+       ],
+       [
+        0,
+        -24
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "diagonals",
+   "name": "Diagonals",
+   "skill": "Runs",
+   "level": 2,
+   "who": "Solo",
+   "min": 6,
+   "space": "Half a pitch",
+   "gear": [],
+   "kit": [],
+   "needs": [],
+   "setup": "Use a pitch or any big rectangle of grass.",
+   "how": [
+    "Run corner to corner along the diagonal at a steady, strong pace.",
+    "Walk along the short side to the next corner.",
+    "Run the other diagonal.",
+    "That is two runs. Keep going."
+   ],
+   "reps": "3 × 4 runs",
+   "points": [
+    "Same pace on every run.",
+    "Breathe in rhythm with your steps.",
+    "Use the walk to get your breath back fully."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Stamina"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -6,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 6,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -6,
+      "z": -16,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 6,
+      "z": -16,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": -6,
+      "z": 0.6,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [],
+    "paths": [
+     {
+      "pts": [
+       [
+        -6,
+        0.6
+       ],
+       [
+        6,
+        -16
+       ]
+      ]
+     },
+     {
+      "pts": [
+       [
+        6,
+        -16
+       ],
+       [
+        -6,
+        -16
+       ]
+      ]
+     },
+     {
+      "pts": [
+       [
+        -6,
+        -16
+       ],
+       [
+        6,
+        0
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "high-knee-runs",
+   "name": "High Knee Runs",
+   "skill": "Runs",
+   "level": 1,
+   "who": "Solo",
+   "min": 3,
+   "space": "20 m",
+   "gear": [
+    "2 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "2 cones"
+    }
+   ],
+   "needs": [],
+   "setup": "Mark out a 20 m lane.",
+   "how": [
+    "Run forward lifting each knee to hip height.",
+    "Take short, quick steps: this is about rhythm, not speed.",
+    "Pump your arms in time with your legs.",
+    "Walk back."
+   ],
+   "reps": "3 × 20 m",
+   "points": [
+    "Stay tall: don't lean back.",
+    "Land on the balls of your feet.",
+    "Quick off the ground."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Speed"
+   ],
+   "tags": [
+    "warm-up"
+   ],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -12,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -12,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.6,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0.6
+       ],
+       [
+        0,
+        -12
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "repeat-sprints",
+   "name": "Repeat Sprints",
+   "skill": "Runs",
+   "level": 4,
+   "who": "Solo",
+   "min": 6,
+   "space": "30 m",
+   "gear": [
+    "2 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "2 cones"
+    }
+   ],
+   "needs": [],
+   "setup": "Put two cones 30 m apart.",
+   "how": [
+    "Sprint to the far cone.",
+    "Jog back in about 20 seconds.",
+    "Go again straight away.",
+    "Rest two minutes between sets."
+   ],
+   "reps": "2 × 6 runs",
+   "points": [
+    "Every sprint is a full sprint.",
+    "Stay relaxed in your face and hands.",
+    "If your time drops a lot, end the set."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Stamina",
+    "Speed"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -24,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -24,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.6,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0.6
+       ],
+       [
+        0,
+        -24
+       ]
+      ],
+      "both": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "dead-bug",
+   "name": "Dead Bug",
+   "skill": "Core",
+   "level": 1,
+   "who": "Solo",
+   "min": 3,
+   "space": "A mat",
+   "gear": [],
+   "kit": [],
+   "needs": [],
+   "setup": "Lie on your back with arms straight up and knees bent above your hips.",
+   "how": [
+    "Press your lower back into the ground.",
+    "Slowly lower one arm behind your head and straighten the opposite leg.",
+    "Bring them back to the start.",
+    "Repeat on the other side."
+   ],
+   "reps": "3 × 10 each side",
+   "points": [
+    "Your lower back stays down the whole time.",
+    "Move slowly: about three seconds each way.",
+    "Breathe out as you reach."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Strength"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 0.6,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0,
+      "yaw": 1.57
+     }
+    ],
+    "balls": [],
+    "paths": []
+   }
+  },
+  {
+   "id": "front-plank",
+   "name": "Front Plank",
+   "skill": "Core",
+   "level": 1,
+   "who": "Solo",
+   "min": 3,
+   "space": "A mat",
+   "gear": [],
+   "kit": [],
+   "needs": [],
+   "setup": "Lie face down, then rise onto your forearms and toes.",
+   "how": [
+    "Elbows under your shoulders.",
+    "Lift your hips so your body makes one straight line.",
+    "Squeeze your stomach and the backs of your legs.",
+    "Hold."
+   ],
+   "reps": "3 × 30 s",
+   "points": [
+    "No sagging hips, no high hips.",
+    "Look at the ground just ahead of your hands.",
+    "Keep breathing."
+   ],
+   "progression": "Lift one foot for the last ten seconds.",
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Strength"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 0.6,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0,
+      "yaw": 1.57
+     }
+    ],
+    "balls": [],
+    "paths": []
+   }
+  },
+  {
+   "id": "side-plank",
+   "name": "Side Plank",
+   "skill": "Core",
+   "level": 2,
+   "who": "Solo",
+   "min": 3,
+   "space": "A mat",
+   "gear": [],
+   "kit": [],
+   "needs": [],
+   "setup": "Lie on your side, propped on one forearm, feet stacked.",
+   "how": [
+    "Elbow under your shoulder.",
+    "Lift your hips until your body is straight from head to feet.",
+    "Hold.",
+    "Swap sides."
+   ],
+   "reps": "2 × 25 s each side",
+   "points": [
+    "Hips stay high and stacked.",
+    "Push the ground away with your forearm.",
+    "Don't let your top shoulder roll forward."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Strength"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 0.6,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0,
+      "yaw": 1.57
+     }
+    ],
+    "balls": [],
+    "paths": []
+   }
+  },
+  {
+   "id": "glute-bridge",
+   "name": "Glute Bridge",
+   "skill": "Core",
+   "level": 1,
+   "who": "Solo",
+   "min": 3,
+   "space": "A mat",
+   "gear": [],
+   "kit": [],
+   "needs": [],
+   "setup": "Lie on your back with knees bent and feet flat, hip width apart.",
+   "how": [
+    "Push through your heels and lift your hips.",
+    "Stop when your knees, hips and shoulders are in line.",
+    "Squeeze for one second.",
+    "Lower slowly."
+   ],
+   "reps": "3 × 12",
+   "points": [
+    "Drive through the heels, not the toes.",
+    "Don't arch your lower back at the top.",
+    "Knees stay in line with your feet."
+   ],
+   "progression": "One leg at a time.",
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Strength",
+    "Speed"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 0.6,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0,
+      "yaw": 1.57
+     }
+    ],
+    "balls": [],
+    "paths": []
+   }
+  },
+  {
+   "id": "mountain-climbers",
+   "name": "Mountain Climbers",
+   "skill": "Core",
+   "level": 2,
+   "who": "Solo",
+   "min": 3,
+   "space": "A mat",
+   "gear": [],
+   "kit": [],
+   "needs": [],
+   "setup": "Start in a press-up position, hands under your shoulders.",
+   "how": [
+    "Drive one knee toward your chest.",
+    "Switch legs quickly, as if running on the spot.",
+    "Keep your hips level with your shoulders.",
+    "Go for the full time."
+   ],
+   "reps": "3 × 25 s",
+   "points": [
+    "Hands stay planted under the shoulders.",
+    "Hips low: don't let them bounce up.",
+    "Fast feet, steady upper body."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Stamina",
+    "Strength"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 0.6,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0,
+      "yaw": 1.57
+     }
+    ],
+    "balls": [],
+    "paths": []
+   }
+  },
+  {
+   "id": "plank-shoulder-taps",
+   "name": "Plank Shoulder Taps",
+   "skill": "Core",
+   "level": 2,
+   "who": "Solo",
+   "min": 3,
+   "space": "A mat",
+   "gear": [],
+   "kit": [],
+   "needs": [],
+   "setup": "Start in a press-up position with your feet a little wider than your hips.",
+   "how": [
+    "Lift one hand and tap the opposite shoulder.",
+    "Put it back down.",
+    "Tap with the other hand.",
+    "Keep alternating."
+   ],
+   "reps": "3 × 16 taps",
+   "points": [
+    "Hips stay still: imagine a cup of water on your back.",
+    "Wider feet make it easier to stay steady.",
+    "Slow is harder and better."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Strength"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 0.6,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0,
+      "yaw": 1.57
+     }
+    ],
+    "balls": [],
+    "paths": []
+   }
+  },
+  {
+   "id": "walking-knee-hug",
+   "name": "Walking Knee Hug",
+   "skill": "Stretching",
+   "level": 1,
+   "who": "Solo",
+   "min": 2,
+   "space": "10 m",
+   "gear": [],
+   "kit": [],
+   "needs": [],
+   "setup": "Find 10 m of space to walk.",
+   "how": [
+    "Step forward and lift one knee.",
+    "Hug it to your chest with both hands for a second.",
+    "Step through and do the other leg.",
+    "Keep walking."
+   ],
+   "reps": "2 × 10 each side",
+   "points": [
+    "Stand tall on the standing leg.",
+    "Rise onto your toes as you hug.",
+    "Smooth, not rushed."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Speed"
+   ],
+   "tags": [
+    "warm-up"
+   ],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1.0,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.0,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.0,
+      "z": -8,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.0,
+      "z": -8,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.6,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0.6
+       ],
+       [
+        0,
+        -8
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "hamstring-sweep",
+   "name": "Hamstring Sweep",
+   "skill": "Stretching",
+   "level": 1,
+   "who": "Solo",
+   "min": 2,
+   "space": "10 m",
+   "gear": [],
+   "kit": [],
+   "needs": [],
+   "setup": "Find 10 m of space to walk.",
+   "how": [
+    "Step one heel out in front with that leg straight and toes up.",
+    "Bend the back knee and sit your hips back.",
+    "Sweep both hands down past your front foot.",
+    "Stand, step and swap legs."
+   ],
+   "reps": "2 × 10 each side",
+   "points": [
+    "Flat back as you reach.",
+    "Feel the stretch behind the front thigh.",
+    "Keep moving: don't hold."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Speed"
+   ],
+   "tags": [
+    "warm-up",
+    "cool-down"
+   ],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1.0,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.0,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.0,
+      "z": -8,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.0,
+      "z": -8,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.6,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0.6
+       ],
+       [
+        0,
+        -8
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "hip-flexor-stretch",
+   "name": "Hip Flexor Stretch",
+   "skill": "Stretching",
+   "level": 1,
+   "who": "Solo",
+   "min": 2,
+   "space": "A mat",
+   "gear": [],
+   "kit": [],
+   "needs": [],
+   "setup": "Kneel on one knee with the other foot flat in front of you.",
+   "how": [
+    "Tuck your hips under.",
+    "Gently push your hips forward until you feel a stretch at the front of the back hip.",
+    "Reach the arm on that side up.",
+    "Hold, then swap."
+   ],
+   "reps": "2 × 30 s each side",
+   "points": [
+    "Stay tall: don't lean forward.",
+    "Squeeze the back glute.",
+    "Ease into it and breathe."
+   ],
+   "progression": null,
+   "stats": [
+    "PHY"
+   ],
+   "fixes": [
+    "Speed"
+   ],
+   "tags": [
+    "cool-down"
+   ],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1,
+      "z": 0.6,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": 0.6,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0,
+      "yaw": 1.57
+     }
+    ],
+    "balls": [],
+    "paths": []
+   }
+  }
+ ],
+ "ladders": {
+  "Ball mastery": [
+   "toe-taps",
+   "foundations",
+   "sole-rolls",
+   "figure-8",
+   "juggling",
+   "inside-outside"
+  ],
+  "Passing": [
+   "wall-passes",
+   "weak-foot-laces",
+   "long-pass-target"
+  ],
+  "Goalkeeping": [
+   "gk-set-and-catch"
+  ],
+  "Runs": [
+   "strides",
+   "high-knee-runs",
+   "diagonals",
+   "flying-20s",
+   "repeat-sprints"
+  ],
+  "Core": [
+   "dead-bug",
+   "front-plank",
+   "glute-bridge",
+   "side-plank",
+   "mountain-climbers",
+   "plank-shoulder-taps"
+  ],
+  "Stretching": [
+   "walking-knee-hug",
+   "hamstring-sweep",
+   "hip-flexor-stretch"
+  ],
+  "Dribbling": [
+   "cone-slalom",
+   "speed-dribble",
+   "stop-and-go"
+  ],
+  "First touch": [
+   "wall-first-touch"
+  ],
+  "Shooting": [
+   "laces-strike",
+   "touch-and-finish"
+  ],
+  "Defending": [
+   "jockey-shuffle",
+   "recovery-run"
+  ],
+  "Awareness": [
+   "scan-and-turn"
+  ]
+ },
+ "removed": {},
+ "moves": [
+  {
+   "id": "drag-back-turn",
+   "name": "Drag-Back Turn",
+   "level": 1,
+   "use": "Turn away from a defender who is closing you down from the front.",
+   "scene": "cruyff",
+   "dur": 3.0,
+   "keyTimes": [
+    0.0,
+    0.8,
+    1.6,
+    2.4
+   ],
+   "steps": [
+    {
+     "text": "Put your sole on top of the ball.",
+     "k": 0
+    },
+    {
+     "text": "Drag it back behind your standing leg.",
+     "k": 1
+    },
+    {
+     "text": "Turn your hips to follow it.",
+     "k": 2
+    },
+    {
+     "text": "Push away with the other foot.",
+     "k": 3
+    }
+   ]
+  }
+ ],
+ "moveLevels": {
+  "1": "Starter"
+ },
+ "templates": [
+  {
+   "id": "three-day-start",
+   "name": "3-Day Start",
+   "sub": "Ball work on Monday, Wednesday and Friday.",
+   "days": [
+    "Mon",
+    "Wed",
+    "Fri"
+   ],
+   "tint": "brand",
+   "perDay": 3,
+   "drills": [
+    "toe-taps",
+    "foundations",
+    "cone-slalom",
+    "wall-passes",
+    "juggling",
+    "speed-dribble"
+   ]
+  }
+ ],
+ "axes": [
+  {
+   "key": "shooting",
+   "label": "Shooting",
+   "builds": "Striking the ball cleanly and finishing chances."
+  },
+  {
+   "key": "passing",
+   "label": "Passing",
+   "builds": "Finding a teammate short and long, with either foot."
+  },
+  {
+   "key": "dribbling",
+   "label": "Dribbling",
+   "builds": "Keeping the ball close and beating a player."
+  },
+  {
+   "key": "defending",
+   "label": "Defending",
+   "builds": "Staying in front of an attacker and winning the ball."
+  },
+  {
+   "key": "physical",
+   "label": "Physical",
+   "builds": "Speed, stamina and strength."
+  },
+  {
+   "key": "control",
+   "label": "Ball control",
+   "builds": "First touch and comfort on the ball."
+  }
+ ],
+ "start": {
+  "shooting": 40,
+  "passing": 40,
+  "dribbling": 40,
+  "defending": 40,
+  "physical": 40,
+  "control": 40
+ },
+ "now": {
+  "shooting": 45,
+  "passing": 45,
+  "dribbling": 45,
+  "defending": 45,
+  "physical": 45,
+  "control": 45
+ },
+ "player": {
+  "name": "Alex",
+  "level": 3,
+  "xp": 240,
+  "xpMax": 500,
+  "streak": 4,
+  "position": "CM",
+  "foot": "Right"
+ },
+ "positions": {
+  "GK": "Goalkeeper",
+  "CB": "Centre Back",
+  "LB": "Left Back",
+  "RB": "Right Back",
+  "LWB": "Left Wing Back",
+  "RWB": "Right Wing Back",
+  "CDM": "Defensive Midfielder",
+  "CM": "Central Midfielder",
+  "CAM": "Attacking Midfielder",
+  "LM": "Left Midfielder",
+  "RM": "Right Midfielder",
+  "LW": "Left Winger",
+  "RW": "Right Winger",
+  "ST": "Striker"
+ },
+ "skills": [
+  "Ball mastery",
+  "Dribbling",
+  "First touch",
+  "Passing",
+  "Shooting",
+  "Defending",
+  "Awareness",
+  "Goalkeeping",
+  "Fitness",
+  "Runs",
+  "Core",
+  "Stretching"
+ ],
+ "levels": [
+  {
+   "id": "park",
+   "name": "Park",
+   "minutes": 15,
+   "line": "Short and simple. Get the habit going."
+  },
+  {
+   "id": "club",
+   "name": "Club",
+   "minutes": 20,
+   "line": "A proper session a few times a week."
+  },
+  {
+   "id": "academy",
+   "name": "Academy",
+   "minutes": 30,
+   "line": "More drills and more sets."
+  },
+  {
+   "id": "pro",
+   "name": "Pro",
+   "minutes": 40,
+   "line": "Harder drills at match speed."
+  },
+  {
+   "id": "world-class",
+   "name": "World Class",
+   "minutes": 50,
+   "line": "Everything, at full intensity."
+  }
+ ],
+ "pros": [],
+ "technique": [
+  {
+   "id": "tech-ball-mastery",
+   "title": "Ball Mastery",
+   "kind": null,
+   "levels": [
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "toe-taps",
+      "sets": 3
+     },
+     {
+      "id": "foundations",
+      "sets": 3
+     },
+     {
+      "id": "sole-rolls",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "toe-taps",
+      "sets": 3
+     },
+     {
+      "id": "foundations",
+      "sets": 3
+     },
+     {
+      "id": "sole-rolls",
+      "sets": 3
+     },
+     {
+      "id": "inside-outside",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "toe-taps",
+      "sets": 3
+     },
+     {
+      "id": "foundations",
+      "sets": 3
+     },
+     {
+      "id": "sole-rolls",
+      "sets": 3
+     },
+     {
+      "id": "inside-outside",
+      "sets": 3
+     },
+     {
+      "id": "figure-8",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 3
+     },
+     {
+      "id": "toe-taps",
+      "sets": 4
+     },
+     {
+      "id": "foundations",
+      "sets": 4
+     },
+     {
+      "id": "sole-rolls",
+      "sets": 4
+     },
+     {
+      "id": "inside-outside",
+      "sets": 4
+     },
+     {
+      "id": "figure-8",
+      "sets": 4
+     },
+     {
+      "id": "juggling",
+      "sets": 4
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 3
+     },
+     {
+      "id": "toe-taps",
+      "sets": 4
+     },
+     {
+      "id": "foundations",
+      "sets": 4
+     },
+     {
+      "id": "sole-rolls",
+      "sets": 4
+     },
+     {
+      "id": "inside-outside",
+      "sets": 4
+     },
+     {
+      "id": "figure-8",
+      "sets": 4
+     },
+     {
+      "id": "juggling",
+      "sets": 4
+     },
+     {
+      "id": "hip-flexor-stretch",
+      "sets": 3
+     }
+    ]
+   ]
+  },
+  {
+   "id": "tech-first-touch",
+   "title": "First Touch",
+   "kind": null,
+   "levels": [
+    [
+     {
+      "id": "hamstring-sweep",
+      "sets": 2
+     },
+     {
+      "id": "wall-passes",
+      "sets": 3
+     },
+     {
+      "id": "wall-first-touch",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "hamstring-sweep",
+      "sets": 2
+     },
+     {
+      "id": "wall-passes",
+      "sets": 3
+     },
+     {
+      "id": "wall-first-touch",
+      "sets": 3
+     },
+     {
+      "id": "scan-and-turn",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "hamstring-sweep",
+      "sets": 2
+     },
+     {
+      "id": "wall-passes",
+      "sets": 3
+     },
+     {
+      "id": "wall-first-touch",
+      "sets": 3
+     },
+     {
+      "id": "scan-and-turn",
+      "sets": 3
+     },
+     {
+      "id": "juggling",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "hamstring-sweep",
+      "sets": 3
+     },
+     {
+      "id": "wall-passes",
+      "sets": 4
+     },
+     {
+      "id": "wall-first-touch",
+      "sets": 4
+     },
+     {
+      "id": "scan-and-turn",
+      "sets": 4
+     },
+     {
+      "id": "juggling",
+      "sets": 4
+     },
+     {
+      "id": "weak-foot-laces",
+      "sets": 4
+     }
+    ],
+    [
+     {
+      "id": "hamstring-sweep",
+      "sets": 3
+     },
+     {
+      "id": "wall-passes",
+      "sets": 4
+     },
+     {
+      "id": "wall-first-touch",
+      "sets": 4
+     },
+     {
+      "id": "scan-and-turn",
+      "sets": 4
+     },
+     {
+      "id": "juggling",
+      "sets": 4
+     },
+     {
+      "id": "weak-foot-laces",
+      "sets": 4
+     },
+     {
+      "id": "hip-flexor-stretch",
+      "sets": 3
+     }
+    ]
+   ]
+  },
+  {
+   "id": "tech-dribbling",
+   "title": "Dribbling",
+   "kind": null,
+   "levels": [
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "foundations",
+      "sets": 2
+     },
+     {
+      "id": "cone-slalom",
+      "sets": 4
+     },
+     {
+      "id": "speed-dribble",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "foundations",
+      "sets": 2
+     },
+     {
+      "id": "cone-slalom",
+      "sets": 4
+     },
+     {
+      "id": "speed-dribble",
+      "sets": 3
+     },
+     {
+      "id": "figure-8",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "foundations",
+      "sets": 2
+     },
+     {
+      "id": "cone-slalom",
+      "sets": 4
+     },
+     {
+      "id": "speed-dribble",
+      "sets": 3
+     },
+     {
+      "id": "figure-8",
+      "sets": 3
+     },
+     {
+      "id": "stop-and-go",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 3
+     },
+     {
+      "id": "foundations",
+      "sets": 3
+     },
+     {
+      "id": "cone-slalom",
+      "sets": 5
+     },
+     {
+      "id": "speed-dribble",
+      "sets": 4
+     },
+     {
+      "id": "figure-8",
+      "sets": 4
+     },
+     {
+      "id": "stop-and-go",
+      "sets": 4
+     },
+     {
+      "id": "inside-outside",
+      "sets": 4
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 3
+     },
+     {
+      "id": "foundations",
+      "sets": 3
+     },
+     {
+      "id": "cone-slalom",
+      "sets": 5
+     },
+     {
+      "id": "speed-dribble",
+      "sets": 4
+     },
+     {
+      "id": "figure-8",
+      "sets": 4
+     },
+     {
+      "id": "stop-and-go",
+      "sets": 4
+     },
+     {
+      "id": "inside-outside",
+      "sets": 4
+     },
+     {
+      "id": "hamstring-sweep",
+      "sets": 3
+     }
+    ]
+   ]
+  },
+  {
+   "id": "tech-finishing",
+   "title": "Finishing",
+   "kind": null,
+   "levels": [
+    [
+     {
+      "id": "hamstring-sweep",
+      "sets": 2
+     },
+     {
+      "id": "wall-passes",
+      "sets": 3
+     },
+     {
+      "id": "laces-strike",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "hamstring-sweep",
+      "sets": 2
+     },
+     {
+      "id": "wall-passes",
+      "sets": 3
+     },
+     {
+      "id": "laces-strike",
+      "sets": 3
+     },
+     {
+      "id": "touch-and-finish",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "hamstring-sweep",
+      "sets": 2
+     },
+     {
+      "id": "wall-passes",
+      "sets": 3
+     },
+     {
+      "id": "laces-strike",
+      "sets": 3
+     },
+     {
+      "id": "touch-and-finish",
+      "sets": 3
+     },
+     {
+      "id": "weak-foot-laces",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "hamstring-sweep",
+      "sets": 3
+     },
+     {
+      "id": "wall-passes",
+      "sets": 4
+     },
+     {
+      "id": "laces-strike",
+      "sets": 4
+     },
+     {
+      "id": "touch-and-finish",
+      "sets": 4
+     },
+     {
+      "id": "weak-foot-laces",
+      "sets": 4
+     },
+     {
+      "id": "long-pass-target",
+      "sets": 4
+     }
+    ],
+    [
+     {
+      "id": "hamstring-sweep",
+      "sets": 3
+     },
+     {
+      "id": "wall-passes",
+      "sets": 4
+     },
+     {
+      "id": "laces-strike",
+      "sets": 4
+     },
+     {
+      "id": "touch-and-finish",
+      "sets": 4
+     },
+     {
+      "id": "weak-foot-laces",
+      "sets": 4
+     },
+     {
+      "id": "long-pass-target",
+      "sets": 4
+     },
+     {
+      "id": "hip-flexor-stretch",
+      "sets": 3
+     }
+    ]
+   ]
+  }
+ ],
+ "fitness": [],
+ "workouts": [
+  {
+   "id": "fx-speed",
+   "title": "Sprint Speed",
+   "kind": "workout",
+   "levels": [
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "high-knee-runs",
+      "sets": 3
+     },
+     {
+      "id": "strides",
+      "sets": 4
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "high-knee-runs",
+      "sets": 3
+     },
+     {
+      "id": "strides",
+      "sets": 4
+     },
+     {
+      "id": "flying-20s",
+      "sets": 4
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "high-knee-runs",
+      "sets": 3
+     },
+     {
+      "id": "strides",
+      "sets": 4
+     },
+     {
+      "id": "flying-20s",
+      "sets": 4
+     },
+     {
+      "id": "glute-bridge",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 3
+     },
+     {
+      "id": "high-knee-runs",
+      "sets": 4
+     },
+     {
+      "id": "strides",
+      "sets": 5
+     },
+     {
+      "id": "flying-20s",
+      "sets": 5
+     },
+     {
+      "id": "glute-bridge",
+      "sets": 4
+     },
+     {
+      "id": "repeat-sprints",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 3
+     },
+     {
+      "id": "high-knee-runs",
+      "sets": 4
+     },
+     {
+      "id": "strides",
+      "sets": 5
+     },
+     {
+      "id": "flying-20s",
+      "sets": 5
+     },
+     {
+      "id": "glute-bridge",
+      "sets": 4
+     },
+     {
+      "id": "repeat-sprints",
+      "sets": 3
+     },
+     {
+      "id": "hamstring-sweep",
+      "sets": 3
+     }
+    ]
+   ]
+  },
+  {
+   "id": "fx-core",
+   "title": "Core Strength",
+   "kind": "workout",
+   "levels": [
+    [
+     {
+      "id": "dead-bug",
+      "sets": 3
+     },
+     {
+      "id": "front-plank",
+      "sets": 3
+     },
+     {
+      "id": "glute-bridge",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "dead-bug",
+      "sets": 3
+     },
+     {
+      "id": "front-plank",
+      "sets": 3
+     },
+     {
+      "id": "glute-bridge",
+      "sets": 3
+     },
+     {
+      "id": "side-plank",
+      "sets": 2
+     }
+    ],
+    [
+     {
+      "id": "dead-bug",
+      "sets": 3
+     },
+     {
+      "id": "front-plank",
+      "sets": 3
+     },
+     {
+      "id": "glute-bridge",
+      "sets": 3
+     },
+     {
+      "id": "side-plank",
+      "sets": 2
+     },
+     {
+      "id": "plank-shoulder-taps",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "dead-bug",
+      "sets": 4
+     },
+     {
+      "id": "front-plank",
+      "sets": 4
+     },
+     {
+      "id": "glute-bridge",
+      "sets": 4
+     },
+     {
+      "id": "side-plank",
+      "sets": 3
+     },
+     {
+      "id": "plank-shoulder-taps",
+      "sets": 4
+     },
+     {
+      "id": "mountain-climbers",
+      "sets": 4
+     }
+    ],
+    [
+     {
+      "id": "dead-bug",
+      "sets": 4
+     },
+     {
+      "id": "front-plank",
+      "sets": 4
+     },
+     {
+      "id": "glute-bridge",
+      "sets": 4
+     },
+     {
+      "id": "side-plank",
+      "sets": 3
+     },
+     {
+      "id": "plank-shoulder-taps",
+      "sets": 4
+     },
+     {
+      "id": "mountain-climbers",
+      "sets": 4
+     },
+     {
+      "id": "hip-flexor-stretch",
+      "sets": 3
+     }
+    ]
+   ]
+  },
+  {
+   "id": "fx-engine",
+   "title": "Engine",
+   "kind": "workout",
+   "levels": [
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "strides",
+      "sets": 4
+     },
+     {
+      "id": "diagonals",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "strides",
+      "sets": 4
+     },
+     {
+      "id": "diagonals",
+      "sets": 3
+     },
+     {
+      "id": "mountain-climbers",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "strides",
+      "sets": 4
+     },
+     {
+      "id": "diagonals",
+      "sets": 3
+     },
+     {
+      "id": "mountain-climbers",
+      "sets": 3
+     },
+     {
+      "id": "repeat-sprints",
+      "sets": 2
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 3
+     },
+     {
+      "id": "strides",
+      "sets": 5
+     },
+     {
+      "id": "diagonals",
+      "sets": 4
+     },
+     {
+      "id": "mountain-climbers",
+      "sets": 4
+     },
+     {
+      "id": "repeat-sprints",
+      "sets": 3
+     },
+     {
+      "id": "high-knee-runs",
+      "sets": 4
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 3
+     },
+     {
+      "id": "strides",
+      "sets": 5
+     },
+     {
+      "id": "diagonals",
+      "sets": 4
+     },
+     {
+      "id": "mountain-climbers",
+      "sets": 4
+     },
+     {
+      "id": "repeat-sprints",
+      "sets": 3
+     },
+     {
+      "id": "high-knee-runs",
+      "sets": 4
+     },
+     {
+      "id": "hamstring-sweep",
+      "sets": 3
+     }
+    ]
+   ]
+  }
+ ],
+ "hybrid": [
+  {
+   "id": "mix-sprint-shoot",
+   "title": "Sprint and Shoot",
+   "kind": "hybrid",
+   "levels": [
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "strides",
+      "sets": 3
+     },
+     {
+      "id": "laces-strike",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "strides",
+      "sets": 3
+     },
+     {
+      "id": "laces-strike",
+      "sets": 3
+     },
+     {
+      "id": "flying-20s",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 2
+     },
+     {
+      "id": "strides",
+      "sets": 3
+     },
+     {
+      "id": "laces-strike",
+      "sets": 3
+     },
+     {
+      "id": "flying-20s",
+      "sets": 3
+     },
+     {
+      "id": "touch-and-finish",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 3
+     },
+     {
+      "id": "strides",
+      "sets": 4
+     },
+     {
+      "id": "laces-strike",
+      "sets": 4
+     },
+     {
+      "id": "flying-20s",
+      "sets": 4
+     },
+     {
+      "id": "touch-and-finish",
+      "sets": 4
+     },
+     {
+      "id": "speed-dribble",
+      "sets": 4
+     }
+    ],
+    [
+     {
+      "id": "walking-knee-hug",
+      "sets": 3
+     },
+     {
+      "id": "strides",
+      "sets": 4
+     },
+     {
+      "id": "laces-strike",
+      "sets": 4
+     },
+     {
+      "id": "flying-20s",
+      "sets": 4
+     },
+     {
+      "id": "touch-and-finish",
+      "sets": 4
+     },
+     {
+      "id": "speed-dribble",
+      "sets": 4
+     },
+     {
+      "id": "hamstring-sweep",
+      "sets": 3
+     }
+    ]
+   ]
+  },
+  {
+   "id": "mix-feet-core",
+   "title": "Quick Feet and Core",
+   "kind": "hybrid",
+   "levels": [
+    [
+     {
+      "id": "toe-taps",
+      "sets": 3
+     },
+     {
+      "id": "front-plank",
+      "sets": 3
+     },
+     {
+      "id": "cone-slalom",
+      "sets": 4
+     }
+    ],
+    [
+     {
+      "id": "toe-taps",
+      "sets": 3
+     },
+     {
+      "id": "front-plank",
+      "sets": 3
+     },
+     {
+      "id": "cone-slalom",
+      "sets": 4
+     },
+     {
+      "id": "dead-bug",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "toe-taps",
+      "sets": 3
+     },
+     {
+      "id": "front-plank",
+      "sets": 3
+     },
+     {
+      "id": "cone-slalom",
+      "sets": 4
+     },
+     {
+      "id": "dead-bug",
+      "sets": 3
+     },
+     {
+      "id": "figure-8",
+      "sets": 3
+     }
+    ],
+    [
+     {
+      "id": "toe-taps",
+      "sets": 4
+     },
+     {
+      "id": "front-plank",
+      "sets": 4
+     },
+     {
+      "id": "cone-slalom",
+      "sets": 5
+     },
+     {
+      "id": "dead-bug",
+      "sets": 4
+     },
+     {
+      "id": "figure-8",
+      "sets": 4
+     },
+     {
+      "id": "plank-shoulder-taps",
+      "sets": 4
+     }
+    ],
+    [
+     {
+      "id": "toe-taps",
+      "sets": 4
+     },
+     {
+      "id": "front-plank",
+      "sets": 4
+     },
+     {
+      "id": "cone-slalom",
+      "sets": 5
+     },
+     {
+      "id": "dead-bug",
+      "sets": 4
+     },
+     {
+      "id": "figure-8",
+      "sets": 4
+     },
+     {
+      "id": "plank-shoulder-taps",
+      "sets": 4
+     },
+     {
+      "id": "hip-flexor-stretch",
+      "sets": 3
+     }
+    ]
+   ]
+  }
+ ]
+}

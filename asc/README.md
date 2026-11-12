@@ -1,0 +1,9 @@
+# App Store Connect scripts (2026-10-28)
+Made the Soccer Max products by API. Key B8B72B9R2P (~/.appstoreconnect/private_keys, never copy it here) + issuer 201c6926-?
+Run from this folder: node step1-subs.mjs ? step2-prices.mjs ? step3-lifetime.mjs ? step4-shots.mjs. ids.json / life.json = what exists (re-runs skip done steps; step2 re-posts prices).
+Gotcha: a review screenshot can stick at UPLOAD_COMPLETE (yearly did) ? delete it and upload again.
+Listing: step5-listing.mjs (text, URLs, categories, free price, age rating 13+, review notes). Add the review contact with PHONE=+1... env.
+Step 7 (2026-10-29): step7-yearly-stay.mjs = "WAIT, DON'T DELETE ME" plan com.jacksteiner.soccermax.yearly.stay, $14.99/yr, no trial (ASC 6828576501, READY_TO_SUBMIT). Add it to the first version with the others.
+Step 8 (2026-10-29): step8-aso.mjs = ASO title/subtitle/keywords/promo for en-US + es-MX + fr-FR; SHOTS=1 uploads shots/out/*.jpg (made by shots/compose.mjs). Build upload: see notes/37.
+Step 10 (2026-10-30): step10-creatives.mjs = the v3 store art on version 1.0, all 3 locales: 9 × 6.9" screenshots (replaces the APP_IPHONE_67 set) + the product page HEADER image and the SEARCH RESULTS video through the App Asset Library (asset library id = app id 6828180179; category CREATIVE_ASSETS; placements PRODUCT_PAGE_HEADER_ASSET / APP_STORE_SEARCH_RESULTS_ASSET, group DEFAULT_PROFILE). Asset commits take `uploaded: true` ONLY (no checksum). Search-video spec shortName says t15~30 while its duration says PT5S ? we upload a 19.2 s file (the 9.6 s loop twice). Poster frame = previewFrameTimeCode 00:00:06:15 (bullet time). Nothing submitted.
+Step 11 (2026-10-30): step11-offer40.mjs = the 40% OFF offer ? monthly.off40 $5.99, yearly.off40 $17.99 (no trial), lifetime.off40 $23.99; ids in off40.json; review shot offer-review.png. All 3 READY_TO_SUBMIT.

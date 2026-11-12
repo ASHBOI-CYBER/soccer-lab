@@ -1,0 +1,3 @@
+// Committed. The API keys live in the gitignored Secrets.xcconfig (APISPORTS_KEY = ..., HIGHLIGHTLY_KEY = ...), see notes/22.
+#include? "Secrets.xcconfig"
+#include? ".env"

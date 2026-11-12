@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<!-- Team accounts (notes/26) -->
+	<key>com.apple.developer.applesignin</key>
+	<array><string>Default</string></array>
+	<!-- home-screen widgets read the snapshot the app writes here (notes/34) -->
+	<key>com.apple.security.application-groups</key>
+	<array><string>group.com.jacksteiner.soccermax</string></array>
+	<!-- share + invite links open the app: soccermax.app/join/*, /s/* (site/worker.js serves the AASA file) -->
+	<key>com.apple.developer.associated-domains</key>
+	<array><string>applinks:soccermax.app</string><string>applinks:www.soccermax.app</string></array>
+</dict>
+</plist>
