@@ -152,7 +152,7 @@ struct MainTabs: View {
     @State private var demoDone = DebugRoute.parts == ["done", "demo"]
     @State private var tab: AppTab = {
         switch DebugRoute.parts.first {
-        case "tab": return ["training": .training, "sessions": .training, "film": .film, "nutrition": .nutrition, "stats": .profile, "card": .profile, "profile": .profile][DebugRoute.parts[safe: 1] ?? ""] ?? .team
+        case "tab": return ["training": .training, "sessions": .training, "film": .film, "nutrition": .nutrition, "stats": .profile, "card": .profile, "profile": .profile][DebugRoute.parts[safe: 1] ?? ""] ?? .training
         case "stats", "card", "profile": return .profile
         case "sessions", "free": return .training
         default: return .training
