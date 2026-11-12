@@ -144,34 +144,35 @@ struct SoccerMaxApp: App {
     }
 }
 
-/// Tabs (2026-11-08): Team · Sessions · Map · Profile. Matchday removed; Stats lives inside Profile.
-enum AppTab: Hashable { case team, sessions, map, profile }
+/// Tabs (SOCCER LAB, 2026-11-12): Training · Film · Nutrition · Profile. Team opens from Profile (a full-screen
+/// cover, `Nav.shared.team`); the Map tab is gone.
+enum AppTab: Hashable { case training, film, nutrition, profile }
 
 struct MainTabs: View {
     @State private var demoDone = DebugRoute.parts == ["done", "demo"]
     @State private var tab: AppTab = {
         switch DebugRoute.parts.first {
-        case "tab": return ["team": .team, "sessions": .sessions, "map": .map, "stats": .profile, "card": .profile, "profile": .profile][DebugRoute.parts[safe: 1] ?? ""] ?? .team
+        case "tab": return ["training": .training, "sessions": .training, "film": .film, "nutrition": .nutrition, "stats": .profile, "card": .profile, "profile": .profile][DebugRoute.parts[safe: 1] ?? ""] ?? .team
         case "stats", "card", "profile": return .profile
-        case "sessions", "free": return .sessions
-        default: return .team
+        case "sessions", "free": return .training
+        default: return .training
         }
     }()
 
     var body: some View {
         TabView(selection: $tab) {
-            TeamTab()
+            TrainingTab()
                 .duoColumn()
-                .tabItem { Label("Team", systemImage: "person.3.fill") }
-                .tag(AppTab.team)
-            TrainTab()
+                .tabItem { Label("Training", systemImage: "figure.soccer") }
+                .tag(AppTab.training)
+            FilmTab()
                 .duoColumn()
-                .tabItem { Label("Sessions", systemImage: "figure.soccer") }
-                .tag(AppTab.sessions)
-            MapTab()
+                .tabItem { Label("Film", systemImage: "play.rectangle.fill") }
+                .tag(AppTab.film)
+            NutritionTab()
                 .duoColumn()
-                .tabItem { Label("Map", systemImage: "map.fill") }
-                .tag(AppTab.map)
+                .tabItem { Label("Nutrition", systemImage: "fork.knife") }
+                .tag(AppTab.nutrition)
             ProfileTab()
                 .duoColumn()
                 .tabItem { Label("Profile", systemImage: "person.crop.circle.fill") }
@@ -192,8 +193,27 @@ struct MainTabs: View {
         // DEBUG `-route done:demo`: the session-done screen with a level-up, saving nothing
         .fullScreenCover(isPresented: $demoDone) { DemoDone() }
         .onChange(of: tab) { _, _ in Haptics.play(.stud) }
-        .onChange(of: Team.shared.pendingCode) { _, c in if c != nil { tab = .team } }
-        .onAppear { if Team.shared.pendingCode != nil { tab = .team } }
+        // a code from a link (team invite, gift, creator) opens the Team page, which has the code box
+        .onChange(of: Team.shared.pendingCode) { _, c in if c != nil { Nav.shared.team = true } }
+        .onAppear { if Team.shared.pendingCode != nil { Nav.shared.team = true } }
+        // TEAM lives behind Profile now: chat, leaderboard, invites and the code box, full screen with a Close bar
+        .fullScreenCover(isPresented: Binding(get: { Nav.shared.team }, set: { Nav.shared.team = $0 })) {
+            TeamTab()
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    HStack {
+                        Spacer()
+                        Button { Nav.shared.team = false } label: {
+                            Label("Close", systemImage: "xmark")
+                                .font(F.round(15, .bold)).foregroundStyle(C.creme)
+                                .padding(.horizontal, 14).frame(height: 44)
+                                .background(Capsule().fill(C.char700))
+                        }
+                    }
+                    .padding(.horizontal, 16).padding(.bottom, 6)
+                    .background(C.char900)
+                }
+                .duoColumn()
+        }
         .onChange(of: Nav.shared.tab) { _, t in if let t { tab = t; Nav.shared.tab = nil } }
         .sheet(item: Binding(get: { Nav.shared.session }, set: { Nav.shared.session = $0 })) { SharedSessionSheet(meta: $0.meta) }
         .onAppear { if let t = Nav.shared.tab { tab = t; Nav.shared.tab = nil } }
@@ -217,6 +237,8 @@ private struct DemoDone: View {
 final class Nav {
     static let shared = Nav()
     var tab: AppTab?
+    /// The Team page is showing (opened from Profile, or by a code from a link).
+    var team = false
     var tape: Int?
     /// A logged session picked on Profile's graph ? opens in the Sessions tab.
     var log: Completion?

@@ -134,6 +134,10 @@ struct ProfileTab: View {
                 .font(F.round(15, .semibold)).foregroundStyle(C.muted)
             TeamChip { showTeams = true }
                 .padding(.top, 4)
+            // TEAM used to be a tab; it opens from here now (chat, leaderboard, invites, the code box)
+            Button { Nav.shared.team = true } label: { Label("MY TEAM", systemImage: "person.3.fill") }
+                .buttonStyle(.game(.charcoal, height: 50, font: 19))
+                .padding(.top, 6)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 2)
@@ -292,7 +296,7 @@ struct TeamDisplayPicker: View {
                             Text("You\u{2019}re not on a team yet.").font(F.round(18, .semibold)).foregroundStyle(C.creme)
                             Button("MAKE OR JOIN A TEAM") {
                                 dismiss()
-                                Nav.shared.tab = .team
+                                Nav.shared.team = true
                             }
                             .buttonStyle(.game(.brand))
                         }

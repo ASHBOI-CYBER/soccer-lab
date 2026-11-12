@@ -222,6 +222,23 @@ D("gk-set-and-catch", "Set and Catch", "Goalkeeping", 1, 5, f"3 {X} 12 catches",
   board(wall(), [you(0, 0.4)], [[0, 0]], [ball((0, 0), (0, -2.8), both=True)]),
   gear=["Ball", "Wall"], space="A wall and 4 m", progression="Throw it lower and scoop it up.")
 
+D("gk-low-dive", "Low Dive", "Goalkeeping", 2, 5, f"3 {X} 6 each side",
+  "Kneel on soft ground with a ball a step to one side. Move to standing only when the kneeling version feels easy.",
+  ["From your knees, fall sideways toward the ball.", "Lead with your hands: bottom hand behind the ball, top hand on top.",
+   "Land on your side, never your elbow or your front.", "Get up quickly and reset. Swap sides."],
+  ["Step toward the ball before you go down.", "Hands reach the ball before your body reaches the ground.", "Keep your eyes on the ball until it is trapped."],
+  ["DEF", "PHY"], ["Positioning", "Composure"],
+  board([cone(-2, -1), cone(2, -1)], [you(0, 0.2)], [[1.4, 0]], [run((0, 0.2), (1.2, 0.1))]),
+  gear=["Ball", "2 cones"], space="Soft ground, 4 m wide", progression="Start standing, with a small side step before the dive.")
+D("gk-angle-shuffle", "Angle Shuffle", "Goalkeeping", 2, 4, f"3 {X} 40 s",
+  "Mark a goal with two cones 5 m apart. Put three balls in an arc 8 m out: left, middle and right.",
+  ["Start in the middle of the goal in your set position.", "Shuffle so you stand on the line between the left ball and the centre of the goal.",
+   "Set your feet, then shuffle to line up with the middle ball, then the right one.", "Keep moving across the arc and back."],
+  ["Small side steps: your feet never cross.", "Be set and still before you count a ball as covered.", "Stay a step or two off your line, not on it."],
+  ["DEF", "PHY"], ["Positioning"],
+  board([cone(-2.5, 0), cone(2.5, 0)], [you(0, -0.8, PI)], [[-4, -7], [0, -8], [4, -7]], [run((-1.4, -0.9), (1.4, -0.9), both=True)]),
+  gear=["Ball", "2 cones"], space="10 m in front of a goal", progression="Have someone call left, middle or right at random.")
+
 # ---- Runs (no ball)
 D("strides", "Strides", "Runs", 1, 4, f"4 {X} 60 m", "Mark out about 60 m of flat ground.",
   ["Build up smoothly over the first 20 m.", "Hold a fast, relaxed pace for the middle 20 m.", "Ease off over the last 20 m.", "Walk back to recover."],

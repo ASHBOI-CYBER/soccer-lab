@@ -61,6 +61,10 @@
 		9A3C9C849F063C4E08F0480E /* Matchday.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25C20692BD219DE50953FB6 /* Matchday.swift */; };
 		9A6DD11E33BA2F2210B53C87 /* ProfileViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321081A7E10807BC492CE684 /* ProfileViews.swift */; };
 		9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B54515A513BD184531E29 /* MapTab.swift */; };
+		A3DA36B2E4E17119BA2A4C1C /* NutritionTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 266682EDB4B2C837A3DA36B2 /* NutritionTab.swift */; };
+		1435CB5A05C8F99CDE16647F /* FilmTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = C368933987A7B2541435CB5A /* FilmTab.swift */; };
+		EF52972845962F45C7D9F0A2 /* TrainingTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5428FC28CF8C2EEAEF529728 /* TrainingTab.swift */; };
+		CCE578D62205D6F8C433C934 /* LabData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8B723472F5A467D5CCE578D6 /* LabData.swift */; };
 		9FAD9F2B042C69342C524266 /* Stats.swift in Sources */ = {isa = PBXBuildFile; fileRef = 85011D59A551EBD0F6D7DD37 /* Stats.swift */; };
 		A412732D2B1C53B075E6DB21 /* DrillBoard.swift in Sources */ = {isa = PBXBuildFile; fileRef = A71CAD9222AFE342FFEFB9B4 /* DrillBoard.swift */; };
 		A4861DCB424CA14AAEBA4BF0 /* CancelFlow.swift in Sources */ = {isa = PBXBuildFile; fileRef = 476F520BFD510D205AFF537F /* CancelFlow.swift */; };
@@ -118,6 +122,10 @@
 
 /* Begin PBXFileReference section */
 		008B54515A513BD184531E29 /* MapTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTab.swift; sourceTree = "<group>"; };
+		266682EDB4B2C837A3DA36B2 /* NutritionTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionTab.swift; sourceTree = "<group>"; };
+		C368933987A7B2541435CB5A /* FilmTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FilmTab.swift; sourceTree = "<group>"; };
+		5428FC28CF8C2EEAEF529728 /* TrainingTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingTab.swift; sourceTree = "<group>"; };
+		8B723472F5A467D5CCE578D6 /* LabData.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LabData.swift; sourceTree = "<group>"; };
 		018E38CA7AB3C52B22B95146 /* SoccerMaxWidgets.appex */ = {isa = PBXFileReference; includeInIndex = 0; lastKnownFileType = "wrapper.app-extension"; path = SoccerMaxWidgets.appex; sourceTree = BUILT_PRODUCTS_DIR; };
 		030B35341F13A9C0584E3325 /* Players */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Players; path = SoccerMax/Resources/Players; sourceTree = SOURCE_ROOT; };
 		034846459EF50CAD0C01EF76 /* Stadiums */ = {isa = PBXFileReference; lastKnownFileType = folder; name = Stadiums; path = SoccerMax/Resources/Stadiums; sourceTree = SOURCE_ROOT; };
@@ -303,6 +311,10 @@
 				84384AF82E40D2BD83DFB35E /* LocalTeamViews.swift */,
 				457EAABAD4522119C8D6381B /* LoggedViews.swift */,
 				008B54515A513BD184531E29 /* MapTab.swift */,
+				266682EDB4B2C837A3DA36B2 /* NutritionTab.swift */,
+				C368933987A7B2541435CB5A /* FilmTab.swift */,
+				5428FC28CF8C2EEAEF529728 /* TrainingTab.swift */,
+				8B723472F5A467D5CCE578D6 /* LabData.swift */,
 				A76DF16E791192BA9B456B48 /* MatchdayViews.swift */,
 				C2BCA943B74D0442D05A583A /* PlanCards.swift */,
 				74F9A24ACA09BFCC1A5D026A /* PlanViews.swift */,
@@ -540,6 +552,10 @@
 				410B5D77DB3B7434D4C9F886 /* LocalTeams.swift in Sources */,
 				2A313F5883861E364088C2C7 /* LoggedViews.swift in Sources */,
 				9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */,
+				A3DA36B2E4E17119BA2A4C1C /* NutritionTab.swift in Sources */,
+				1435CB5A05C8F99CDE16647F /* FilmTab.swift in Sources */,
+				EF52972845962F45C7D9F0A2 /* TrainingTab.swift in Sources */,
+				CCE578D62205D6F8C433C934 /* LabData.swift in Sources */,
 				BC629F144A14F74ECD90A23E /* Mascot.swift in Sources */,
 				9A3C9C849F063C4E08F0480E /* Matchday.swift in Sources */,
 				5B4BEC359CF60DD61B1A1207 /* MatchdayViews.swift in Sources */,
