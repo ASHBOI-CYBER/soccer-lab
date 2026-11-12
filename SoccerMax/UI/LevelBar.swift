@@ -15,16 +15,16 @@ struct LevelBar: View {
     var body: some View {
         VStack(alignment: .leading, spacing: compact ? 10 : 12) {
             HStack(alignment: .lastTextBaseline) {
-                Disp("LEVEL \(level.lv)", size: compact ? 24 : 26)
+                Text("Level \(level.lv)").font(.system(size: 18, weight: .bold)).foregroundStyle(C.creme)
                     .contentTransition(.numericText())
                 Spacer(minLength: 8)
                 Text("\(level.into.formatted()) / \(level.need.formatted()) XP")
-                    .font(F.round(14, .bold)).monospacedDigit().foregroundStyle(C.muted)
-                if showsMore { Image(systemName: "chevron.right").font(.system(size: 13, weight: .heavy)).foregroundStyle(C.muted) }
+                    .font(F.round(13, .semibold)).monospacedDigit().foregroundStyle(C.muted)
+                if showsMore { Image(systemName: "chevron.right").font(.system(size: 12, weight: .bold)).foregroundStyle(C.muted) }
             }
-            XPBar(progress: fill, height: compact ? 18 : 22)
-                .padding(.top, -4)     // the display font's tall line box
-        }   // no card border (2026-11-08, user)
+            XPBar(progress: fill, height: 8)
+        }
+        .gameCard(padding: 16, radius: 18)   // a card again (2026-11-13): on black, a bare bar read as a stray dot
         .onAppear { withAnimation(.spring(response: 0.7, dampingFraction: 0.85)) { fill = level.progress } }
         .onChange(of: level.into) { _, _ in withAnimation(.spring) { fill = level.progress } }
         .accessibilityElement(children: .combine)
@@ -32,38 +32,26 @@ struct LevelBar: View {
     }
 }
 
-/// One smooth bar: a sunk track, a green fill with a top highlight, a soft shine gliding across every few seconds.
+/// A thin progress bar: a grey track and a glowing blue fill. Empty at zero.
 struct XPBar: View {
     let progress: Double
-    var height: CGFloat = 22
+    var height: CGFloat = 8
 
     var body: some View {
         GeometryReader { g in
-            let fw = max(height, g.size.width * progress)
-            TimelineView(.animation(minimumInterval: 1 / 30)) { tl in
-                let t = tl.date.timeIntervalSinceReferenceDate
-                let sweep = (t / 3.2).truncatingRemainder(dividingBy: 1)       // 0?1 every 3.2 s
-                ZStack(alignment: .leading) {
-                    Capsule().fill(C.char950)
-                        .overlay(Capsule().stroke(C.charInk, lineWidth: 2))
-                    ZStack {
-                        LinearGradient(colors: [C.brandHi, C.brand, C.brandMid], startPoint: .top, endPoint: .bottom)
-                        Capsule().fill(.white.opacity(0.32))
-                            .frame(height: height * 0.22)
-                            .padding(.horizontal, height * 0.45)
-                            .frame(maxHeight: .infinity, alignment: .top)
-                            .padding(.top, height * 0.16)
-                        LinearGradient(colors: [.clear, .white.opacity(0.4), .clear], startPoint: .leading, endPoint: .trailing)
-                            .frame(width: height * 3)
-                            .offset(x: (fw + height * 6) * sweep - fw / 2 - height * 3)
-                    }
-                    .frame(width: fw)
-                    .clipShape(Capsule())
-                    .shadow(color: C.brand.opacity(0.35), radius: 6)
+            let f = min(1, max(0, progress))
+            ZStack(alignment: .leading) {
+                Capsule().fill(C.char700)
+                if f > 0 {
+                    Capsule()
+                        .fill(LinearGradient(colors: [C.brandHi, C.brand], startPoint: .leading, endPoint: .trailing))
+                        .frame(width: max(height, g.size.width * f))
+                        .shadow(color: C.brand.opacity(0.7), radius: 5)
                 }
             }
         }
         .frame(height: height)
+        .accessibilityHidden(true)
     }
 }
 
