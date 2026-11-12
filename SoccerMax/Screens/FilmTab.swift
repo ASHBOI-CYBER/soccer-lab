@@ -52,7 +52,7 @@ struct FilmTab: View {
         LabPanel {
             VStack(alignment: .leading, spacing: 12) {
                 Disp("REVIEW YOUR GAME", size: 24)
-                Text("Watch a clip of yourself, tick what went wrong, and the right drills are added to your training.")
+                Text("Watch a clip of yourself and answer a few questions. Your coach tells you what to work on and adds the drills to your training.")
                     .font(F.round(15, .semibold)).foregroundStyle(C.creme2)
                     .fixedSize(horizontal: false, vertical: true)
                 Button { adding = true } label: { Label("REVIEW A CLIP", systemImage: "plus") }
@@ -83,7 +83,7 @@ struct FilmTab: View {
                             .frame(width: 42, height: 42).background(Circle().fill(C.brand))
                         VStack(alignment: .leading, spacing: 2) {
                             Text(r.title).font(F.round(16, .bold)).foregroundStyle(C.creme).lineLimit(1)
-                            Text("\(r.date.formatted(.dateTime.day().month(.abbreviated))) · \(r.mistakes.count) to fix · \(r.drills.count) drills")
+                            Text("\(r.date.formatted(.dateTime.day().month(.abbreviated))) · \(r.mistakes.isEmpty ? "nothing to fix" : "\(r.mistakes.count) to fix") · \(r.drills.count) drills")
                                 .font(F.round(13, .semibold)).foregroundStyle(C.muted)
                         }
                         Spacer(minLength: 0)
@@ -99,29 +99,42 @@ struct FilmTab: View {
     }
 }
 
-// MARK: - new review
+// MARK: - new review (guided: the app asks, the player answers, the app says what to work on)
 
 struct FilmReviewSheet: View {
     let position: String
     @Environment(\.dismiss) private var dismiss
     @State private var lab = Lab.shared
+
+    private enum Stage { case setup, questions, result }
+    @State private var stage: Stage = .setup
     @State private var title = ""
     @State private var note = ""
-    @State private var picked: Set<String> = []
+    @State private var moments: Set<String> = []
+    @State private var answers: [String: Bool] = [:]
     @State private var item: PhotosPickerItem?
     @State private var clip: String?
     @State private var loading = false
     @State private var clipError = false
-    /// Set once saved: the sheet then shows what was added.
-    @State private var added: [String]?
+    /// The saved review, once the questions are done.
+    @State private var saved: FilmReview?
+
+    private var chosen: [FilmMoment] { FilmGuide.list(position: position).filter { moments.contains($0.id) } }
+    private var questionCount: Int { chosen.reduce(0) { $0 + $1.questions.count } }
+    private var answered: Int { chosen.reduce(0) { n, m in n + m.questions.filter { answers[$0.id] != nil }.count } }
 
     var body: some View {
         ScrollView {
-            if let added { result(added) } else { form }
+            switch stage {
+            case .setup: setup
+            case .questions: questions
+            case .result: result
+            }
         }
         .scrollIndicators(.hidden)
         .presentationDetents([.large])
         .presentationBackground(C.char900)
+        .interactiveDismissDisabled(stage == .questions)
         .onChange(of: item) { _, new in
             guard let new else { return }
             loading = true
@@ -137,7 +150,9 @@ struct FilmReviewSheet: View {
         }
     }
 
-    private var form: some View {
+    // step 1: the clip and what is in it
+
+    private var setup: some View {
         VStack(alignment: .leading, spacing: 20) {
             HStack {
                 Disp("NEW REVIEW", size: 30)
@@ -173,15 +188,69 @@ struct FilmReviewSheet: View {
                 Text("Your clip stays on this phone.").font(F.round(13, .semibold)).foregroundStyle(C.muted)
             }
 
-            VStack(alignment: .leading, spacing: 12) {
-                LabKicker("WHAT WENT WRONG?")
-                ForEach(FilmRules.areas(position: position), id: \.self) { area in
-                    VStack(alignment: .leading, spacing: 8) {
-                        Text(area).font(F.round(15, .bold)).foregroundStyle(C.creme2)
-                        ForEach(FilmRules.list(position: position).filter { $0.area == area }) { m in
-                            mistakeRow(m)
-                        }
-                    }
+            VStack(alignment: .leading, spacing: 10) {
+                LabKicker("WHAT HAPPENS IN THE CLIP?")
+                Text("Pick everything you did in it. You'll get a few questions on each.")
+                    .font(F.round(14, .semibold)).foregroundStyle(C.muted)
+                ForEach(FilmGuide.list(position: position)) { m in momentRow(m) }
+            }
+
+            Button(moments.isEmpty ? "PICK AT LEAST ONE" : "NEXT") {
+                Haptics.play(.kick)
+                withAnimation(.snappy) { stage = .questions }
+            }
+            .buttonStyle(.gameLarge(.brand))
+            .disabled(moments.isEmpty || loading)
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 24)
+    }
+
+    private func momentRow(_ m: FilmMoment) -> some View {
+        let on = moments.contains(m.id)
+        return Button {
+            if on { moments.remove(m.id) } else { moments.insert(m.id) }
+            Haptics.play(.stud)
+        } label: {
+            HStack(spacing: 12) {
+                Image(systemName: m.icon).font(.system(size: 17, weight: .bold))
+                    .foregroundStyle(on ? Color.white : C.creme2)
+                    .frame(width: 38, height: 38)
+                    .background(Circle().fill(on ? C.brand : C.char700))
+                Text(m.title).font(F.round(16, .bold)).foregroundStyle(C.creme)
+                Spacer(minLength: 0)
+                Image(systemName: on ? "checkmark.circle.fill" : "circle")
+                    .font(.system(size: 22, weight: .bold)).foregroundStyle(on ? C.brand : C.char600)
+            }
+            .padding(.vertical, 8).padding(.horizontal, 12)
+            .frame(minHeight: 54)
+            .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(on ? C.brand.opacity(0.16) : C.char800))
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(on ? .isSelected : [])
+    }
+
+    // step 2: the questions
+
+    private var questions: some View {
+        VStack(alignment: .leading, spacing: 20) {
+            HStack {
+                Button { withAnimation(.snappy) { stage = .setup } } label: {
+                    Label("Back", systemImage: "chevron.left").font(F.round(15, .bold)).foregroundStyle(C.muted)
+                }
+                Spacer()
+                Text("\(answered) of \(questionCount) answered").font(F.round(14, .bold)).foregroundStyle(C.muted)
+            }
+            .padding(.top, 24)
+            Disp("WATCH, THEN ANSWER", size: 26)
+            Text("Be honest. Nobody else sees this, and it's how your coach picks the right drills.")
+                .font(F.round(14, .semibold)).foregroundStyle(C.muted)
+                .fixedSize(horizontal: false, vertical: true)
+
+            ForEach(chosen) { m in
+                VStack(alignment: .leading, spacing: 10) {
+                    LabKicker(m.title.uppercased())
+                    ForEach(m.questions) { q in questionRow(q) }
                 }
             }
 
@@ -194,52 +263,82 @@ struct FilmReviewSheet: View {
                     .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(C.char950))
             }
 
-            Button(picked.isEmpty ? "TICK AT LEAST ONE" : "SAVE AND ADD DRILLS") { save() }
+            Button(answered < questionCount ? "ANSWER THEM ALL" : "SEE WHAT TO WORK ON") { finish() }
                 .buttonStyle(.gameLarge(.brand, feel: .goal))
-                .disabled(picked.isEmpty || loading)
+                .disabled(answered < questionCount)
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 24)
     }
 
-    private func mistakeRow(_ m: FilmMistake) -> some View {
-        let on = picked.contains(m.id)
-        return Button {
-            if on { picked.remove(m.id) } else { picked.insert(m.id) }
+    private func questionRow(_ q: FilmQuestion) -> some View {
+        let a = answers[q.id]
+        return VStack(alignment: .leading, spacing: 10) {
+            Text(q.text).font(F.round(16, .bold)).foregroundStyle(C.creme)
+                .fixedSize(horizontal: false, vertical: true)
+            HStack(spacing: 10) {
+                answerButton("Yes", on: a == true) { answers[q.id] = true }
+                answerButton("No", on: a == false) { answers[q.id] = false }
+            }
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(C.char800))
+    }
+
+    private func answerButton(_ label: String, on: Bool, action: @escaping () -> Void) -> some View {
+        Button {
+            action()
             Haptics.play(.stud)
         } label: {
-            HStack(spacing: 10) {
-                Image(systemName: on ? "checkmark.square.fill" : "square")
-                    .font(.system(size: 22, weight: .bold)).foregroundStyle(on ? C.brand : C.char600)
-                Text(m.label).font(F.round(16, .semibold)).foregroundStyle(C.creme)
-                Spacer(minLength: 0)
-            }
-            .padding(.vertical, 10).padding(.horizontal, 12)
-            .frame(minHeight: 44)
-            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(on ? C.brand.opacity(0.18) : C.char800))
+            Text(label).font(F.round(16, .bold))
+                .foregroundStyle(on ? Color.white : C.creme2)
+                .frame(maxWidth: .infinity).frame(height: 46)
+                .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(on ? C.brand : C.char700))
         }
         .buttonStyle(.plain)
         .accessibilityAddTraits(on ? .isSelected : [])
     }
 
-    private func result(_ ids: [String]) -> some View {
-        VStack(spacing: 18) {
-            Image(systemName: "checkmark.seal.fill").font(.system(size: 54, weight: .bold)).foregroundStyle(C.brand)
-                .padding(.top, 40)
-            Disp(ids.count == 1 ? "1 DRILL ADDED" : "\(ids.count) DRILLS ADDED", size: 30)
-            Text("They're on your Fix List in Training. Do each one \(Lab.fixGoal) times and it clears.")
-                .font(F.round(15, .semibold)).foregroundStyle(C.creme2).multilineTextAlignment(.center)
-            VStack(spacing: 8) {
-                ForEach(ids, id: \.self) { id in
-                    let d = Library.shared.drill(id)
-                    HStack {
-                        Text(d.name).font(F.round(16, .bold)).foregroundStyle(C.creme)
-                        Spacer()
-                        Text(d.skill).font(F.round(13, .semibold)).foregroundStyle(C.muted)
+    // step 3: what the coach says
+
+    private var result: some View {
+        let r = saved
+        let found = r?.mistakes ?? []
+        return VStack(alignment: .leading, spacing: 18) {
+            VStack(spacing: 10) {
+                Image(systemName: found.isEmpty ? "hand.thumbsup.fill" : "checkmark.seal.fill")
+                    .font(.system(size: 50, weight: .bold)).foregroundStyle(C.brand)
+                Disp(found.isEmpty ? "CLEAN CLIP" : found.count == 1 ? "1 THING TO WORK ON" : "\(found.count) THINGS TO WORK ON", size: 28)
+                    .multilineTextAlignment(.center)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.top, 36)
+
+            if found.isEmpty {
+                Text("Nothing to fix from your answers. Keep doing what you did here, and review another clip after your next game.")
+                    .font(F.round(15, .semibold)).foregroundStyle(C.creme2).multilineTextAlignment(.center)
+                    .frame(maxWidth: .infinity)
+            } else {
+                ForEach(found, id: \.self) { id in
+                    if let m = FilmRules.find(id) {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text(m.label).font(F.round(16, .bold)).foregroundStyle(C.gold)
+                            Text(FilmGuide.feedback[id] ?? "").font(F.round(15, .semibold)).foregroundStyle(C.creme)
+                                .fixedSize(horizontal: false, vertical: true)
+                            Text("Drills: " + m.drills.filter { Library.shared.has($0) }.map { Library.shared.drill($0).name }.joined(separator: ", "))
+                                .font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(C.char800))
                     }
-                    .padding(12)
-                    .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(C.char800))
                 }
+                let n = r?.drills.count ?? 0
+                Text("\(n) drill\(n == 1 ? " is" : "s are") now on your Fix List in Training. Do each one \(Lab.fixGoal) times and it clears.")
+                    .font(F.round(14, .semibold)).foregroundStyle(C.muted)
+                    .fixedSize(horizontal: false, vertical: true)
             }
             Button("DONE") { dismiss() }.buttonStyle(.gameLarge(.brand, feel: .kick))
         }
@@ -247,16 +346,16 @@ struct FilmReviewSheet: View {
         .padding(.bottom, 24)
     }
 
-    private func save() {
-        // keep the order the list shows them in
-        let order = FilmRules.list(position: position).map(\.id).filter { picked.contains($0) }
+    private func finish() {
+        let found = FilmGuide.mistakes(moments: moments, answers: answers, position: position)
         let name = title.trimmingCharacters(in: .whitespacesAndNewlines)
-        let review = FilmReview(title: name.isEmpty ? "Clip review" : String(name.prefix(60)), mistakes: order,
+        let review = FilmReview(title: name.isEmpty ? "Clip review" : String(name.prefix(60)), mistakes: found,
                                 note: String(note.trimmingCharacters(in: .whitespacesAndNewlines).prefix(400)),
-                                clip: clip, drills: FilmRules.drills(for: order))
-        let ids = lab.add(review)
+                                clip: clip, drills: FilmRules.drills(for: found))
+        lab.add(review)
+        saved = review
         Haptics.play(.goal)
-        withAnimation(.snappy) { added = ids }
+        withAnimation(.snappy) { stage = .result }
     }
 
     private func cancel() {
@@ -288,11 +387,17 @@ struct FilmReviewPage: View {
                 }
 
                 VStack(alignment: .leading, spacing: 8) {
-                    LabKicker("WHAT WENT WRONG")
+                    LabKicker(review.mistakes.isEmpty ? "NOTHING TO FIX" : "WHAT TO WORK ON")
                     ForEach(review.mistakes, id: \.self) { id in
                         if let m = FilmRules.find(id) {
-                            Label(m.label, systemImage: "exclamationmark.circle.fill")
-                                .font(F.round(16, .semibold)).foregroundStyle(C.creme)
+                            VStack(alignment: .leading, spacing: 3) {
+                                Label(m.label, systemImage: "exclamationmark.circle.fill")
+                                    .font(F.round(16, .bold)).foregroundStyle(C.creme)
+                                if let tip = FilmGuide.feedback[id] {
+                                    Text(tip).font(F.round(14, .semibold)).foregroundStyle(C.creme2)
+                                        .fixedSize(horizontal: false, vertical: true)
+                                }
+                            }
                         }
                     }
                 }
@@ -305,12 +410,12 @@ struct FilmReviewPage: View {
                     }
                 }
 
-                VStack(alignment: .leading, spacing: 10) {
+                if !review.drills.isEmpty { VStack(alignment: .leading, spacing: 10) {
                     LabKicker("DRILLS THIS ADDED")
                     ForEach(review.drills.filter { Library.shared.has($0) }, id: \.self) { id in
                         LabDrillRow(drill: Library.shared.drill(id))
                     }
-                }
+                } }
 
                 Button("Delete this review", role: .destructive) { confirmDelete = true }
                     .font(F.round(15, .bold))

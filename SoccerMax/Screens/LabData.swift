@@ -103,6 +103,100 @@ enum FilmRules {
     }
 }
 
+/// One yes/no question about the clip. The answer that means "this went wrong" (`problemIs`) points at a mistake.
+struct FilmQuestion: Identifiable, Hashable {
+    let id: String
+    let text: String
+    /// true = answering Yes is the problem; false = answering No is.
+    let problemIs: Bool
+    let mistake: String
+}
+
+/// A part of the game the clip shows. The player picks the ones in their clip and only gets those questions.
+struct FilmMoment: Identifiable, Hashable {
+    let id: String
+    let title: String
+    let icon: String
+    let questions: [FilmQuestion]
+    var keeper = false
+}
+
+/// The guided review (2026-11-12): the app asks, the player answers yes or no, and the app says what to work on.
+/// Still plain rules, no AI: each answer maps to one entry in FilmRules.all.
+enum FilmGuide {
+    static let moments: [FilmMoment] = [
+        FilmMoment(id: "keeper", title: "In goal", icon: "hand.raised.fill", questions: [
+            FilmQuestion(id: "k1", text: "Did the ball go past you before you got down to it?", problemIs: true, mistake: "gk-dive"),
+            FilmQuestion(id: "k2", text: "Did the ball come back out of your hands?", problemIs: true, mistake: "gk-catch"),
+            FilmQuestion(id: "k3", text: "Were you in the middle of the angle when the shot came?", problemIs: false, mistake: "gk-position"),
+        ], keeper: true),
+        FilmMoment(id: "receive", title: "Receiving the ball", icon: "arrow.down.to.line", questions: [
+            FilmQuestion(id: "r1", text: "Did the ball bounce away from you when it arrived?", problemIs: true, mistake: "touch-heavy"),
+            FilmQuestion(id: "r2", text: "Did you look around before the ball reached you?", problemIs: false, mistake: "touch-blind"),
+        ]),
+        FilmMoment(id: "pass", title: "Passing", icon: "arrow.up.right", questions: [
+            FilmQuestion(id: "p1", text: "Did your pass stop short or get cut out?", problemIs: true, mistake: "pass-soft"),
+            FilmQuestion(id: "p2", text: "Did your pass go to your teammate's feet or into their run?", problemIs: false, mistake: "pass-wide"),
+            FilmQuestion(id: "p3", text: "Did you keep the ball while a teammate was free?", problemIs: true, mistake: "pass-slow"),
+        ]),
+        FilmMoment(id: "dribble", title: "Dribbling", icon: "figure.run", questions: [
+            FilmQuestion(id: "d1", text: "Did a defender take the ball off you?", problemIs: true, mistake: "dribble-lost"),
+            FilmQuestion(id: "d2", text: "Did you change speed to get away from them?", problemIs: false, mistake: "dribble-pace"),
+            FilmQuestion(id: "d3", text: "Did you turn away from your weaker foot when it was the better side?", problemIs: true, mistake: "weak-foot"),
+        ]),
+        FilmMoment(id: "shoot", title: "Shooting", icon: "scope", questions: [
+            FilmQuestion(id: "s1", text: "Was your shot on target?", problemIs: false, mistake: "shot-wide"),
+            FilmQuestion(id: "s2", text: "Did you shoot before you were balanced?", problemIs: true, mistake: "shot-rushed"),
+            FilmQuestion(id: "s3", text: "Did the shot have enough power to trouble the keeper?", problemIs: false, mistake: "shot-weak"),
+        ]),
+        FilmMoment(id: "defend", title: "Defending", icon: "shield.fill", questions: [
+            FilmQuestion(id: "f1", text: "Did the attacker get past you?", problemIs: true, mistake: "def-beaten"),
+            FilmQuestion(id: "f2", text: "Did you lunge in and miss the ball?", problemIs: true, mistake: "def-dived"),
+            FilmQuestion(id: "f3", text: "Did you get back behind the ball quickly after your team lost it?", problemIs: false, mistake: "def-recover"),
+        ]),
+        FilmMoment(id: "fitness", title: "Late in the game", icon: "timer", questions: [
+            FilmQuestion(id: "t1", text: "Were you slower at the end than at the start?", problemIs: true, mistake: "fit-tired"),
+            FilmQuestion(id: "t2", text: "Did an opponent beat you to a ball you both ran for?", problemIs: true, mistake: "fit-sprint"),
+        ]),
+    ]
+
+    static func list(position: String) -> [FilmMoment] { moments.filter { !$0.keeper || position == "GK" } }
+
+    /// The mistakes the answers point to, in the order the questions are asked.
+    static func mistakes(moments picked: Set<String>, answers: [String: Bool], position: String) -> [String] {
+        var out: [String] = []
+        for m in list(position: position) where picked.contains(m.id) {
+            for q in m.questions {
+                if let a = answers[q.id], a == q.problemIs, !out.contains(q.mistake) { out.append(q.mistake) }
+            }
+        }
+        return out
+    }
+
+    /// What the coach says about each mistake: what is happening and the one thing to change.
+    static let feedback: [String: String] = [
+        "pass-soft": "Your passes are dying before they arrive. Strike through the middle of the ball and follow through to your target.",
+        "pass-wide": "Your passes are missing the target. Point your standing foot where you want the ball to go.",
+        "pass-slow": "You are holding the ball too long. Look before it arrives, so you already know your pass.",
+        "touch-heavy": "Your first touch is getting away from you. Soften your foot as the ball arrives and take it into space.",
+        "touch-blind": "You are receiving without knowing what is around you. Check over your shoulder while the ball is travelling.",
+        "dribble-lost": "You are losing the ball when you dribble. Keep it closer with more, smaller touches.",
+        "dribble-pace": "You are dribbling at one speed, which is easy to defend. Slow down, then explode past.",
+        "weak-foot": "You are avoiding your weaker foot, so defenders know which way you will go. Use it every session.",
+        "shot-wide": "Your shots are missing the goal. Keep your head over the ball and pick a corner before you strike.",
+        "shot-rushed": "You are shooting before you are set. One good touch out of your feet first, then strike.",
+        "shot-weak": "Your shots lack power. Lock your ankle, hit through the ball with your laces and land on your kicking foot.",
+        "def-beaten": "Attackers are getting past you. Stay side-on, stay on your toes and let them make the first move.",
+        "def-dived": "You are diving into tackles. Hold your ground and only go when their touch gets away from them.",
+        "def-recover": "You are slow to get back when the ball is lost. Turn and sprint straight away, then slow down as you arrive.",
+        "fit-tired": "You are fading late in games. Build your engine with repeated runs and short rests.",
+        "fit-sprint": "You are losing races to the ball. Work on your top speed with short, full-effort sprints.",
+        "gk-dive": "You are getting down late. Take a small step toward the ball first and lead with your hands.",
+        "gk-catch": "The ball is coming out of your hands. Get your hands behind it, thumbs together, and bring it into your chest.",
+        "gk-position": "You are off your angle when shots come. Keep moving so you are always on the line between ball and goal.",
+    ]
+}
+
 struct FilmReview: Codable, Identifiable, Hashable {
     var id = UUID()
     var date = Date()
