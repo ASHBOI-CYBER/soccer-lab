@@ -74,7 +74,7 @@ jobs:
           BUNDLE=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" build/Build/Products/Debug-iphonesimulator/SoccerMax.app/Info.plist)
           # warm-up: system banners that appear right after boot have gone by the time this ends
           xcrun simctl launch "$UDID" "$BUNDLE" -route "tab:home:named" -sm.photo.asked YES >/dev/null
-          sleep 40
+          sleep 80
           for pair in $ROUTES; do
             name="${pair%%=*}"; route="${pair#*=}"
             # each screen starts from a clean launch; the photo prompt is switched off so it doesn't cover the screen
