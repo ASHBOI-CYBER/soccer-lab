@@ -85,7 +85,7 @@ struct FutCard: View {
                 Text("\(card.ovr)").font(F.display(em * 3.4)).foregroundStyle(tier == .max ? look.hi : look.ink)
                 Text(position).font(F.display(em * 1.35)).foregroundStyle(look.ink)
                 if tier == .max {
-                    Text("MAX").font(F.display(em * 0.68)).foregroundStyle(.white)
+                    Text("LAB").font(F.display(em * 0.68)).foregroundStyle(.white)
                         .padding(.horizontal, em * 0.5).padding(.top, em * 0.2).padding(.bottom, em * 0.1)
                         .background(RoundedRectangle(cornerRadius: em * 0.4).fill(C.brand))
                 }

@@ -9,7 +9,9 @@
             "artifact": "build/Build/Products/Debug-iphonesimulator/SoccerMax.app"
           }
         }
-      }
+      },
+      "appId": "soccer-lab-aekqbiis",
+      "deviceCategory": "phone"
     }
   }
 }

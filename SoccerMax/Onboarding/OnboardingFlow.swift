@@ -107,7 +107,7 @@ struct OnboardingFlow: View {
         case .welcome: Welcome(ctx: ctx)
         case .name: NameStep(ctx: ctx)
         case .position: PositionStep(ctx: ctx)
-        case .gender: PickStep(ctx: ctx, title: "Nice to meet you, \(n)! Are you a?", options: ["Male", "Female", "Prefer not to say"], key: \.gender)
+        case .gender: PickStep(ctx: ctx, title: "Nice to meet you, \(n)! Are you a…", options: ["Male", "Female", "Prefer not to say"], key: \.gender)
         case .foot: PickStep(ctx: ctx, title: "Which is your strong foot?", options: ["Right", "Left", "Both"], key: \.foot)
         case .wants: WantsStep(ctx: ctx)
         case .source: PickStep(ctx: ctx, title: "Where did you find us?", options: ["TikTok", "Instagram", "YouTube", "A friend", "App Store", "Other"], key: \.source,
@@ -233,7 +233,7 @@ struct Welcome: View {
                 Mascot(lines: ["Hi! I'm your new coach.", "Let's build your player!"], size: 190)
                     .padding(.horizontal, 24)
                 Disp("SOCCER", size: 84, color: .white, ink: C.brandInk)
-                Disp("MAX", size: 84, color: .white, ink: C.brandInk).padding(.top, -18)
+                Disp("LAB", size: 84, color: .white, ink: C.brandInk).padding(.top, -18)
                 Text("Train like a pro. Think like one too.")
                     .font(F.round(17, .bold)).foregroundStyle(.white)
                     .shadow(color: .black.opacity(0.25), radius: 0, y: 2)
@@ -612,7 +612,7 @@ struct AccountStep: View {
                 .multilineTextAlignment(.center)
                 .contentTransition(.opacity)
                 .padding(.top, 8)
-            Text(phase == .working ? "Creating your account?" : "Save your training and join your team.")
+            Text(phase == .working ? "Creating your account…" : "Save your training and join your team.")
                 .font(F.round(16, .semibold)).foregroundStyle(C.muted)
                 .contentTransition(.opacity)
                 .padding(.top, 8)
@@ -632,6 +632,12 @@ struct AccountStep: View {
                     Label("One tap · No password", systemImage: "lock.fill")
                         .font(F.round(13, .semibold)).foregroundStyle(C.muted)
                 }
+                #if DEBUG
+                // Test builds only (never in the App Store build): a simulator has no Apple ID to sign in with,
+                // so this goes into the app without an account. Team features stay signed out.
+                Button("Skip sign-in (test build)") { signedIn() }
+                    .font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                #endif
             }
         }
         .onAppear {
