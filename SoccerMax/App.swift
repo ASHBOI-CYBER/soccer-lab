@@ -277,6 +277,26 @@ extension View {
         background(AppBackground())
             .scrollContentBackground(.hidden)
             .toolbarBackground(.hidden, for: .navigationBar)
+            .overlay { StatusBarFade() }
+    }
+}
+
+/// A soft blur behind the clock and battery (and the navigation bar on detail pages), fading out just below them,
+/// so content scrolling up the page disappears cleanly and never sits behind the time (2026-11-13).
+private struct StatusBarFade: View {
+    var body: some View {
+        GeometryReader { g in
+            Rectangle()
+                .fill(.ultraThinMaterial)
+                .overlay(Color.black.opacity(0.55))
+                .mask(LinearGradient(stops: [.init(color: .black, location: 0), .init(color: .black, location: 0.7), .init(color: .clear, location: 1)],
+                                     startPoint: .top, endPoint: .bottom))
+                .frame(height: g.safeAreaInsets.top + 14)
+                .frame(maxHeight: .infinity, alignment: .top)
+                .ignoresSafeArea(edges: .top)
+        }
+        .allowsHitTesting(false)
+        .accessibilityHidden(true)
     }
 }
 
