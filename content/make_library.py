@@ -239,6 +239,47 @@ D("gk-angle-shuffle", "Angle Shuffle", "Goalkeeping", 2, 4, f"3 {X} 40 s",
   board([cone(-2.5, 0), cone(2.5, 0)], [you(0, -0.8, PI)], [[-4, -7], [0, -8], [4, -7]], [run((-1.4, -0.9), (1.4, -0.9), both=True)]),
   gear=["Ball", "2 cones"], space="10 m in front of a goal", progression="Have someone call left, middle or right at random.")
 
+D("check-and-go", "Check and Go", "Awareness", 2, 4, f"3 {X} 6 runs",
+  "Put a cone where a defender would stand, and two more 8 m away to each side of it. No ball needed.",
+  ["Stand next to the defender cone.", "Take three sharp steps one way, as if asking for the ball there.",
+   "Plant your foot and sprint the other way to the far cone.", "Walk back. Go the opposite way next time."],
+  ["The first move has to look real: sell it with your whole body.", "Change direction off your outside foot.", "Look back at where the ball would be as you sprint."],
+  ["PHY", "DRI"], ["Positioning", "Speed"],
+  board([cone(0, 0), cone(-8, -2), cone(8, -2)], [you(0.6, 0.4, PI / 2)], [], [run((0.6, 0.4), (2.4, 0.8)), run((2.4, 0.8), (-8, -1.6))]),
+  ball=False, gear=["3 cones"], space="16 m wide", progression="Have a friend pass you a ball as you arrive.")
+D("shield-and-turn", "Shield and Turn", "Ball mastery", 2, 4, f"3 {X} 40 s",
+  "Put one cone down as a defender. Stand with your back to it and the ball at your feet.",
+  ["Get side-on to the cone with your arm out toward it.", "Keep the ball on the foot furthest from the cone, under your sole.",
+   "Roll the ball around as you shuffle, always keeping your body between it and the cone.", "After a few seconds, turn away from the cone and take two touches clear."],
+  ["Low and wide: knees bent, feet apart.", "The ball stays on your far foot.", "Feel where the defender is with your arm, not by looking."],
+  ["BC", "PHY"], ["Ball control", "Strength", "Composure"],
+  board([cone(0, -0.8), cone(-2, 2), cone(2, 2)], [you(0, 0, PI / 2)], [[0.3, 0.4]], [run((0, 0), (1.8, 1.8))]),
+  gear=["Ball", "3 cones"], space="4 m square", progression="Ask a friend to lean on you while you shield.")
+D("one-touch-wall", "One-Touch Wall", "Passing", 3, 4, f"3 {X} 30 passes",
+  "Stand 2 m from a wall.",
+  ["Pass against the wall and play the rebound straight back, first time.", "Alternate feet: right, left, right, left.",
+   "Count how many you get without stopping the ball.", "If it gets away, reset and start the count again."],
+  ["Stay on your toes and keep your feet moving.", "Firm ankle, soft knees.", "Hit the middle of the ball so it comes back along the ground."],
+  ["PAS", "BC"], ["Passing", "First touch", "Weak foot"],
+  board(wall(-2), [you(0, 0.4)], [[0, 0]], [ball((0, 0), (0, -1.8), both=True)]),
+  gear=["Ball", "Wall"], space="A wall and 3 m", progression="Step back to 4 m and keep it first time.")
+D("press-and-recover", "Press and Recover", "Defending", 3, 5, f"3 {X} 5 runs",
+  "Put one cone 10 m in front of you and another 10 m behind you. No ball needed.",
+  ["Sprint to the front cone as if closing down a player.", "Slow down over the last two steps and finish side-on, low.",
+   "Hold for one second, then turn and sprint back past the start to the far cone.", "Walk back to the middle and go again."],
+  ["Fast to get there, slow to arrive.", "Never run straight through: arrive balanced.", "The turn back is as important as the press."],
+  ["DEF", "PHY"], ["Defending", "Stamina", "Positioning"],
+  board([cone(0, -10), cone(0, 10)], [you(0, 0)], [], [run((0, 0), (0, -9.4)), run((0.6, -9.4), (0.6, 9.6))]),
+  ball=False, gear=["2 cones"], space="20 m", progression="Add a side shuffle of 3 m before you recover.")
+D("gk-throw-target", "Throw to a Target", "Goalkeeping", 2, 5, f"3 {X} 8 throws",
+  "Put two cones 2 m apart as a gate, 15 m away. Stand with the ball in your hands.",
+  ["Step forward with the foot opposite your throwing arm.", "Bring your arm over the top, straight, like a bowler.",
+   "Release so the ball skims the ground through the gate.", "Fetch it and go again. Swap arms halfway."],
+  ["Point your front shoulder at the target.", "A flat, fast ball is easier for your teammate than a looping one.", "Follow through toward the gate."],
+  ["PAS", "DEF"], ["Passing", "Long balls"],
+  board([cone(-1, -15), cone(1, -15)], [you(0, 0.4)], [[0, 0]], [ball((0, 0), (0, -15))]),
+  gear=["Ball", "2 cones"], space="20 m", progression="Move the gate to 25 m, or roll it underarm for short ones.")
+
 # ---- Runs (no ball)
 D("strides", "Strides", "Runs", 1, 4, f"4 {X} 60 m", "Mark out about 60 m of flat ground.",
   ["Build up smoothly over the first 20 m.", "Hold a fast, relaxed pace for the middle 20 m.", "Ease off over the last 20 m.", "Walk back to recover."],

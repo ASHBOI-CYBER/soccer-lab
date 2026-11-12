@@ -122,9 +122,13 @@ struct FilmReviewSheet: View {
     /// The saved review, once the questions are done.
     @State private var saved: FilmReview?
 
+    /// The questions picked for this review, by part of the game. Picked once, so going Back doesn't reshuffle.
+    @State private var asked: [String: [FilmQuestion]] = [:]
+
     private var chosen: [FilmMoment] { FilmGuide.list(position: position).filter { moments.contains($0.id) } }
-    private var questionCount: Int { chosen.reduce(0) { $0 + $1.questions.count } }
-    private var answered: Int { chosen.reduce(0) { n, m in n + m.questions.filter { answers[$0.id] != nil }.count } }
+    private var askedNow: [FilmQuestion] { chosen.flatMap { asked[$0.id] ?? [] } }
+    private var questionCount: Int { askedNow.count }
+    private var answered: Int { askedNow.filter { answers[$0.id] != nil }.count }
 
     var body: some View {
         ScrollView {
@@ -193,13 +197,14 @@ struct FilmReviewSheet: View {
 
             VStack(alignment: .leading, spacing: 10) {
                 LabKicker("WHAT HAPPENS IN THE CLIP?")
-                Text("Pick everything you did in it. You'll get a few questions on each.")
+                Text("Pick everything you did in it. You'll get \(FilmGuide.perMoment) questions on each, and they change every review.")
                     .font(F.round(14, .semibold)).foregroundStyle(C.muted)
                 ForEach(FilmGuide.list(position: position)) { m in momentRow(m) }
             }
 
             Button(moments.isEmpty ? "PICK AT LEAST ONE" : "NEXT") {
                 Haptics.play(.kick)
+                for m in chosen where asked[m.id] == nil { asked[m.id] = FilmGuide.ask(m) }
                 withAnimation(.snappy) { stage = .questions }
             }
             .buttonStyle(.gameLarge(.brand))
@@ -253,7 +258,7 @@ struct FilmReviewSheet: View {
             ForEach(chosen) { m in
                 VStack(alignment: .leading, spacing: 10) {
                     LabKicker(m.title.uppercased())
-                    ForEach(m.questions) { q in questionRow(q) }
+                    ForEach(asked[m.id] ?? []) { q in questionRow(q) }
                 }
             }
 
@@ -338,8 +343,26 @@ struct FilmReviewSheet: View {
                         .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(C.char800))
                     }
                 }
-                let n = r?.drills.count ?? 0
-                Text("\(n) drill\(n == 1 ? " is" : "s are") now on your Fix List in Training. Do each one \(Lab.fixGoal) times and it clears.")
+                VStack(alignment: .leading, spacing: 8) {
+                    LabKicker("YOUR DRILLS")
+                    ForEach((r?.drills ?? []).filter { Library.shared.has($0) }, id: \.self) { id in
+                        let d = Library.shared.drill(id)
+                        HStack(spacing: 12) {
+                            Image(systemName: skillIcon(d.skill)).font(.system(size: 16, weight: .bold))
+                                .foregroundStyle(labSkillColor(d.skill))
+                                .frame(width: 38, height: 38)
+                                .background(Circle().fill(labSkillColor(d.skill).opacity(0.18)))
+                            VStack(alignment: .leading, spacing: 2) {
+                                Text(d.name).font(F.round(16, .bold)).foregroundStyle(C.creme)
+                                Text("\(d.reps) \u{00B7} \(d.min) min").font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                            }
+                            Spacer(minLength: 0)
+                        }
+                        .padding(10)
+                        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(C.char850))
+                    }
+                }
+                Text("They're on your Fix List in Training now. Do each one \(Lab.fixGoal) times and it clears.")
                     .font(F.round(14, .semibold)).foregroundStyle(C.muted)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -350,7 +373,7 @@ struct FilmReviewSheet: View {
     }
 
     private func finish() {
-        let found = FilmGuide.mistakes(moments: moments, answers: answers, position: position)
+        let found = FilmGuide.mistakes(asked: askedNow, answers: answers)
         let name = title.trimmingCharacters(in: .whitespacesAndNewlines)
         let review = FilmReview(title: name.isEmpty ? "Clip review" : String(name.prefix(60)), mistakes: found,
                                 note: String(note.trimmingCharacters(in: .whitespacesAndNewlines).prefix(400)),

@@ -2413,6 +2413,536 @@
    }
   },
   {
+   "id": "check-and-go",
+   "name": "Check and Go",
+   "skill": "Awareness",
+   "level": 2,
+   "who": "Solo",
+   "min": 4,
+   "space": "16 m wide",
+   "gear": [
+    "3 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "3 cones"
+    }
+   ],
+   "needs": [],
+   "setup": "Put a cone where a defender would stand, and two more 8 m away to each side of it. No ball needed.",
+   "how": [
+    "Stand next to the defender cone.",
+    "Take three sharp steps one way, as if asking for the ball there.",
+    "Plant your foot and sprint the other way to the far cone.",
+    "Walk back. Go the opposite way next time."
+   ],
+   "reps": "3 × 6 runs",
+   "points": [
+    "The first move has to look real: sell it with your whole body.",
+    "Change direction off your outside foot.",
+    "Look back at where the ball would be as you sprint."
+   ],
+   "progression": "Have a friend pass you a ball as you arrive.",
+   "stats": [
+    "PHY",
+    "DRI"
+   ],
+   "fixes": [
+    "Positioning",
+    "Speed"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": 0,
+      "z": 0,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -8,
+      "z": -2,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 8,
+      "z": -2,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0.6,
+      "z": 0.4,
+      "yaw": 1.57
+     }
+    ],
+    "balls": [],
+    "paths": [
+     {
+      "pts": [
+       [
+        0.6,
+        0.4
+       ],
+       [
+        2.4,
+        0.8
+       ]
+      ]
+     },
+     {
+      "pts": [
+       [
+        2.4,
+        0.8
+       ],
+       [
+        -8,
+        -1.6
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "shield-and-turn",
+   "name": "Shield and Turn",
+   "skill": "Ball mastery",
+   "level": 2,
+   "who": "Solo",
+   "min": 4,
+   "space": "4 m square",
+   "gear": [
+    "Ball",
+    "3 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "3 cones"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Put one cone down as a defender. Stand with your back to it and the ball at your feet.",
+   "how": [
+    "Get side-on to the cone with your arm out toward it.",
+    "Keep the ball on the foot furthest from the cone, under your sole.",
+    "Roll the ball around as you shuffle, always keeping your body between it and the cone.",
+    "After a few seconds, turn away from the cone and take two touches clear."
+   ],
+   "reps": "3 × 40 s",
+   "points": [
+    "Low and wide: knees bent, feet apart.",
+    "The ball stays on your far foot.",
+    "Feel where the defender is with your arm, not by looking."
+   ],
+   "progression": "Ask a friend to lean on you while you shield.",
+   "stats": [
+    "BC",
+    "PHY"
+   ],
+   "fixes": [
+    "Ball control",
+    "Strength",
+    "Composure"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": 0,
+      "z": -0.8,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -2,
+      "z": 2,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 2,
+      "z": 2,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0,
+      "yaw": 1.57
+     }
+    ],
+    "balls": [
+     [
+      0.3,
+      0.4
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        1.8,
+        1.8
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "one-touch-wall",
+   "name": "One-Touch Wall",
+   "skill": "Passing",
+   "level": 3,
+   "who": "Solo",
+   "min": 4,
+   "space": "A wall and 3 m",
+   "gear": [
+    "Ball",
+    "Wall"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "Wall"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Stand 2 m from a wall.",
+   "how": [
+    "Pass against the wall and play the rebound straight back, first time.",
+    "Alternate feet: right, left, right, left.",
+    "Count how many you get without stopping the ball.",
+    "If it gets away, reset and start the count again."
+   ],
+   "reps": "3 × 30 passes",
+   "points": [
+    "Stay on your toes and keep your feet moving.",
+    "Firm ankle, soft knees.",
+    "Hit the middle of the ball so it comes back along the ground."
+   ],
+   "progression": "Step back to 4 m and keep it first time.",
+   "stats": [
+    "PAS",
+    "BC"
+   ],
+   "fixes": [
+    "Passing",
+    "First touch",
+    "Weak foot"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -2.0,
+      "z": -2,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.5,
+      "z": -2,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -1.0,
+      "z": -2,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": -0.5,
+      "z": -2,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.0,
+      "z": -2,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0.5,
+      "z": -2,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.0,
+      "z": -2,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1.5,
+      "z": -2,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 2.0,
+      "z": -2,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.4,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      0
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        -1.8
+       ]
+      ],
+      "ball": true,
+      "both": true
+     }
+    ]
+   }
+  },
+  {
+   "id": "press-and-recover",
+   "name": "Press and Recover",
+   "skill": "Defending",
+   "level": 3,
+   "who": "Solo",
+   "min": 5,
+   "space": "20 m",
+   "gear": [
+    "2 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "2 cones"
+    }
+   ],
+   "needs": [],
+   "setup": "Put one cone 10 m in front of you and another 10 m behind you. No ball needed.",
+   "how": [
+    "Sprint to the front cone as if closing down a player.",
+    "Slow down over the last two steps and finish side-on, low.",
+    "Hold for one second, then turn and sprint back past the start to the far cone.",
+    "Walk back to the middle and go again."
+   ],
+   "reps": "3 × 5 runs",
+   "points": [
+    "Fast to get there, slow to arrive.",
+    "Never run straight through: arrive balanced.",
+    "The turn back is as important as the press."
+   ],
+   "progression": "Add a side shuffle of 3 m before you recover.",
+   "stats": [
+    "DEF",
+    "PHY"
+   ],
+   "fixes": [
+    "Defending",
+    "Stamina",
+    "Positioning"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": 0,
+      "z": -10,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 0,
+      "z": 10,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        -9.4
+       ]
+      ]
+     },
+     {
+      "pts": [
+       [
+        0.6,
+        -9.4
+       ],
+       [
+        0.6,
+        9.6
+       ]
+      ]
+     }
+    ]
+   }
+  },
+  {
+   "id": "gk-throw-target",
+   "name": "Throw to a Target",
+   "skill": "Goalkeeping",
+   "level": 2,
+   "who": "Solo",
+   "min": 5,
+   "space": "20 m",
+   "gear": [
+    "Ball",
+    "2 cones"
+   ],
+   "kit": [
+    {
+     "item": null,
+     "label": "Ball"
+    },
+    {
+     "item": null,
+     "label": "2 cones"
+    }
+   ],
+   "needs": [
+    "Ball"
+   ],
+   "setup": "Put two cones 2 m apart as a gate, 15 m away. Stand with the ball in your hands.",
+   "how": [
+    "Step forward with the foot opposite your throwing arm.",
+    "Bring your arm over the top, straight, like a bowler.",
+    "Release so the ball skims the ground through the gate.",
+    "Fetch it and go again. Swap arms halfway."
+   ],
+   "reps": "3 × 8 throws",
+   "points": [
+    "Point your front shoulder at the target.",
+    "A flat, fast ball is easier for your teammate than a looping one.",
+    "Follow through toward the gate."
+   ],
+   "progression": "Move the gate to 25 m, or roll it underarm for short ones.",
+   "stats": [
+    "PAS",
+    "DEF"
+   ],
+   "fixes": [
+    "Passing",
+    "Long balls"
+   ],
+   "tags": [],
+   "video": false,
+   "board": {
+    "props": [
+     {
+      "k": "cone",
+      "x": -1,
+      "z": -15,
+      "yaw": 0
+     },
+     {
+      "k": "cone",
+      "x": 1,
+      "z": -15,
+      "yaw": 0
+     }
+    ],
+    "players": [
+     {
+      "kit": "you",
+      "x": 0,
+      "z": 0.4,
+      "yaw": 3.14
+     }
+    ],
+    "balls": [
+     [
+      0,
+      0
+     ]
+    ],
+    "paths": [
+     {
+      "pts": [
+       [
+        0,
+        0
+       ],
+       [
+        0,
+        -15
+       ]
+      ],
+      "ball": true
+     }
+    ]
+   }
+  },
+  {
    "id": "strides",
    "name": "Strides",
    "skill": "Runs",
@@ -3611,17 +4141,20 @@
    "sole-rolls",
    "figure-8",
    "juggling",
-   "inside-outside"
+   "inside-outside",
+   "shield-and-turn"
   ],
   "Passing": [
    "wall-passes",
    "weak-foot-laces",
-   "long-pass-target"
+   "long-pass-target",
+   "one-touch-wall"
   ],
   "Goalkeeping": [
    "gk-set-and-catch",
    "gk-low-dive",
-   "gk-angle-shuffle"
+   "gk-angle-shuffle",
+   "gk-throw-target"
   ],
   "Runs": [
    "strides",
@@ -3657,10 +4190,12 @@
   ],
   "Defending": [
    "jockey-shuffle",
-   "recovery-run"
+   "recovery-run",
+   "press-and-recover"
   ],
   "Awareness": [
-   "scan-and-turn"
+   "scan-and-turn",
+   "check-and-go"
   ]
  },
  "removed": {},
