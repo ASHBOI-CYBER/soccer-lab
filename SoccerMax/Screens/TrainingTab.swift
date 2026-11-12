@@ -1,23 +1,32 @@
-// TRAINING tab (SOCCER LAB, 2026-11-12). Today's session is built from onboarding: a warm-up, ball work every
-// player does, and drills for the player's position (LabPlan). Under it: the Fix List (drills the Film tab added),
-// the ready-made sessions from the library, and the free session logger that used to be the Sessions tab.
+// TRAINING tab (SOCCER LAB, 2026-11-12). Top to bottom: the coach's hello, this week's calendar (which week, which
+// day, which days were trained), the session for the picked day (built from onboarding: a warm-up, ball work every
+// player does, and drills for the player's position, LabPlan), the Fix List from Film, the live GPS run, the
+// ready-made sessions and the free session logger.
 import SwiftUI
 
 struct TrainingTab: View {
     @Environment(AppStore.self) private var store
     @State private var lab = Lab.shared
+    /// The day whose session is showing ("Mon"..."Sun"); today when the tab opens.
+    @State private var day = todayKey()
+    @State private var running = false
 
-    private var plan: [Drill] { LabPlan.today(position: store.answers.position) }
+    private var date: Date { dateOf(day) }
+    private var isToday: Bool { day == todayKey() }
+    private var plan: [Drill] { LabPlan.today(position: store.answers.position, date: date) }
     private var fixes: [Drill] { lab.fixList.filter { Library.shared.has($0) }.map { Library.shared.drill($0) } }
     private var sessions: [ProSession] { Library.shared.technique + Library.shared.hybrid + Library.shared.workouts }
 
     var body: some View {
         NavigationStack {
             ScrollView {
-                VStack(alignment: .leading, spacing: 28) {
+                VStack(alignment: .leading, spacing: 26) {
                     TabHeader("TRAINING")
-                    today
+                    hello
+                    week
+                    session
                     if !fixes.isEmpty { fixList }
+                    runCard
                     readyMade
                     free
                 }
@@ -32,31 +41,118 @@ struct TrainingTab: View {
             .navigationDestination(item: Binding(get: { Nav.shared.log }, set: { Nav.shared.log = $0 })) { LoggedDetail(c: $0) }
             .page()
         }
+        .fullScreenCover(isPresented: $running) { RunView().duoColumn() }
     }
 
-    // MARK: today
+    // MARK: hello
 
-    private var today: some View {
+    private var greeting: String {
+        let h = Calendar.current.component(.hour, from: Date())
+        return h < 12 ? "Morning" : h < 18 ? "Afternoon" : "Evening"
+    }
+
+    private var hello: some View {
+        let left = LabPlan.today(position: store.answers.position).filter { !lab.isDone($0.id) }.count
+        let streak = store.air.days
+        return HStack(spacing: 12) {
+            MascotDrawn(talking: false).frame(width: 78, height: 78)
+            VStack(alignment: .leading, spacing: 4) {
+                Text("\(greeting), \(store.answers.firstName)!").font(F.round(20, .bold)).foregroundStyle(C.creme)
+                Text(left == 0 ? "Today's session is done. See you tomorrow." : left == 1 ? "One drill left today. Finish strong." : "\(left) drills waiting for you today.")
+                    .font(F.round(14, .semibold)).foregroundStyle(C.creme2)
+                    .fixedSize(horizontal: false, vertical: true)
+                if streak > 0 {
+                    Label("\(streak) day streak", systemImage: "flame.fill")
+                        .font(F.round(13, .bold)).foregroundStyle(C.gold)
+                }
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(14)
+        .background(
+            RoundedRectangle(cornerRadius: 24, style: .continuous)
+                .fill(LinearGradient(colors: [C.brandMid, C.brandLip], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(C.charInk, lineWidth: 2.5))
+        )
+    }
+
+    // MARK: this week
+
+    private var week: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            HStack(alignment: .firstTextBaseline) {
+                Disp("WEEK \(lab.week())", size: 24)
+                Spacer()
+                Text(Date().formatted(.dateTime.weekday(.wide).day().month(.wide)))
+                    .font(F.round(14, .semibold)).foregroundStyle(C.muted)
+            }
+            HStack(spacing: 6) {
+                ForEach(DAYS, id: \.self) { d in dayPill(d) }
+            }
+        }
+    }
+
+    private func dayPill(_ d: String) -> some View {
+        let when = dateOf(d)
+        let trained = (store.trained[dateKey(when)] ?? 0) >= 1
+        let today = d == todayKey()
+        let picked = d == day
+        let future = when > Date()
+        return Button {
+            day = d
+            Haptics.play(.stud)
+        } label: {
+            VStack(spacing: 5) {
+                Text(String(d.prefix(1))).font(F.round(12, .bold)).foregroundStyle(picked ? Color.white : C.muted)
+                Text("\(Calendar.current.component(.day, from: when))")
+                    .font(F.round(17, .bold)).foregroundStyle(picked ? Color.white : future ? C.muted : C.creme)
+                Image(systemName: trained ? "checkmark.circle.fill" : "circle.fill")
+                    .font(.system(size: trained ? 13 : 6, weight: .bold))
+                    .foregroundStyle(trained ? (picked ? Color.white : C.brand) : (today ? C.gold : Color.clear))
+                    .frame(height: 14)
+            }
+            .frame(maxWidth: .infinity)
+            .padding(.vertical, 9)
+            .background(
+                RoundedRectangle(cornerRadius: 14, style: .continuous).fill(picked ? C.brand : C.char800)
+                    .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(today ? C.gold : C.charInk, lineWidth: today ? 2 : 1.5))
+            )
+        }
+        .buttonStyle(.plain)
+        .accessibilityLabel("\(FULL_DAY[d]?.capitalized ?? d) \(Calendar.current.component(.day, from: when))\(today ? ", today" : "")\(trained ? ", trained" : "")")
+        .accessibilityAddTraits(picked ? .isSelected : [])
+    }
+
+    // MARK: the day's session
+
+    private var session: some View {
         let list = plan
-        let doneCount = list.filter { lab.isDone($0.id) }.count
+        let doneCount = isToday ? list.filter { lab.isDone($0.id) }.count : 0
         let minutes = list.reduce(0) { $0 + $1.min }
         return VStack(alignment: .leading, spacing: 12) {
-            LabKicker("TODAY'S SESSION")
+            LabKicker(isToday ? "TODAY'S SESSION" : "\(FULL_DAY[day] ?? day)'S SESSION")
             LabPanel {
                 VStack(alignment: .leading, spacing: 14) {
-                    VStack(alignment: .leading, spacing: 4) {
-                        Disp("\(LabPlan.group(store.answers.position).uppercased()) SESSION", size: 24)
-                        Text("Built for a \(store.answers.positionName.lowercased()) · about \(minutes) min")
-                            .font(F.round(14, .semibold)).foregroundStyle(C.muted)
-                    }
-                    HStack(spacing: 10) {
-                        LabBar(value: Double(doneCount), goal: Double(max(1, list.count)))
-                        Text("\(doneCount) of \(list.count)").font(F.round(13, .bold)).foregroundStyle(C.creme2)
+                    HStack(spacing: 14) {
+                        LabRing(value: Double(doneCount), goal: Double(max(1, list.count))) {
+                            Text("\(doneCount)/\(list.count)").font(F.round(15, .bold)).foregroundStyle(C.creme)
+                        }
+                        .frame(width: 62, height: 62)
+                        VStack(alignment: .leading, spacing: 4) {
+                            Disp("\(LabPlan.group(store.answers.position).uppercased()) SESSION", size: 22)
+                                .lineLimit(1).minimumScaleFactor(0.7)
+                            Label("\(list.count) drills · about \(minutes) min", systemImage: "clock.fill")
+                                .font(F.round(14, .semibold)).foregroundStyle(C.muted)
+                        }
+                        Spacer(minLength: 0)
                     }
                     VStack(spacing: 10) {
-                        ForEach(list) { d in LabDrillRow(drill: d) }
+                        ForEach(list) { d in LabDrillRow(drill: d, canTick: isToday) }
                     }
-                    if doneCount == list.count, !list.isEmpty {
+                    if !isToday {
+                        Text("You can tick drills off on the day itself.")
+                            .font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                    } else if doneCount == list.count, !list.isEmpty {
                         Label("Session done. Nice work.", systemImage: "checkmark.seal.fill")
                             .font(F.round(15, .bold)).foregroundStyle(C.gold)
                     }
@@ -82,6 +178,44 @@ struct TrainingTab: View {
         }
     }
 
+    // MARK: live run
+
+    private var runCard: some View {
+        let weekStart = dateOf("Mon")
+        let mine = lab.runs.filter { $0.date >= weekStart }
+        let km = mine.reduce(0) { $0 + $1.km }
+        return VStack(alignment: .leading, spacing: 12) {
+            LabKicker("RUNNING")
+            LabPanel {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(spacing: 14) {
+                        Image(systemName: "figure.run").font(.system(size: 24, weight: .bold)).foregroundStyle(.white)
+                            .frame(width: 54, height: 54)
+                            .background(Circle().fill(labSkillColor("Runs")))
+                        VStack(alignment: .leading, spacing: 3) {
+                            Text("Live run").font(F.round(18, .bold)).foregroundStyle(C.creme)
+                            Text(mine.isEmpty ? "Track distance, pace and your route with GPS."
+                                 : "\(String(format: "%.1f", km)) km this week · \(mine.count) run\(mine.count == 1 ? "" : "s")")
+                                .font(F.round(14, .semibold)).foregroundStyle(C.muted)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        Spacer(minLength: 0)
+                    }
+                    Button { running = true } label: { Label("START A RUN", systemImage: "location.fill") }
+                        .buttonStyle(.game(.brand, height: 52, font: 20))
+                    if let last = lab.runs.first {
+                        HStack {
+                            Text("Last run").font(F.round(13, .bold)).foregroundStyle(C.creme2)
+                            Spacer()
+                            Text("\(RunFormat.distance(last.meters)) km · \(RunFormat.time(last.seconds)) · \(RunFormat.pace(last.pace)) /km")
+                                .font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     // MARK: ready-made sessions
 
     private var readyMade: some View {
@@ -92,9 +226,9 @@ struct TrainingTab: View {
                     NavigationLink(value: s) {
                         HStack(spacing: 12) {
                             Image(systemName: s.kind == "workout" ? "bolt.fill" : s.kind == "hybrid" ? "flame.fill" : "soccerball")
-                                .font(.system(size: 18, weight: .bold)).foregroundStyle(C.brandInk)
-                                .frame(width: 42, height: 42)
-                                .background(Circle().fill(C.brand))
+                                .font(.system(size: 18, weight: .bold)).foregroundStyle(.white)
+                                .frame(width: 44, height: 44)
+                                .background(Circle().fill(s.kind == "workout" ? labSkillColor("Runs") : s.kind == "hybrid" ? labSkillColor("Shooting") : C.brand))
                             VStack(alignment: .leading, spacing: 2) {
                                 Text(s.title).font(F.round(17, .bold)).foregroundStyle(C.creme)
                                 Text(s.kind == "workout" ? "Fitness" : s.kind == "hybrid" ? "Soccer and fitness" : "Technique")
@@ -126,45 +260,53 @@ struct TrainingTab: View {
     }
 }
 
-/// One drill: a tick button on the left (marks it done for today), the rest opens the drill page.
+/// One drill: its skill's coloured icon, the name and dose (opens the drill page), and a tick on the right that
+/// marks it done for today.
 struct LabDrillRow: View {
     let drill: Drill
     var note: String? = nil
+    var canTick = true
     @Environment(AppStore.self) private var store
     @State private var lab = Lab.shared
 
     var body: some View {
-        let done = lab.isDone(drill.id)
-        HStack(spacing: 12) {
-            Button {
-                lab.complete(drill, store: store)
-                Haptics.play(.goal)
-            } label: {
-                Image(systemName: done ? "checkmark.circle.fill" : "circle")
-                    .font(.system(size: 28, weight: .bold))
-                    .foregroundStyle(done ? C.brand : C.char600)
-                    .frame(width: 44, height: 44)
-            }
-            .buttonStyle(.plain)
-            .disabled(done)
-            .accessibilityLabel(done ? "\(drill.name), done" : "Mark \(drill.name) done")
-
+        let done = canTick && lab.isDone(drill.id)
+        let tint = labSkillColor(drill.skill)
+        HStack(spacing: 10) {
             NavigationLink(value: drill) {
-                HStack(spacing: 8) {
+                HStack(spacing: 12) {
+                    Image(systemName: skillIcon(drill.skill))
+                        .font(.system(size: 17, weight: .bold)).foregroundStyle(done ? C.muted : tint)
+                        .frame(width: 42, height: 42)
+                        .background(Circle().fill((done ? C.muted : tint).opacity(0.18)))
                     VStack(alignment: .leading, spacing: 2) {
                         Text(drill.name).font(F.round(16, .bold)).foregroundStyle(done ? C.muted : C.creme)
                             .strikethrough(done, color: C.muted)
-                        Text(note ?? "\(drill.skill) · \(drill.reps) · \(drill.min) min")
+                        Text(note ?? "\(drill.reps) · \(drill.min) min")
                             .font(F.round(13, .semibold)).foregroundStyle(C.muted).lineLimit(1)
                     }
                     Spacer(minLength: 0)
-                    Image(systemName: "chevron.right").font(.system(size: 13, weight: .heavy)).foregroundStyle(C.muted)
                 }
                 .contentShape(Rectangle())
             }
             .buttonStyle(.plain)
+
+            if canTick {
+                Button {
+                    lab.complete(drill, store: store)
+                    Haptics.play(.goal)
+                } label: {
+                    Image(systemName: done ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 28, weight: .bold))
+                        .foregroundStyle(done ? C.brand : C.char600)
+                        .frame(width: 44, height: 44)
+                }
+                .buttonStyle(.plain)
+                .disabled(done)
+                .accessibilityLabel(done ? "\(drill.name), done" : "Mark \(drill.name) done")
+            }
         }
-        .padding(.vertical, 4).padding(.horizontal, 8)
+        .padding(.vertical, 6).padding(.leading, 8).padding(.trailing, 4)
         .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(C.char850))
     }
 }

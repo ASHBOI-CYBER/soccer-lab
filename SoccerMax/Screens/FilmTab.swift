@@ -51,7 +51,10 @@ struct FilmTab: View {
     private var intro: some View {
         LabPanel {
             VStack(alignment: .leading, spacing: 12) {
-                Disp("REVIEW YOUR GAME", size: 24)
+                HStack(spacing: 12) {
+                    MascotDrawn(talking: false).frame(width: 66, height: 66)
+                    Disp("REVIEW YOUR GAME", size: 24)
+                }
                 Text("Watch a clip of yourself and answer a few questions. Your coach tells you what to work on and adds the drills to your training.")
                     .font(F.round(15, .semibold)).foregroundStyle(C.creme2)
                     .fixedSize(horizontal: false, vertical: true)

@@ -346,6 +346,10 @@ final class Lab {
     var reviews: [FilmReview] { didSet { save(reviews, "lab.film.v1") } }
     var fuel: [String: FuelDay] { didSet { save(fuel, "lab.fuel.v1") } }
     var body: FuelBody { didSet { save(body, "lab.body.v1") } }
+    /// GPS runs, newest first (Screens/RunTracker.swift).
+    var runs: [RunLog] { didSet { save(runs, "lab.runs.v1") } }
+    /// The first day the player opened Training: week 1 starts on that week's Monday.
+    let startDate: Date
 
     static let fixGoal = 3
 
@@ -356,6 +360,13 @@ final class Lab {
         reviews = Self.load("lab.film.v1") ?? []
         fuel = Self.load("lab.fuel.v1") ?? [:]
         body = Self.load("lab.body.v1") ?? FuelBody()
+        runs = Self.load("lab.runs.v1") ?? []
+        if let t = UserDefaults.standard.object(forKey: "lab.start") as? Date {
+            startDate = t
+        } else {
+            startDate = Date()
+            UserDefaults.standard.set(startDate, forKey: "lab.start")
+        }
     }
 
     private static func load<T: Decodable>(_ key: String) -> T? {
@@ -383,6 +394,17 @@ final class Lab {
         }
         // keep a month of ticks, not forever
         if done.count > 40 { for k in done.keys.sorted().dropLast(31) { done[k] = nil } }
+    }
+
+    // runs and the calendar
+
+    func add(run: RunLog) { runs = Array(([run] + runs).prefix(200)) }
+
+    /// Which training week this is, counting from the week the player started (1, 2, 3...).
+    func week(of date: Date = Date()) -> Int {
+        let cal = Calendar.current
+        let a = dateOf("Mon", now: startDate), b = dateOf("Mon", now: date)
+        return max(1, (cal.dateComponents([.day], from: a, to: b).day ?? 0) / 7 + 1)
     }
 
     // film
@@ -451,6 +473,39 @@ struct LabPanel<Content: View>: View {
             .padding(padding)
             .frame(maxWidth: .infinity, alignment: .leading)
             .background(shape.fill(C.char800).overlay(shape.stroke(C.charInk, lineWidth: 2.5)))
+    }
+}
+
+/// A ring that fills as `value` approaches `goal`, with anything in the middle.
+struct LabRing<Center: View>: View {
+    let value: Double
+    let goal: Double
+    var color: Color = C.brand
+    var width: CGFloat = 10
+    @ViewBuilder var center: Center
+    var body: some View {
+        let f = goal > 0 ? min(1, max(0, value / goal)) : 0
+        ZStack {
+            Circle().stroke(C.char950, lineWidth: width)
+            Circle().trim(from: 0, to: f)
+                .stroke(color, style: StrokeStyle(lineWidth: width, lineCap: .round))
+                .rotationEffect(.degrees(-90))
+                .animation(.snappy, value: f)
+            center
+        }
+    }
+}
+
+/// One colour per kind of drill, so a list reads at a glance.
+func labSkillColor(_ skill: String) -> Color {
+    switch skill {
+    case "Shooting": return Color(hex: 0xFF6B5E)
+    case "Passing", "Awareness": return Color(hex: 0x3DD6C6)
+    case "Dribbling", "First touch": return C.gold
+    case "Defending", "Goalkeeping": return Color(hex: 0xA78BFA)
+    case "Runs", "Fitness", "Core": return Color(hex: 0xFF9F43)
+    case "Stretching": return Color(hex: 0x7BE495)
+    default: return C.brandHi
     }
 }
 

@@ -38,16 +38,29 @@ struct NutritionTab: View {
             LabKicker("TODAY'S FUEL")
             LabPanel {
                 VStack(alignment: .leading, spacing: 16) {
-                    VStack(alignment: .leading, spacing: 6) {
-                        HStack(alignment: .firstTextBaseline, spacing: 6) {
-                            Disp("\(day.kcal)", size: 40)
-                            Text("of \(goal.kcal) kcal").font(F.round(16, .bold)).foregroundStyle(C.muted)
+                    HStack(spacing: 16) {
+                        LabRing(value: Double(day.kcal), goal: Double(goal.kcal), width: 12) {
+                            VStack(spacing: 0) {
+                                Disp("\(day.kcal)", size: 26)
+                                Text("kcal").font(F.round(12, .bold)).foregroundStyle(C.muted)
+                            }
                         }
-                        LabBar(value: Double(day.kcal), goal: Double(goal.kcal))
+                        .frame(width: 112, height: 112)
+                        VStack(alignment: .leading, spacing: 6) {
+                            let left = goal.kcal - day.kcal
+                            Text(left > 0 ? "\(left) kcal to go" : "Target reached")
+                                .font(F.round(19, .bold)).foregroundStyle(C.creme)
+                            Text("Today's target is \(goal.kcal) kcal")
+                                .font(F.round(14, .semibold)).foregroundStyle(C.muted)
+                            Label(day.entries.isEmpty ? "Nothing logged yet" : "\(day.entries.count) logged today", systemImage: "fork.knife")
+                                .font(F.round(13, .bold)).foregroundStyle(C.brandHi)
+                        }
+                        Spacer(minLength: 0)
                     }
-                    macro("Protein", day.protein, goal.protein, C.brandHi)
+                    .accessibilityElement(children: .combine)
+                    macro("Protein", day.protein, goal.protein, labSkillColor("Shooting"))
                     macro("Carbs", day.carbs, goal.carbs, C.gold)
-                    macro("Fat", day.fat, goal.fat, C.creme2)
+                    macro("Fat", day.fat, goal.fat, labSkillColor("Passing"))
                 }
             }
         }
