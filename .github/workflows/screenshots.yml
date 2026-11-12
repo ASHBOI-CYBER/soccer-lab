@@ -1,0 +1,93 @@
+# Builds Soccer Lab for the iOS simulator on a GitHub Mac and saves a screenshot of each main screen.
+# Free way to look at the app without a Mac: run it from the Actions tab (or `gh workflow run screenshots.yml`),
+# then download the "screenshots" artifact. Started by hand only, so it never spends Mac minutes by surprise.
+name: Screenshots
+
+on:
+  workflow_dispatch:
+    inputs:
+      routes:
+        description: "Screens to capture: name=route pairs, space separated"
+        required: false
+        default: "01-welcome=ob 02-name=ob:name 03-position=ob:position:named 04-foot=ob:foot:named 05-wants=ob:wants:named 06-account=ob:account:named 10-home=tab:home:named 11-training=tab:training:named 12-film=tab:film:named 13-nutrition=tab:nutrition:named 14-profile=tab:profile:named"
+
+concurrency:
+  group: screenshots
+  cancel-in-progress: true
+
+jobs:
+  screenshots:
+    runs-on: macos-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Xcode version
+        run: xcodebuild -version
+
+      - name: Cache packages and build
+        uses: actions/cache@v4
+        with:
+          path: |
+            build/SourcePackages
+            build/Build/Intermediates.noindex
+            build/Build/Products
+          key: sim-${{ runner.os }}-${{ hashFiles('SoccerMax.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}-${{ github.sha }}
+          restore-keys: |
+            sim-${{ runner.os }}-${{ hashFiles('SoccerMax.xcodeproj/project.xcworkspace/xcshareddata/swiftpm/Package.resolved') }}-
+
+      - name: Build for the simulator
+        run: |
+          set -o pipefail
+          xcodebuild -project SoccerMax.xcodeproj -scheme SoccerMax -configuration Debug \
+            -sdk iphonesimulator -derivedDataPath build \
+            -skipPackagePluginValidation -skipMacroValidation \
+            ONLY_ACTIVE_ARCH=YES CODE_SIGN_IDENTITY=- build 2>&1 | tee build.log | grep -E "error:|warning: unre|BUILD|^\*\*" || true
+          test -d build/Build/Products/Debug-iphonesimulator/SoccerMax.app
+
+      - name: Show build errors
+        if: failure()
+        run: grep -E "error:" build.log | sort -u | head -60 || tail -80 build.log
+
+      - name: Boot a simulator
+        run: |
+          # the newest iPhone Pro that is installed on this runner
+          UDID=$(xcrun simctl list devices available -j | python3 -c "
+          import json, sys
+          devs = [d for rt, ds in json.load(sys.stdin)['devices'].items() if 'iOS' in rt for d in ds if d['isAvailable'] and 'iPhone' in d['name']]
+          pro = [d for d in devs if d['name'].endswith(' Pro')] or devs
+          pro.sort(key=lambda d: d['name'])
+          print(pro[-1]['udid'])")
+          echo "UDID=$UDID" >> "$GITHUB_ENV"
+          xcrun simctl list devices available | grep "$UDID"
+          xcrun simctl boot "$UDID"
+          xcrun simctl bootstatus "$UDID" -b
+          xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
+          xcrun simctl ui "$UDID" appearance dark || true
+          xcrun simctl install "$UDID" build/Build/Products/Debug-iphonesimulator/SoccerMax.app
+
+      - name: Take the screenshots
+        env:
+          ROUTES: ${{ inputs.routes }}
+        run: |
+          mkdir -p shots
+          BUNDLE=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" build/Build/Products/Debug-iphonesimulator/SoccerMax.app/Info.plist)
+          for pair in $ROUTES; do
+            name="${pair%%=*}"; route="${pair#*=}"
+            # each screen starts from a clean launch; the photo prompt is switched off so it doesn't cover the screen
+            xcrun simctl terminate "$UDID" "$BUNDLE" 2>/dev/null || true
+            xcrun simctl launch "$UDID" "$BUNDLE" -route "$route" -sm.photo.asked YES -sm.photo.opens 0 >/dev/null
+            sleep 7
+            xcrun simctl io "$UDID" screenshot "shots/$name.png" >/dev/null 2>&1 && echo "captured $name ($route)" || echo "FAILED $name ($route)"
+          done
+          ls -la shots
+
+      - name: Upload the screenshots
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: screenshots
+          path: |
+            shots
+            build.log
+          retention-days: 7
