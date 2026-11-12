@@ -22,14 +22,14 @@ enum C {
     static let brandInk = Color(hex: 0x06225C)
 
     static let char950 = Color(hex: 0x000000)
-    static let char900 = Color(hex: 0x050608)
-    static let char850 = Color(hex: 0x0C0E13)
-    static let char800 = Color(hex: 0x12141A)
-    static let char700 = Color(hex: 0x1C1F28)
+    static let char900 = Color(hex: 0x000000)
+    static let char850 = Color(hex: 0x08090C)
+    static let char800 = Color(hex: 0x0E1015)
+    static let char700 = Color(hex: 0x181B23)
     static let char600 = Color(hex: 0x2C303C)
     static let charInk = Color(hex: 0x000000)
     /// The hairline around cards and controls.
-    static let line = Color(hex: 0x23262F)
+    static let line = Color(hex: 0x20232C)
 
     static let creme = Color(hex: 0xFFFFFF)
     static let creme2 = Color(hex: 0xC5CAD6)
@@ -82,8 +82,10 @@ struct Disp: View {
 struct AppBackground: View {
     var body: some View {
         ZStack {
-            C.char900
-            RadialGradient(colors: [C.brand.opacity(0.16), .clear], center: .top, startRadius: 0, endRadius: 380)
+            Color.black
+            // the glow: a blue light above the screen, and a fainter one low on the left
+            RadialGradient(colors: [C.brand.opacity(0.34), C.brand.opacity(0.08), .clear], center: UnitPoint(x: 0.5, y: -0.08), startRadius: 0, endRadius: 420)
+            RadialGradient(colors: [C.brandMid.opacity(0.14), .clear], center: UnitPoint(x: 0.0, y: 0.85), startRadius: 0, endRadius: 320)
         }
         .ignoresSafeArea()
     }
@@ -123,8 +125,13 @@ struct GameButtonStyle: ButtonStyle {
             .padding(.horizontal, round ? 0 : 20)
             .frame(maxWidth: block ? .infinity : nil)
             .frame(width: round ? height : nil, height: height)
-            .background(shape.fill(t == .charcoal ? C.char700 : t.face))
-            .overlay(shape.stroke(t == .charcoal ? C.line : Color.white.opacity(0.14), lineWidth: 1))
+            .background(
+                shape.fill(t == .brand ? AnyShapeStyle(LinearGradient(colors: [C.brandHi, C.brand, C.brandMid], startPoint: .top, endPoint: .bottom))
+                           : AnyShapeStyle(t == .charcoal ? C.char700 : t.face))
+            )
+            .overlay(shape.stroke(t == .charcoal ? C.line : Color.white.opacity(0.18), lineWidth: 1))
+            // the primary action glows
+            .shadow(color: t == .brand ? C.brand.opacity(0.6) : .clear, radius: 14, y: 4)
             .opacity(pressed ? 0.82 : 1)
             .scaleEffect(pressed ? 0.98 : 1)
             .animation(.spring(response: 0.18, dampingFraction: 0.7), value: pressed)

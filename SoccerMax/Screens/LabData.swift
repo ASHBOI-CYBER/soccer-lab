@@ -603,6 +603,15 @@ final class Lab {
         fuel[today] = day
         trimFuel()
     }
+    /// Log every item of a ready-made meal (Screens/NutritionTab.swift QuickMeal).
+    func eat(meal: QuickMeal) {
+        var day = fuelToday
+        for f in meal.items {
+            day.entries.append(FoodEntry(name: f.name, kcal: f.kcal, protein: f.protein, carbs: f.carbs, fat: f.fat))
+        }
+        fuel[today] = day
+        trimFuel()
+    }
     func remove(_ e: FoodEntry) {
         var day = fuelToday
         day.entries.removeAll { $0.id == e.id }
@@ -629,7 +638,10 @@ struct LabPanel<Content: View>: View {
         content
             .padding(padding)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(shape.fill(C.char800).overlay(shape.stroke(C.line, lineWidth: 1)))
+            .background(
+                shape.fill(LinearGradient(colors: [Color(hex: 0x13161D), C.char850], startPoint: .top, endPoint: .bottom))
+                    .overlay(shape.stroke(LinearGradient(colors: [Color.white.opacity(0.10), C.line], startPoint: .top, endPoint: .bottom), lineWidth: 1))
+            )
     }
 }
 
@@ -643,10 +655,11 @@ struct LabRing<Center: View>: View {
     var body: some View {
         let f = goal > 0 ? min(1, max(0, value / goal)) : 0
         ZStack {
-            Circle().stroke(C.char950, lineWidth: width)
+            Circle().stroke(color.opacity(0.16), lineWidth: width)
             Circle().trim(from: 0, to: f)
                 .stroke(color, style: StrokeStyle(lineWidth: width, lineCap: .round))
                 .rotationEffect(.degrees(-90))
+                .shadow(color: color.opacity(0.8), radius: 7)
                 .animation(.snappy, value: f)
             center
         }
@@ -685,8 +698,9 @@ struct LabBar: View {
         GeometryReader { g in
             let f = goal > 0 ? min(1, max(0, value / goal)) : 0
             ZStack(alignment: .leading) {
-                Capsule().fill(C.char950)
+                Capsule().fill(C.char700)
                 Capsule().fill(color).frame(width: max(f > 0 ? 8 : 0, g.size.width * f))
+                    .shadow(color: color.opacity(0.8), radius: 6)
             }
         }
         .frame(height: 10)

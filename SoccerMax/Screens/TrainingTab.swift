@@ -81,7 +81,9 @@ struct TrainingTab: View {
             .frame(maxWidth: .infinity)
             .padding(.vertical, 9)
             .background(
-                RoundedRectangle(cornerRadius: 14, style: .continuous).fill(picked ? C.brand : C.char800)
+                RoundedRectangle(cornerRadius: 14, style: .continuous)
+                    .fill(picked ? AnyShapeStyle(LinearGradient(colors: [C.brandHi, C.brand], startPoint: .top, endPoint: .bottom)) : AnyShapeStyle(C.char800))
+                    .shadow(color: picked ? C.brand.opacity(0.65) : .clear, radius: 12, y: 3)
                     .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(today ? C.brandHi : C.line, lineWidth: today ? 1.5 : 1))
             )
         }

@@ -65,7 +65,8 @@ struct HomeTab: View {
                 Text(String(store.answers.firstName.prefix(1)).uppercased())
                     .font(F.round(16, .bold)).foregroundStyle(.white)
                     .frame(width: 40, height: 40)
-                    .background(Circle().fill(C.brand))
+                    .background(Circle().fill(LinearGradient(colors: [C.brandHi, C.brand], startPoint: .top, endPoint: .bottom)))
+                    .shadow(color: C.brand.opacity(0.7), radius: 10)
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Profile")
@@ -120,7 +121,9 @@ struct HomeTab: View {
         .padding(18)
         .background(
             RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(LinearGradient(colors: [C.brand, C.brandMid, C.brandLip], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .fill(LinearGradient(colors: [C.brandHi, C.brand, C.brandLip], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .overlay(RoundedRectangle(cornerRadius: 26, style: .continuous).stroke(Color.white.opacity(0.22), lineWidth: 1))
+                .shadow(color: C.brand.opacity(0.65), radius: 26, y: 10)
         )
     }
 
@@ -147,6 +150,7 @@ struct HomeTab: View {
                         VStack(spacing: 6) {
                             Circle()
                                 .fill(on ? C.brand : C.char700)
+                                .shadow(color: on ? C.brand.opacity(0.8) : .clear, radius: 6)
                                 .overlay(Circle().stroke(isToday ? C.brandHi : Color.clear, lineWidth: 2))
                                 .frame(width: 22, height: 22)
                                 .overlay { if on { Image(systemName: "checkmark").font(.system(size: 10, weight: .heavy)).foregroundStyle(.white) } }
@@ -246,7 +250,9 @@ struct HomeTab: View {
     }
 
     private var card: some View {
-        RoundedRectangle(cornerRadius: 22, style: .continuous).fill(C.char800)
-            .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(C.line, lineWidth: 1))
+        RoundedRectangle(cornerRadius: 22, style: .continuous)
+            .fill(LinearGradient(colors: [Color(hex: 0x13161D), C.char850], startPoint: .top, endPoint: .bottom))
+            .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous)
+                .stroke(LinearGradient(colors: [Color.white.opacity(0.10), C.line], startPoint: .top, endPoint: .bottom), lineWidth: 1))
     }
 }

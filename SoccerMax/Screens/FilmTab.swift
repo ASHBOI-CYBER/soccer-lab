@@ -31,7 +31,10 @@ struct FilmTab: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 26) {
                     TabHeader("Film")
+                    Text("Review your own game and get the drills that fix it.")
+                        .font(F.round(14, .medium)).foregroundStyle(C.muted).padding(.top, -20).padding(.horizontal, 4)
                     intro
+                    steps
                     if lab.reviews.isEmpty { empty } else { history }
                 }
                 .padding(.horizontal, 20)
@@ -63,6 +66,38 @@ struct FilmTab: View {
                     .buttonStyle(.game(.brand))
             }
         }
+    }
+
+    private var steps: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("How it works").font(.system(size: 20, weight: .heavy)).foregroundStyle(C.creme)
+            HStack(alignment: .top, spacing: 10) {
+                step(1, "Pick", "Choose what happens in your clip.", "hand.tap.fill")
+                step(2, "Answer", "A few yes or no questions on each.", "questionmark.bubble.fill")
+                step(3, "Train", "Get coaching and the drills to do.", "figure.soccer")
+            }
+        }
+    }
+
+    private func step(_ n: Int, _ title: String, _ text: String, _ icon: String) -> some View {
+        VStack(alignment: .leading, spacing: 8) {
+            HStack {
+                Image(systemName: icon).font(.system(size: 15, weight: .bold)).foregroundStyle(C.brandHi)
+                    .frame(width: 36, height: 36)
+                    .background(RoundedRectangle(cornerRadius: 10, style: .continuous).fill(C.brand.opacity(0.18)))
+                Spacer()
+                Text("0\(n)").font(F.round(12, .bold)).foregroundStyle(C.brand)
+            }
+            Text(title).font(F.round(16, .bold)).foregroundStyle(C.creme)
+            Text(text).font(F.round(12, .medium)).foregroundStyle(C.muted)
+                .fixedSize(horizontal: false, vertical: true)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity, minHeight: 138, alignment: .topLeading)
+        .background(RoundedRectangle(cornerRadius: 18, style: .continuous)
+            .fill(LinearGradient(colors: [Color(hex: 0x13161D), C.char850], startPoint: .top, endPoint: .bottom))
+            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(C.line, lineWidth: 1)))
+        .accessibilityElement(children: .combine)
     }
 
     private var empty: some View {
