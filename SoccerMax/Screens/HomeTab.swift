@@ -45,7 +45,7 @@ struct HomeTab: View {
                     Text("SOCCER ").foregroundStyle(C.creme)
                     Text("LAB").foregroundStyle(C.brand)
                 }
-                .font(.system(size: 26, weight: .black)).kerning(1)
+                .font(.system(size: 22, weight: .heavy)).kerning(1.5)
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel("Soccer Lab")
                 Text("\(greeting), \(store.answers.firstName)")
@@ -66,7 +66,6 @@ struct HomeTab: View {
                     .font(F.round(16, .bold)).foregroundStyle(.white)
                     .frame(width: 40, height: 40)
                     .background(Circle().fill(LinearGradient(colors: [C.brandHi, C.brand], startPoint: .top, endPoint: .bottom)))
-                    .shadow(color: C.brand.opacity(0.7), radius: 10)
             }
             .buttonStyle(.plain)
             .accessibilityLabel("Profile")
@@ -92,10 +91,10 @@ struct HomeTab: View {
             }
             VStack(alignment: .leading, spacing: 5) {
                 Text("\(LabPlan.group(store.answers.position)) session")
-                    .font(.system(size: 26, weight: .heavy)).foregroundStyle(.white)
+                    .font(.system(size: 22, weight: .bold)).foregroundStyle(.white)
                 Text(finished ? "All \(list.count) drills ticked off. Recover well and come back tomorrow."
                      : "\(list.count) drills built for a \(store.answers.positionName.lowercased()), about \(minutes) minutes.")
-                    .font(F.round(15, .medium)).foregroundStyle(.white.opacity(0.9))
+                    .font(F.round(14, .medium)).foregroundStyle(.white.opacity(0.85))
                     .fixedSize(horizontal: false, vertical: true)
             }
             GeometryReader { g in
@@ -112,18 +111,18 @@ struct HomeTab: View {
                     Text(finished ? "See this week's plan" : done == 0 ? "Start training" : "Keep going")
                     Image(systemName: "chevron.right").font(.system(size: 13, weight: .heavy))
                 }
-                .font(F.round(16, .bold)).foregroundStyle(C.brandLip)
-                .frame(maxWidth: .infinity).frame(height: 50)
+                .font(F.round(15, .semibold)).foregroundStyle(C.brandLip)
+                .frame(maxWidth: .infinity).frame(height: 46)
                 .background(Capsule().fill(.white))
             }
             .buttonStyle(.press(.kick))
         }
-        .padding(18)
+        .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 26, style: .continuous)
-                .fill(LinearGradient(colors: [C.brandHi, C.brand, C.brandLip], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .fill(LinearGradient(colors: [C.brand, C.brandMid, C.brandLip], startPoint: .topLeading, endPoint: .bottomTrailing))
                 .overlay(RoundedRectangle(cornerRadius: 26, style: .continuous).stroke(Color.white.opacity(0.22), lineWidth: 1))
-                .shadow(color: C.brand.opacity(0.65), radius: 26, y: 10)
+                .shadow(color: C.brand.opacity(0.4), radius: 18, y: 6)
         )
     }
 
@@ -139,7 +138,7 @@ struct HomeTab: View {
                     Text("Week \(lab.week())").font(F.round(13, .semibold)).foregroundStyle(C.muted)
                 }
                 HStack(alignment: .firstTextBaseline, spacing: 6) {
-                    Text("\(trained)").font(.system(size: 30, weight: .heavy)).foregroundStyle(C.creme)
+                    Text("\(trained)").font(.system(size: 24, weight: .bold)).foregroundStyle(C.creme)
                     Text(trained == 1 ? "day trained" : "days trained").font(F.round(15, .semibold)).foregroundStyle(C.muted)
                 }
                 HStack(spacing: 8) {
@@ -190,7 +189,7 @@ struct HomeTab: View {
                     .frame(width: 40, height: 40)
                     .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(tint.opacity(0.16)))
                 VStack(alignment: .leading, spacing: 2) {
-                    Text(title).font(F.round(16, .bold)).foregroundStyle(C.creme)
+                    Text(title).font(F.round(15, .semibold)).foregroundStyle(C.creme)
                     Text(sub).font(F.round(12, .medium)).foregroundStyle(C.muted).lineLimit(1).minimumScaleFactor(0.8)
                 }
             }

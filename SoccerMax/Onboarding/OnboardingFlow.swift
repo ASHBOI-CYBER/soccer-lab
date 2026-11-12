@@ -176,7 +176,7 @@ struct OBShell<Content: View>: View {
     private var inner: some View {
         VStack(alignment: .leading, spacing: 0) {
             Text(title)
-                .font(.system(size: 30, weight: .heavy)).foregroundStyle(C.creme)
+                .font(.system(size: 26, weight: .bold)).foregroundStyle(C.creme)
                 .fixedSize(horizontal: false, vertical: true)
                 .padding(.top, 18)
                 .accessibilityAddTraits(.isHeader)
@@ -236,16 +236,16 @@ struct Welcome: View {
             VStack(spacing: 0) {
                 Spacer(minLength: 20)
                 ZStack {
-                    Circle().fill(C.brand.opacity(0.35)).frame(width: 230, height: 230).blur(radius: 60)
-                    Image("AppBall").resizable().scaledToFit().frame(width: 190, height: 190)
-                        .shadow(color: C.brand.opacity(0.7), radius: 30)
+                    Circle().fill(C.brand.opacity(0.28)).frame(width: 190, height: 190).blur(radius: 55)
+                    Image("AppBall").resizable().scaledToFit().frame(width: 150, height: 150)
+                        .shadow(color: C.brand.opacity(0.5), radius: 24)
                         .accessibilityHidden(true)
                 }
                 HStack(spacing: 0) {
                     Text("SOCCER ").foregroundStyle(C.creme)
                     Text("LAB").foregroundStyle(C.brand)
                 }
-                .font(.system(size: 44, weight: .black)).kerning(1.5)
+                .font(.system(size: 34, weight: .heavy)).kerning(2)
                 .padding(.top, 18)
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel("Soccer Lab")
@@ -432,23 +432,26 @@ struct PositionStep: View {
         OBShell(ctx: ctx, title: "Where do you play, \(store.answers.firstName)?") {
             VStack(spacing: 16) {
                 HStack(spacing: 12) {
-                    Disp(store.answers.position, size: 34, color: C.brand)
-                    Text(store.answers.positionName).font(F.round(19, .semibold)).foregroundStyle(C.creme)
+                    Text(store.answers.position).font(.system(size: 22, weight: .bold)).foregroundStyle(C.brandHi)
+                    Text(store.answers.positionName).font(F.round(16, .medium)).foregroundStyle(C.creme2)
                     Spacer()
                 }
                 GeometryReader { g in
                     let w = g.size.width, h = g.size.height
                     ZStack {
-                        RoundedRectangle(cornerRadius: 22).fill(LinearGradient(colors: [Color(hex: 0x1668E8), Color(hex: 0x0E4FBF)], startPoint: .top, endPoint: .bottom))
-                        PitchLines().stroke(.white.opacity(0.4), lineWidth: 2)
+                        RoundedRectangle(cornerRadius: 20, style: .continuous)
+                            .fill(LinearGradient(colors: [Color(hex: 0x0E1420), Color(hex: 0x070A10)], startPoint: .top, endPoint: .bottom))
+                            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.line, lineWidth: 1))
+                        PitchLines().stroke(C.brand.opacity(0.35), lineWidth: 1)
                         ForEach(SPOTS, id: \.0) { id, x, y in
                             let on = store.answers.position == id
                             Button { store.answers.position = id } label: {
-                                Text(id).font(F.display(14))
-                                    .foregroundStyle(on ? C.brandInk : .white)
-                                    .frame(width: on ? 56 : 48, height: on ? 56 : 48)
-                                    .background(Circle().fill(on ? C.creme : C.char900.opacity(0.75)))
-                                    .overlay(Circle().stroke(on ? C.brandInk : .white.opacity(0.6), lineWidth: 2.5))
+                                Text(id).font(.system(size: 12, weight: .semibold))
+                                    .foregroundStyle(on ? Color.white : C.creme2)
+                                    .frame(width: 46, height: 46)
+                                    .background(Circle().fill(on ? C.brand : C.char700))
+                                    .overlay(Circle().stroke(on ? C.brandHi : C.line, lineWidth: 1))
+                                    .shadow(color: on ? C.brand.opacity(0.7) : .clear, radius: 10)
                             }
                             .buttonStyle(.press(.pop))
                             .position(x: w * x / 100, y: h * y / 100)

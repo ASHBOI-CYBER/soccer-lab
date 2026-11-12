@@ -43,8 +43,7 @@ struct ProfileTab: View {
                     }
                     identity
                     numbers
-                    // the Stats tab moved in here (2026-11-08): fire, level, rank, week, totals
-                    FireHero(air: store.air)
+                    // the big flame is gone (2026-11-13): the streak is the first tile above
                     // v3 (2026-11-08, user): no rank card; tap the level bar ? every level
                     Button { showBadges = true } label: { LevelBar(level: store.level, showsMore: true) }
                         .buttonStyle(.press)
@@ -119,7 +118,7 @@ struct ProfileTab: View {
                 .frame(width: 40, height: 40)
                 .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(tint.opacity(0.16)))
             VStack(alignment: .leading, spacing: 1) {
-                Text(value).font(.system(size: 24, weight: .heavy)).foregroundStyle(C.creme)
+                Text(value).font(.system(size: 21, weight: .bold)).foregroundStyle(C.creme)
                     .lineLimit(1).minimumScaleFactor(0.7)
                 Text(label).font(F.round(12, .semibold)).foregroundStyle(C.muted).lineLimit(1).minimumScaleFactor(0.8)
             }
@@ -145,7 +144,7 @@ struct ProfileTab: View {
     private var identity: some View {
         VStack(spacing: 10) {
             PhotosPicker(selection: $photo, matching: .images) {
-                Avatar(size: 118)
+                Avatar(size: 92)
                     .overlay(alignment: .bottomLeading) {
                         if let t = ShownTeam.row(shownTeam) {
                             TeamCrest(name: t.name, logo: t.logo, color: t.color, size: 46).offset(x: -4, y: 2)
@@ -163,7 +162,7 @@ struct ProfileTab: View {
                 editName = true
             } label: {
                 HStack(spacing: 8) {
-                    Disp(fullName, size: 32)
+                    Text(fullName).font(.system(size: 24, weight: .bold)).foregroundStyle(C.creme)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
                     Image(systemName: "pencil").font(.system(size: 15, weight: .heavy)).foregroundStyle(C.muted)
@@ -177,8 +176,8 @@ struct ProfileTab: View {
                 .padding(.top, 4)
             // TEAM used to be a tab; it opens from here now (chat, leaderboard, invites, the code box)
             Button { Nav.shared.team = true } label: { Label("My team", systemImage: "person.3.fill") }
-                .buttonStyle(.game(.charcoal, height: 50, font: 19))
-                .padding(.top, 6)
+                .buttonStyle(.game(.charcoal, height: 46, font: 19))
+                .padding(.top, 8)
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 2)
@@ -262,23 +261,21 @@ struct Avatar: View {
                 if let img = store.avatar {
                     Image(uiImage: img).resizable().scaledToFill()
                 } else {
-                    LinearGradient(colors: [C.brandHi, C.brand, C.brandMid], startPoint: .top, endPoint: .bottom)
-                    Circle().inset(by: 7).stroke(C.creme.opacity(0.45), style: StrokeStyle(lineWidth: 1.6, dash: [4, 4]))
-                    Text(initials.isEmpty ? "P" : initials).font(F.display(size * 0.38)).foregroundStyle(.white)
-                        .shadow(color: C.brandInk, radius: 0, y: 3)
+                    C.char800
+                    Text(initials.isEmpty ? "P" : initials).font(.system(size: size * 0.36, weight: .semibold)).foregroundStyle(C.creme)
                 }
             }
             .frame(width: size, height: size)
             .clipShape(Circle())
-            .overlay(Circle().stroke(C.charInk, lineWidth: 3))
-            .background(Circle().fill(C.charInk).offset(y: 5))
+            .overlay(Circle().stroke(C.brand.opacity(0.7), lineWidth: 1.5))
+            .shadow(color: C.brand.opacity(0.35), radius: 12)
 
             Image(systemName: "camera.fill")
-                .font(.system(size: size * 0.12, weight: .heavy))
-                .foregroundStyle(C.brandInk)
-                .frame(width: size * 0.3, height: size * 0.3)
+                .font(.system(size: size * 0.11, weight: .semibold))
+                .foregroundStyle(.white)
+                .frame(width: size * 0.28, height: size * 0.28)
                 .background(Circle().fill(C.brand))
-                .overlay(Circle().stroke(C.brandInk, lineWidth: 2.5))
+                .overlay(Circle().stroke(Color.black, lineWidth: 2))
                 .offset(x: 2, y: 2)
         }
     }
@@ -305,16 +302,16 @@ struct TeamChip: View {
                     TeamCrest(name: t.name, logo: t.logo, color: t.color, size: 30)
                     Text(t.name).font(F.round(16, .bold)).foregroundStyle(C.creme)
                 } else {
-                    Image(systemName: "shield.lefthalf.filled").font(.system(size: 17, weight: .heavy)).foregroundStyle(C.brand)
-                    Text("DISPLAY YOUR TEAM").font(F.display(16)).foregroundStyle(C.brand)
+                    Image(systemName: "shield.lefthalf.filled").font(.system(size: 14, weight: .semibold)).foregroundStyle(C.brandHi)
+                    Text("Show a team on your profile").font(F.round(14, .semibold)).foregroundStyle(C.brandHi)
                 }
                 Image(systemName: "chevron.right").font(.system(size: 12, weight: .heavy)).foregroundStyle(C.muted)
             }
             .lineLimit(1)
             .padding(.leading, 14).padding(.trailing, 16)
-            .frame(height: 48)
+            .frame(height: 40)
             .background(Capsule().fill(C.char800))
-            .overlay(Capsule().strokeBorder(t == nil ? C.brand.opacity(0.6) : C.charInk, style: StrokeStyle(lineWidth: 2, dash: t == nil ? [6, 5] : [])))
+            .overlay(Capsule().strokeBorder(C.line, lineWidth: 1))
         }
         .buttonStyle(.press(.stud))
         .accessibilityLabel(t.map { "Showing \($0.name) on your profile. Change" } ?? "Display your team")

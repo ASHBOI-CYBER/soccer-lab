@@ -43,7 +43,7 @@ enum C {
 
 enum F {
     /// Headings: the system face, heavy. A little smaller than the old bubble font, which ran wide.
-    static func display(_ size: CGFloat) -> Font { .system(size: (size * 0.84).rounded(), weight: .heavy) }
+    static func display(_ size: CGFloat) -> Font { .system(size: (size * 0.74).rounded(), weight: .bold) }
     static func round(_ size: CGFloat, _ weight: Font.Weight = .medium) -> Font {
         switch weight {
         case .bold, .heavy, .black: return .system(size: size, weight: .bold)
@@ -84,8 +84,7 @@ struct AppBackground: View {
         ZStack {
             Color.black
             // the glow: a blue light above the screen, and a fainter one low on the left
-            RadialGradient(colors: [C.brand.opacity(0.34), C.brand.opacity(0.08), .clear], center: UnitPoint(x: 0.5, y: -0.08), startRadius: 0, endRadius: 420)
-            RadialGradient(colors: [C.brandMid.opacity(0.14), .clear], center: UnitPoint(x: 0.0, y: 0.85), startRadius: 0, endRadius: 320)
+            RadialGradient(colors: [C.brand.opacity(0.26), C.brand.opacity(0.05), .clear], center: UnitPoint(x: 0.5, y: -0.12), startRadius: 0, endRadius: 380)
         }
         .ignoresSafeArea()
     }
@@ -118,20 +117,20 @@ struct GameButtonStyle: ButtonStyle {
         let pressed = configuration.isPressed
         let shape = Capsule()
         return configuration.label
-            .font(.system(size: Swift.max(14, (fontSize * 0.7).rounded()), weight: .bold))
+            .font(.system(size: 16, weight: .semibold))
             .foregroundStyle(enabled ? t.label : C.muted)
             .lineLimit(1)
             .minimumScaleFactor(0.7)
             .padding(.horizontal, round ? 0 : 20)
             .frame(maxWidth: block ? .infinity : nil)
-            .frame(width: round ? height : nil, height: height)
+            .frame(width: round ? Swift.min(height, 44) : nil, height: round ? Swift.min(height, 44) : Swift.min(height, 52))
             .background(
-                shape.fill(t == .brand ? AnyShapeStyle(LinearGradient(colors: [C.brandHi, C.brand, C.brandMid], startPoint: .top, endPoint: .bottom))
+                shape.fill(t == .brand ? AnyShapeStyle(LinearGradient(colors: [C.brand, C.brandMid], startPoint: .top, endPoint: .bottom))
                            : AnyShapeStyle(t == .charcoal ? C.char700 : t.face))
             )
             .overlay(shape.stroke(t == .charcoal ? C.line : Color.white.opacity(0.18), lineWidth: 1))
             // the primary action glows
-            .shadow(color: t == .brand ? C.brand.opacity(0.6) : .clear, radius: 14, y: 4)
+            .shadow(color: t == .brand ? C.brand.opacity(0.35) : .clear, radius: 10, y: 3)
             .opacity(pressed ? 0.82 : 1)
             .scaleEffect(pressed ? 0.98 : 1)
             .animation(.spring(response: 0.18, dampingFraction: 0.7), value: pressed)

@@ -16,7 +16,7 @@ struct Options: View {
                 Button { pick(o) } label: {
                     HStack(spacing: 14) {
                         if let i = icon?(o) { i }
-                        Text(o).font(F.round(19, .semibold)).foregroundStyle(C.creme)
+                        Text(o).font(F.round(16, .semibold)).foregroundStyle(C.creme)
                         Spacer()
                         ZStack {
                             Circle().fill(on ? C.brand : Color.clear).frame(width: 26, height: 26)
@@ -24,13 +24,12 @@ struct Options: View {
                             if on { Image(systemName: "checkmark").font(.system(size: 13, weight: .heavy)).foregroundStyle(.white) }
                         }
                     }
-                    .padding(.horizontal, 18)
-                    .frame(height: 62)
+                    .padding(.horizontal, 16)
+                    .frame(height: 54)
                     .background(
                         RoundedRectangle(cornerRadius: 18, style: .continuous)
                             .fill(on ? C.brand.opacity(0.18) : C.char800)
                             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(on ? C.brand : C.line, lineWidth: on ? 1.5 : 1))
-                            .shadow(color: on ? C.brand.opacity(0.45) : .clear, radius: 12)
                     )
                 }
                 .buttonStyle(.press(.pop))

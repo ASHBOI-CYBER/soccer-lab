@@ -50,10 +50,10 @@ struct NutritionTab: View {
             .overlay(alignment: .bottomTrailing) {
                 if isToday {
                     Button { adding = true } label: {
-                        Image(systemName: "plus").font(.system(size: 24, weight: .heavy)).foregroundStyle(.white)
-                            .frame(width: 60, height: 60)
-                            .background(Circle().fill(LinearGradient(colors: [C.brandHi, C.brand], startPoint: .top, endPoint: .bottom)))
-                            .shadow(color: C.brand.opacity(0.7), radius: 18, y: 4)
+                        Image(systemName: "plus").font(.system(size: 20, weight: .bold)).foregroundStyle(.white)
+                            .frame(width: 54, height: 54)
+                            .background(Circle().fill(LinearGradient(colors: [C.brand, C.brandMid], startPoint: .top, endPoint: .bottom)))
+                            .shadow(color: C.brand.opacity(0.45), radius: 12, y: 3)
                     }
                     .buttonStyle(.press(.pop))
                     .padding(.trailing, 20).padding(.bottom, 16)
@@ -110,7 +110,7 @@ struct NutritionTab: View {
             HStack(alignment: .center, spacing: 14) {
                 VStack(alignment: .leading, spacing: 6) {
                     Text("\(abs(left))")
-                        .font(.system(size: 54, weight: .black)).foregroundStyle(C.creme)
+                        .font(.system(size: 40, weight: .bold)).foregroundStyle(C.creme)
                         .minimumScaleFactor(0.6).lineLimit(1)
                     Text(left >= 0 ? "Calories left" : "Calories over").font(F.round(16, .semibold)).foregroundStyle(C.creme2)
                     LabBar(value: Double(d.kcal), goal: Double(goal.kcal)).padding(.top, 6)
@@ -126,7 +126,7 @@ struct NutritionTab: View {
                         Text("\(pct)%").font(F.round(14, .bold)).foregroundStyle(C.creme)
                     }
                 }
-                .frame(width: 104, height: 104)
+                .frame(width: 92, height: 92)
             }
         }
         .accessibilityElement(children: .combine)
@@ -145,7 +145,7 @@ struct NutritionTab: View {
     private func macro(_ name: String, _ value: Double, _ goal: Int, _ icon: String, _ tint: Color) -> some View {
         let left = max(0, goal - Int(value.rounded()))
         return VStack(spacing: 8) {
-            Text("\(left)g").font(.system(size: 24, weight: .heavy)).foregroundStyle(C.creme)
+            Text("\(left)g").font(.system(size: 20, weight: .bold)).foregroundStyle(C.creme)
             Text("\(name) left").font(F.round(12, .semibold)).foregroundStyle(C.muted)
             LabRing(value: value, goal: Double(goal), color: tint, width: 6) {
                 Image(systemName: icon).font(.system(size: 14, weight: .bold)).foregroundStyle(tint)
