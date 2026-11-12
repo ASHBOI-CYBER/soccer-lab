@@ -19,18 +19,18 @@ struct Options: View {
                         Text(o).font(F.round(19, .semibold)).foregroundStyle(C.creme)
                         Spacer()
                         ZStack {
-                            Circle().fill(on ? C.brand : C.char950).frame(width: 28, height: 28)
-                                .overlay(Circle().stroke(on ? C.brandInk : C.char600, lineWidth: 2.5))
+                            Circle().fill(on ? C.brand : Color.clear).frame(width: 26, height: 26)
+                                .overlay(Circle().stroke(on ? C.brandHi : C.char600, lineWidth: 1.5))
                             if on { Image(systemName: "checkmark").font(.system(size: 13, weight: .heavy)).foregroundStyle(.white) }
                         }
                     }
                     .padding(.horizontal, 18)
                     .frame(height: 62)
                     .background(
-                        RoundedRectangle(cornerRadius: 20, style: .continuous)
-                            .fill(on ? C.brand.opacity(0.16) : C.char800)
-                            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(on ? C.brand : C.charInk, lineWidth: 2.5))
-                            .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(on ? C.brandLip : C.charInk).offset(y: 4))
+                        RoundedRectangle(cornerRadius: 18, style: .continuous)
+                            .fill(on ? C.brand.opacity(0.18) : C.char800)
+                            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(on ? C.brand : C.line, lineWidth: on ? 1.5 : 1))
+                            .shadow(color: on ? C.brand.opacity(0.45) : .clear, radius: 12)
                     )
                 }
                 .buttonStyle(.press(.pop))
@@ -181,8 +181,8 @@ struct Tile3D<Content: View>: View {
                 .background(
                     shape.fill(on ? LinearGradient(colors: [C.brand.opacity(0.32), C.brand.opacity(0.14)], startPoint: .top, endPoint: .bottom)
                                   : LinearGradient(colors: [C.char700, C.char800], startPoint: .top, endPoint: .bottom))
-                        .overlay(shape.stroke(on ? C.brand : C.charInk, lineWidth: 2.5))
-                        .background(shape.fill(on ? C.brandLip : C.charInk).offset(y: 5))
+                        .overlay(shape.stroke(on ? C.brand : C.line, lineWidth: on ? 1.5 : 1))
+                        .shadow(color: on ? C.brand.opacity(0.45) : .clear, radius: 12)
                 )
                 .overlay(alignment: .topTrailing) {
                     if on {
@@ -332,7 +332,7 @@ struct SlowBack: View {
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { action(); waiting = false }   // was 0.9 s (user, 2026-11-08: "a lot quicker")
         } label: {
             ZStack {
-                Circle().fill(C.char850).overlay(Circle().stroke(C.charInk, lineWidth: 2)).frame(width: 40, height: 40)
+                Circle().fill(C.char800).overlay(Circle().stroke(C.line, lineWidth: 1)).frame(width: 40, height: 40)
                 Image(systemName: "chevron.left").font(.system(size: 16, weight: .heavy)).foregroundStyle(C.muted)
             }
         }
@@ -346,13 +346,13 @@ struct ProgressBar: View {
     var body: some View {
         GeometryReader { g in
             ZStack(alignment: .leading) {
-                Capsule().fill(C.char950).overlay(Capsule().stroke(C.charInk, lineWidth: 2))
-                Capsule().fill(LinearGradient(colors: [C.brandHi, C.brand], startPoint: .top, endPoint: .bottom))
-                    .frame(width: max(10, g.size.width * value))
-                    .padding(2)
+                Capsule().fill(C.char700)
+                Capsule().fill(LinearGradient(colors: [C.brandHi, C.brand], startPoint: .leading, endPoint: .trailing))
+                    .frame(width: max(8, g.size.width * value))
+                    .shadow(color: C.brand.opacity(0.8), radius: 6)
             }
         }
-        .frame(height: 12)
+        .frame(height: 6)
         .animation(.spring(response: 0.5, dampingFraction: 0.7), value: value)
     }
 }

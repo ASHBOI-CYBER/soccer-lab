@@ -37,11 +37,12 @@ struct ProfileTab: View {
         NavigationStack(path: $path) {
             ScrollView {
                 VStack(spacing: 22) {
-                    TabHeader(title: "PROFILE") {
+                    TabHeader(title: "Profile") {
                         Button { path.append(CardRoute.settings) } label: { Image(systemName: "gearshape.fill").font(.system(size: 18, weight: .bold)) }
                             .buttonStyle(.gameRound(.charcoal, size: 46))
                     }
                     identity
+                    numbers
                     // the Stats tab moved in here (2026-11-08): fire, level, rank, week, totals
                     FireHero(air: store.air)
                     // v3 (2026-11-08, user): no rank card; tap the level bar ? every level
@@ -95,6 +96,46 @@ struct ProfileTab: View {
         }
     }
 
+    /// Four numbers at a glance (2026-11-13): streak, this week's minutes, this week's running, film reviews.
+    private var numbers: some View {
+        let lab = Lab.shared
+        let weekStart = dateOf("Mon")
+        let km = lab.runs.filter { $0.date >= weekStart }.reduce(0) { $0 + $1.km }
+        return VStack(spacing: 10) {
+            HStack(spacing: 10) {
+                numberTile("\(store.air.days)", "Day streak", "flame.fill", C.gold)
+                numberTile("\(store.minutesThisWeek)", "Minutes this week", "clock.fill", C.brandHi)
+            }
+            HStack(spacing: 10) {
+                numberTile(String(format: "%.1f", km), "Km run this week", "figure.run", labSkillColor("Runs"))
+                numberTile("\(lab.reviews.count)", "Film reviews", "video.fill", labSkillColor("Defending"))
+            }
+        }
+    }
+
+    private func numberTile(_ value: String, _ label: String, _ icon: String, _ tint: Color) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon).font(.system(size: 16, weight: .bold)).foregroundStyle(tint)
+                .frame(width: 40, height: 40)
+                .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(tint.opacity(0.16)))
+            VStack(alignment: .leading, spacing: 1) {
+                Text(value).font(.system(size: 24, weight: .heavy)).foregroundStyle(C.creme)
+                    .lineLimit(1).minimumScaleFactor(0.7)
+                Text(label).font(F.round(12, .semibold)).foregroundStyle(C.muted).lineLimit(1).minimumScaleFactor(0.8)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(12)
+        .frame(maxWidth: .infinity)
+        .background(
+            RoundedRectangle(cornerRadius: 18, style: .continuous)
+                .fill(LinearGradient(colors: [tint.opacity(0.10), C.char800], startPoint: .topLeading, endPoint: .bottomTrailing))
+                .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(C.line, lineWidth: 1))
+        )
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(label): \(value)")
+    }
+
     private var fullName: String {
         let a = store.answers
         let l = a.last.trimmingCharacters(in: .whitespaces)
@@ -122,7 +163,7 @@ struct ProfileTab: View {
                 editName = true
             } label: {
                 HStack(spacing: 8) {
-                    Disp(fullName.uppercased(), size: 32)
+                    Disp(fullName, size: 32)
                         .lineLimit(1)
                         .minimumScaleFactor(0.6)
                     Image(systemName: "pencil").font(.system(size: 15, weight: .heavy)).foregroundStyle(C.muted)
@@ -135,7 +176,7 @@ struct ProfileTab: View {
             TeamChip { showTeams = true }
                 .padding(.top, 4)
             // TEAM used to be a tab; it opens from here now (chat, leaderboard, invites, the code box)
-            Button { Nav.shared.team = true } label: { Label("MY TEAM", systemImage: "person.3.fill") }
+            Button { Nav.shared.team = true } label: { Label("My team", systemImage: "person.3.fill") }
                 .buttonStyle(.game(.charcoal, height: 50, font: 19))
                 .padding(.top, 6)
         }
@@ -165,7 +206,7 @@ struct GiftCard: View {
             HStack(spacing: 14) {
                 Image(systemName: "gift.fill").font(.system(size: 26, weight: .bold)).foregroundStyle(C.brandInk)
                     .frame(width: 58, height: 58)
-                    .background(Circle().fill(C.brand).overlay(Circle().stroke(C.charInk, lineWidth: 2.5)))
+                    .background(Circle().fill(C.brand).overlay(Circle().stroke(C.line, lineWidth: 1)))
                 VStack(alignment: .leading, spacing: 3) {
                     Disp("GIVE A FRIEND 7 DAYS FREE", size: 21).lineLimit(2).minimumScaleFactor(0.8)
                     Text("No card. For your soccer buddies.").font(F.round(14, .semibold)).foregroundStyle(C.muted)
@@ -183,7 +224,7 @@ struct GiftCard: View {
         .padding(16)
         .background(
             RoundedRectangle(cornerRadius: 24, style: .continuous).fill(LinearGradient(colors: [C.char800, C.char850], startPoint: .top, endPoint: .bottom))
-                .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(C.charInk, lineWidth: 2.5))
+                .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(C.line, lineWidth: 1))
         )
         .stitched(24)
         .background(RoundedRectangle(cornerRadius: 24, style: .continuous).fill(C.charInk).offset(y: 5))

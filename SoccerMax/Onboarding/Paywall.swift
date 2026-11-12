@@ -364,7 +364,7 @@ private struct TrialSteps: View {
             HStack(alignment: .top, spacing: 0) {
                 ForEach(steps, id: \.0) { s in
                     VStack(spacing: 6) {
-                        Circle().fill(s.2).frame(width: 16, height: 16).overlay(Circle().stroke(C.charInk, lineWidth: 2.5))
+                        Circle().fill(s.2).frame(width: 16, height: 16).overlay(Circle().stroke(C.line, lineWidth: 1))
                         Text(s.0).font(F.display(15)).foregroundStyle(C.creme)
                         Text(s.1).font(F.round(12, .semibold)).foregroundStyle(C.muted)
                     }
@@ -484,7 +484,7 @@ private struct FeaturesSheet: View {
                 .frame(minHeight: 62, maxHeight: 92)
                 .frame(maxWidth: .infinity)
                 .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(C.char850)
-                    .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.charInk, lineWidth: 2.5)))
+                    .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.line, lineWidth: 1)))
                 .opacity(shown ? 1 : 0)
                 .offset(x: shown ? 0 : 28)
                 .animation(.spring(response: 0.55, dampingFraction: 0.8).delay(0.1 + Double(i) * 0.06), value: shown)
@@ -508,7 +508,7 @@ struct PayIconTile: View {
             shape.fill(C.brandLip).offset(y: 4)
             shape.fill(LinearGradient(colors: [C.brandHi, C.brand, C.brandMid], startPoint: .top, endPoint: .bottom))
             shape.inset(by: 4).stroke(C.creme.opacity(0.45), style: StrokeStyle(lineWidth: 1.4, dash: [3, 3]))
-            shape.stroke(C.charInk, lineWidth: 2.5)
+            shape.stroke(C.line, lineWidth: 1)
             Canvas { ctx, s in PayGlyph.draw(icon, in: &ctx, size: s) }
                 .padding(size * 0.1)
         }

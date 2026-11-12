@@ -355,7 +355,8 @@ struct StitchBorder<S: InsettableShape>: View {
 extension View {
     /// The ball's stitched seam around a card.
     func stitched(_ radius: CGFloat, color: Color = C.creme, opacity: Double = 0.14, inset: CGFloat = 6) -> some View {
-        overlay(StitchBorder(shape: RoundedRectangle(cornerRadius: max(0, radius), style: .continuous), color: color, opacity: opacity, inset: inset))
+        // the stitched seam belonged to the cartoon look; cards are plain now (2026-11-13)
+        self
     }
 }
 

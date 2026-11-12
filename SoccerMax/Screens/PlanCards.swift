@@ -223,7 +223,7 @@ struct LipPress: ButtonStyle {
             .offset(y: configuration.isPressed ? depth - 1 : 0)
             .background(
                 RoundedRectangle(cornerRadius: radius, style: .continuous).fill(lip)
-                    .overlay(RoundedRectangle(cornerRadius: radius, style: .continuous).stroke(C.charInk, lineWidth: 2.5))
+                    .overlay(RoundedRectangle(cornerRadius: radius, style: .continuous).stroke(C.line, lineWidth: 1))
                     .offset(y: depth)
             )
             .padding(.bottom, depth)
@@ -347,7 +347,7 @@ struct StreakChip: View {
         .padding(.trailing, 15)
         .frame(height: 46)
         .background(Capsule().fill(LinearGradient(colors: [C.char700, C.char800], startPoint: .top, endPoint: .bottom)))
-        .overlay(Capsule().stroke(C.charInk, lineWidth: 2.5))
+        .overlay(Capsule().stroke(C.line, lineWidth: 1))
         .background(Capsule().fill(C.charInk).offset(y: 4))
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(n) sessions in a row")
@@ -414,7 +414,7 @@ struct DayHero<Action: View>: View {
         }
         .background(Self.floor)
         .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 26, style: .continuous).stroke(C.charInk, lineWidth: 2.5))
+        .overlay(RoundedRectangle(cornerRadius: 26, style: .continuous).stroke(C.line, lineWidth: 1))
         .background(RoundedRectangle(cornerRadius: 26, style: .continuous).fill(C.charInk).offset(y: 5))
     }
 

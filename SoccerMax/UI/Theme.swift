@@ -180,9 +180,9 @@ struct GameCard: ViewModifier {
             .padding(padding)
             .background(
                 RoundedRectangle(cornerRadius: radius, style: .continuous)
-                    .fill(LinearGradient(colors: [C.char800, C.char850], startPoint: .top, endPoint: .bottom))
-                    .overlay(RoundedRectangle(cornerRadius: radius, style: .continuous).stroke(stroke, lineWidth: 2.5))
-                    .background(RoundedRectangle(cornerRadius: radius, style: .continuous).fill(C.charInk).offset(y: 5))
+                    .fill(LinearGradient(colors: [Color(hex: 0x13161D), C.char850], startPoint: .top, endPoint: .bottom))
+                    .overlay(RoundedRectangle(cornerRadius: radius, style: .continuous)
+                        .stroke(LinearGradient(colors: [Color.white.opacity(0.10), C.line], startPoint: .top, endPoint: .bottom), lineWidth: 1))
             )
     }
 }

@@ -135,7 +135,7 @@ struct OBShell<Content: View>: View {
     let ctx: OBContext
     let title: String
     var sub: Text? = nil
-    var cta: String? = "CONTINUE"
+    var cta: String? = "Continue"
     var canNext = true
     var onNext: (() -> Void)? = nil
     var scrolls = true
@@ -143,9 +143,11 @@ struct OBShell<Content: View>: View {
 
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
-            HStack(spacing: 12) {   // no progress bar (user, 2026-11-08)
+            HStack(spacing: 12) {   // back, and how far through the questions you are (2026-11-13)
                 SlowBack(action: ctx.back)
-                Spacer()
+                ProgressBar(value: progress)
+                    .padding(.trailing, 8)
+                    .accessibilityLabel("Step \((OBStep.allCases.firstIndex(of: ctx.step) ?? 0)) of \(OBStep.allCases.count - 1)")
             }
             .padding(.horizontal, 16)
             .padding(.top, 4)
@@ -166,13 +168,20 @@ struct OBShell<Content: View>: View {
         }
     }
 
+    private var progress: Double {
+        let all = OBStep.allCases
+        return Double(all.firstIndex(of: ctx.step) ?? 0) / Double(max(1, all.count - 1))
+    }
+
     private var inner: some View {
         VStack(alignment: .leading, spacing: 0) {
-            MascotSays(text: title)
-                .padding(.top, 8)
-                .padding(.leading, -12)
+            Text(title)
+                .font(.system(size: 30, weight: .heavy)).foregroundStyle(C.creme)
+                .fixedSize(horizontal: false, vertical: true)
+                .padding(.top, 18)
+                .accessibilityAddTraits(.isHeader)
             if let sub {
-                sub.font(F.round(17, .medium)).foregroundStyle(C.creme2).padding(.top, 6)
+                sub.font(F.round(16, .medium)).foregroundStyle(C.muted).padding(.top, 8)
             }
             content.padding(.top, 22)
         }
@@ -223,41 +232,69 @@ struct Welcome: View {
 
     var body: some View {
         ZStack {
-            MownPitch()
-            GeometryReader { g in
-                Circle().stroke(.white.opacity(0.3), lineWidth: 3).frame(width: 260, height: 260)
-                    .position(x: g.size.width / 2, y: g.size.height * 0.27)
-            }
-            VStack(spacing: 14) {
-                Spacer().frame(height: 40)
-                Mascot(lines: ["Hi! I'm your new coach.", "Let's build your player!"], size: 190)
-                    .padding(.horizontal, 24)
-                Disp("SOCCER", size: 84, color: .white, ink: C.brandInk)
-                Disp("LAB", size: 84, color: .white, ink: C.brandInk).padding(.top, -18)
-                Text("Train like a pro. Think like one too.")
-                    .font(F.round(17, .bold)).foregroundStyle(.white)
-                    .shadow(color: .black.opacity(0.25), radius: 0, y: 2)
-                Spacer()
+            AppBackground()
+            VStack(spacing: 0) {
+                Spacer(minLength: 20)
+                ZStack {
+                    Circle().fill(C.brand.opacity(0.35)).frame(width: 230, height: 230).blur(radius: 60)
+                    Image("AppBall").resizable().scaledToFit().frame(width: 190, height: 190)
+                        .shadow(color: C.brand.opacity(0.7), radius: 30)
+                        .accessibilityHidden(true)
+                }
+                HStack(spacing: 0) {
+                    Text("SOCCER ").foregroundStyle(C.creme)
+                    Text("LAB").foregroundStyle(C.brand)
+                }
+                .font(.system(size: 44, weight: .black)).kerning(1.5)
+                .padding(.top, 18)
+                .accessibilityElement(children: .combine)
+                .accessibilityLabel("Soccer Lab")
+                Text("Your training, built around how you play.")
+                    .font(F.round(17, .medium)).foregroundStyle(C.creme2)
+                    .multilineTextAlignment(.center)
+                    .padding(.top, 8)
+                VStack(alignment: .leading, spacing: 14) {
+                    welcomeRow("figure.soccer", "A session every day, made for your position")
+                    welcomeRow("video.fill", "Review your clips and get the drills that fix them")
+                    welcomeRow("fork.knife", "Fuel targets and a simple food log")
+                }
+                .padding(.top, 30)
+                .padding(.horizontal, 28)
+                Spacer(minLength: 20)
             }
         }
         .dock(fade: .clear) {
-            VStack(spacing: 14) {
-                Button("BUILD MY PLAYER") { ctx.go(.name) }.buttonStyle(.gameLarge)
+            VStack(spacing: 12) {
+                Button("Get started") { ctx.go(.name) }.buttonStyle(.gameLarge)
                 // an invite link's code (or one typed here) waits for the end of onboarding: after the Apple account
-                // the app opens on the Team tab with it ready to join (ShareLinks, notes/19 "SHARE LINKS")
+                // the app opens the Team page with it ready to use (ShareLinks, notes/19 "SHARE LINKS")
                 Button { entering = true } label: {
-                    Label(team.pendingCode.map { "CODE \($0)" } ?? "I HAVE A CODE",
-                          systemImage: team.pendingCode == nil ? "person.3.fill" : "checkmark.circle.fill")
+                    Label(team.pendingCode.map { "Code \($0)" } ?? "I have a code",
+                          systemImage: team.pendingCode == nil ? "ticket.fill" : "checkmark.circle.fill")
                 }
                 .buttonStyle(.game(team.pendingCode == nil ? .charcoal : .brand))
-                Button("I HAVE AN ACCOUNT") { signingIn = true }
-                    .font(F.round(16, .bold)).foregroundStyle(.white.opacity(0.85))
-                    .padding(.top, 2)
+                Button("I already have an account") { signingIn = true }
+                    .font(F.round(15, .semibold)).foregroundStyle(C.muted)
+                    .frame(minHeight: 44)
             }
         }
         .sheet(isPresented: $entering) { InviteCodeSheet { ctx.go(.name) } }
         .sheet(isPresented: $signingIn) {
             SignBackInSheet(back: { signingIn = false; ctx.finish() }, none: { signingIn = false; ctx.go(.name) })
+        }
+    }
+}
+
+extension Welcome {
+    /// One line of what the app does, on the welcome screen.
+    func welcomeRow(_ icon: String, _ text: String) -> some View {
+        HStack(spacing: 14) {
+            Image(systemName: icon).font(.system(size: 16, weight: .bold)).foregroundStyle(C.brandHi)
+                .frame(width: 40, height: 40)
+                .background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(C.brand.opacity(0.18)))
+            Text(text).font(F.round(15, .semibold)).foregroundStyle(C.creme)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
         }
     }
 }
@@ -374,7 +411,7 @@ private struct NameField: View {
             .padding(.horizontal, 20)
             .frame(height: 60)
             .background(RoundedRectangle(cornerRadius: 22, style: .continuous).fill(C.char950)
-                .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(C.charInk, lineWidth: 2.5)))
+                .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(C.line, lineWidth: 1)))
             .onChange(of: text) { _, v in
                 if v.count > max { text = String(v.prefix(max)) }
                 Haptics.play(.stud)

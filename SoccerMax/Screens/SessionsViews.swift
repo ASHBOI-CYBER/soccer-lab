@@ -278,7 +278,7 @@ struct EmptySessions: View {
         .frame(maxWidth: .infinity)
         .background(DayHero<EmptyView>.floor)
         .clipShape(RoundedRectangle(cornerRadius: 26, style: .continuous))
-        .overlay(RoundedRectangle(cornerRadius: 26, style: .continuous).stroke(C.charInk, lineWidth: 2.5))
+        .overlay(RoundedRectangle(cornerRadius: 26, style: .continuous).stroke(C.line, lineWidth: 1))
     }
 }
 

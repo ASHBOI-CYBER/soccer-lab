@@ -488,7 +488,7 @@ private struct TeamPitchHero: View {
             }
         }
         .frame(height: 230)
-        .background(shape.fill(C.brandLip).overlay(shape.stroke(C.charInk, lineWidth: 2.5)).offset(y: 6))
+        .background(shape.fill(C.brandLip).overlay(shape.stroke(C.line, lineWidth: 1)).offset(y: 6))
         .padding(.bottom, 6)
         .onAppear { bob = true }
         .accessibilityHidden(true)
@@ -1191,7 +1191,7 @@ private struct Podium: View {
                         PlayerPic(id: m.id, name: m.name, size: pic)
                             .padding(4)
                             .background(Circle().fill(LinearGradient(colors: medal.face, startPoint: .top, endPoint: .bottom)))
-                            .overlay(Circle().stroke(C.charInk, lineWidth: 2.5))
+                            .overlay(Circle().stroke(C.line, lineWidth: 1))
                             .overlay(alignment: .top) {
                                 if i == 0 {
                                     Image(systemName: "crown.fill").font(.system(size: 26, weight: .heavy)).foregroundStyle(C.gold)
@@ -1240,10 +1240,10 @@ private struct Pedestal: View {
             Text("\(rank)").font(F.display(rank == 1 ? 44 : 34)).foregroundStyle(.white)
                 .shadow(color: ink, radius: 0, y: 3)
                 .padding(.top, 10)
-            shape.stroke(C.charInk, lineWidth: 2.5)
+            shape.stroke(C.line, lineWidth: 1)
         }
         .frame(height: height)
-        .background(shape.fill(lip).overlay(shape.stroke(C.charInk, lineWidth: 2.5)).offset(y: 5))
+        .background(shape.fill(lip).overlay(shape.stroke(C.line, lineWidth: 1)).offset(y: 5))
         .padding(.bottom, 5)
     }
 }
@@ -1697,7 +1697,7 @@ struct AppleSignIn: View {
         .signInWithAppleButtonStyle(.white)
         .frame(height: 58)
         .clipShape(Capsule())
-        .overlay(Capsule().stroke(C.charInk, lineWidth: 2.5))
+        .overlay(Capsule().stroke(C.line, lineWidth: 1))
     }
 }
 

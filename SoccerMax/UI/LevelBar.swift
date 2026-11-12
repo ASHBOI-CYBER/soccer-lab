@@ -177,7 +177,7 @@ struct ProgressRow: View {
             .padding(.horizontal, 8).padding(.vertical, 10)
             .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))   // the tile is the fire's box
             .gameCard(padding: 0, radius: 20)
-            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.charInk, lineWidth: 2.5))   // border on top of the glow
+            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.line, lineWidth: 1))   // border on top of the glow
     }
 
     private func caption(_ s: String) -> some View {

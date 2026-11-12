@@ -218,7 +218,7 @@ struct SpeechBubble: View {
             .multilineTextAlignment(align)
             .fixedSize(horizontal: false, vertical: true)
             .padding(.horizontal, 16).padding(.vertical, 12)
-            .background(BubbleShape(tail: tail).fill(C.creme).overlay(BubbleShape(tail: tail).stroke(C.charInk, lineWidth: 2.5)))
+            .background(BubbleShape(tail: tail).fill(C.creme).overlay(BubbleShape(tail: tail).stroke(C.line, lineWidth: 1)))
             .background(BubbleShape(tail: tail).fill(C.charInk).offset(y: 4))
             .padding(tail == .bottom ? .bottom : .leading, 12)
             .animation(nil, value: shown)

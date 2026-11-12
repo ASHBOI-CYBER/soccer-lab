@@ -130,7 +130,7 @@ struct PlayerPoster: View {
             }
             .overlay(alignment: .topTrailing) { if saved { SavedMark().padding(10) } }
             .clipShape(shape)
-            .overlay(shape.stroke(C.charInk, lineWidth: 2.5))
+            .overlay(shape.stroke(C.line, lineWidth: 1))
             .contentShape(shape)
             .accessibilityElement(children: .ignore)
             .accessibilityLabel("\(pro.title), \(pro.position ?? ""), \(minutes) minutes\(saved ? ", saved" : "")")
@@ -166,7 +166,7 @@ struct TechniqueTile: View {
         .overlay(alignment: .topTrailing) { if saved { SavedMark().padding(10) } }
         .clipShape(shape)
         .stitched(22, opacity: 0.12)
-        .overlay(shape.stroke(C.charInk, lineWidth: 2.5))
+        .overlay(shape.stroke(C.line, lineWidth: 1))
         .contentShape(shape)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("\(pro.title), \(minutes) minutes\(saved ? ", saved" : "")")
