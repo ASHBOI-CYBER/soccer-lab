@@ -210,7 +210,7 @@ struct RunView: View {
             }
             .frame(height: 230)
             .clipShape(RoundedRectangle(cornerRadius: 22, style: .continuous))
-            .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(C.charInk, lineWidth: 2.5))
+            .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(C.line, lineWidth: 1))
 
             if run.denied {
                 VStack(spacing: 8) {

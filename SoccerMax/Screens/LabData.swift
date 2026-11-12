@@ -629,7 +629,7 @@ struct LabPanel<Content: View>: View {
         content
             .padding(padding)
             .frame(maxWidth: .infinity, alignment: .leading)
-            .background(shape.fill(C.char800).overlay(shape.stroke(C.charInk, lineWidth: 2.5)))
+            .background(shape.fill(C.char800).overlay(shape.stroke(C.line, lineWidth: 1)))
     }
 }
 

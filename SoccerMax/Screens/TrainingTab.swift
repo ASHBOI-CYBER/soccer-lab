@@ -21,8 +21,7 @@ struct TrainingTab: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 26) {
-                    TabHeader("TRAINING")
-                    hello
+                    TabHeader("Training")
                     week
                     session
                     if !fixes.isEmpty { fixList }
@@ -42,38 +41,6 @@ struct TrainingTab: View {
             .page()
         }
         .fullScreenCover(isPresented: $running) { RunView().duoColumn() }
-    }
-
-    // MARK: hello
-
-    private var greeting: String {
-        let h = Calendar.current.component(.hour, from: Date())
-        return h < 12 ? "Morning" : h < 18 ? "Afternoon" : "Evening"
-    }
-
-    private var hello: some View {
-        let left = LabPlan.today(position: store.answers.position).filter { !lab.isDone($0.id) }.count
-        let streak = store.air.days
-        return HStack(spacing: 12) {
-            MascotDrawn(talking: false).frame(width: 78, height: 78)
-            VStack(alignment: .leading, spacing: 4) {
-                Text("\(greeting), \(store.answers.firstName)!").font(F.round(20, .bold)).foregroundStyle(C.creme)
-                Text(left == 0 ? "Today's session is done. See you tomorrow." : left == 1 ? "One drill left today. Finish strong." : "\(left) drills waiting for you today.")
-                    .font(F.round(14, .semibold)).foregroundStyle(C.creme2)
-                    .fixedSize(horizontal: false, vertical: true)
-                if streak > 0 {
-                    Label("\(streak) day streak", systemImage: "flame.fill")
-                        .font(F.round(13, .bold)).foregroundStyle(C.gold)
-                }
-            }
-            Spacer(minLength: 0)
-        }
-        .padding(14)
-        .background(
-            RoundedRectangle(cornerRadius: 24, style: .continuous)
-                .fill(LinearGradient(colors: [C.brandMid, C.brandLip], startPoint: .topLeading, endPoint: .bottomTrailing))
-                .overlay(RoundedRectangle(cornerRadius: 24, style: .continuous).stroke(C.charInk, lineWidth: 2.5))
-        )
     }
 
     // MARK: this week
@@ -108,14 +75,14 @@ struct TrainingTab: View {
                     .font(F.round(17, .bold)).foregroundStyle(picked ? Color.white : future ? C.muted : C.creme)
                 Image(systemName: trained ? "checkmark.circle.fill" : "circle.fill")
                     .font(.system(size: trained ? 13 : 6, weight: .bold))
-                    .foregroundStyle(trained ? (picked ? Color.white : C.brand) : (today ? C.gold : Color.clear))
+                    .foregroundStyle(trained ? (picked ? Color.white : C.brand) : (today ? C.brandHi : Color.clear))
                     .frame(height: 14)
             }
             .frame(maxWidth: .infinity)
             .padding(.vertical, 9)
             .background(
                 RoundedRectangle(cornerRadius: 14, style: .continuous).fill(picked ? C.brand : C.char800)
-                    .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(today ? C.gold : C.charInk, lineWidth: today ? 2 : 1.5))
+                    .overlay(RoundedRectangle(cornerRadius: 14, style: .continuous).stroke(today ? C.brandHi : C.line, lineWidth: today ? 1.5 : 1))
             )
         }
         .buttonStyle(.plain)
@@ -239,7 +206,7 @@ struct TrainingTab: View {
                         }
                         .padding(12)
                         .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.char800)
-                            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(C.charInk, lineWidth: 2.5)))
+                            .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(C.line, lineWidth: 1)))
                     }
                     .buttonStyle(.plain)
                 }

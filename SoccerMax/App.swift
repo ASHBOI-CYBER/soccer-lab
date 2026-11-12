@@ -35,11 +35,11 @@ struct SoccerMaxApp: App {
             }
         }
         // Native bars in the brand's fonts and colors.
-        let title = UIFont(name: "LuckiestGuy-Regular", size: 20) ?? .boldSystemFont(ofSize: 20)
+        let title = UIFont.systemFont(ofSize: 17, weight: .bold)
         let nav = UINavigationBarAppearance()
         nav.configureWithTransparentBackground()
         nav.titleTextAttributes = [.font: title, .foregroundColor: UIColor(C.creme)]
-        nav.largeTitleTextAttributes = [.font: UIFont(name: "LuckiestGuy-Regular", size: 38) ?? title, .foregroundColor: UIColor(C.creme)]
+        nav.largeTitleTextAttributes = [.font: UIFont.systemFont(ofSize: 32, weight: .heavy), .foregroundColor: UIColor(C.creme)]
         UINavigationBar.appearance().standardAppearance = nav
         UINavigationBar.appearance().scrollEdgeAppearance = nav
         UINavigationBar.appearance().compactAppearance = nav
@@ -48,7 +48,7 @@ struct SoccerMaxApp: App {
         tab.configureWithDefaultBackground()
         tab.backgroundColor = UIColor(C.char950).withAlphaComponent(0.85)
         let item = UITabBarItemAppearance()
-        let font = UIFont(name: "Fredoka-SemiBold", size: 11) ?? .systemFont(ofSize: 11)
+        let font = UIFont.systemFont(ofSize: 11, weight: .semibold)
         item.normal.titleTextAttributes = [.font: font, .foregroundColor: UIColor(C.muted)]
         item.selected.titleTextAttributes = [.font: font, .foregroundColor: UIColor(C.brand)]
         item.normal.iconColor = UIColor(C.muted)
@@ -146,21 +146,25 @@ struct SoccerMaxApp: App {
 
 /// Tabs (SOCCER LAB, 2026-11-12): Training · Film · Nutrition · Profile. Team opens from Profile (a full-screen
 /// cover, `Nav.shared.team`); the Map tab is gone.
-enum AppTab: Hashable { case training, film, nutrition, profile }
+enum AppTab: Hashable { case home, training, film, nutrition, profile }
 
 struct MainTabs: View {
     @State private var demoDone = DebugRoute.parts == ["done", "demo"]
     @State private var tab: AppTab = {
         switch DebugRoute.parts.first {
-        case "tab": return ["training": .training, "sessions": .training, "film": .film, "nutrition": .nutrition, "stats": .profile, "card": .profile, "profile": .profile][DebugRoute.parts[safe: 1] ?? ""] ?? .training
+        case "tab": return ["home": .home, "training": .training, "sessions": .training, "film": .film, "nutrition": .nutrition, "stats": .profile, "card": .profile, "profile": .profile][DebugRoute.parts[safe: 1] ?? ""] ?? .training
         case "stats", "card", "profile": return .profile
         case "sessions", "free": return .training
-        default: return .training
+        default: return .home
         }
     }()
 
     var body: some View {
         TabView(selection: $tab) {
+            HomeTab()
+                .duoColumn()
+                .tabItem { Label("Home", systemImage: "house.fill") }
+                .tag(AppTab.home)
             TrainingTab()
                 .duoColumn()
                 .tabItem { Label("Training", systemImage: "figure.soccer") }

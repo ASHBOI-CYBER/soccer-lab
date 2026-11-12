@@ -30,7 +30,7 @@ struct FilmTab: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 26) {
-                    TabHeader("FILM")
+                    TabHeader("Film")
                     intro
                     if lab.reviews.isEmpty { empty } else { history }
                 }
@@ -52,8 +52,9 @@ struct FilmTab: View {
         LabPanel {
             VStack(alignment: .leading, spacing: 12) {
                 HStack(spacing: 12) {
-                    MascotDrawn(talking: false).frame(width: 66, height: 66)
-                    Disp("REVIEW YOUR GAME", size: 24)
+                    Image(systemName: "video.fill").font(.system(size: 20, weight: .bold)).foregroundStyle(C.brandHi)
+                        .frame(width: 48, height: 48).background(Circle().fill(C.brand.opacity(0.18)))
+                    Disp("Review your game", size: 24)
                 }
                 Text("Watch a clip of yourself and answer a few questions. Your coach tells you what to work on and adds the drills to your training.")
                     .font(F.round(15, .semibold)).foregroundStyle(C.creme2)
@@ -94,7 +95,7 @@ struct FilmTab: View {
                     }
                     .padding(12)
                     .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.char800)
-                        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(C.charInk, lineWidth: 2.5)))
+                        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(C.line, lineWidth: 1)))
                 }
                 .buttonStyle(.plain)
             }

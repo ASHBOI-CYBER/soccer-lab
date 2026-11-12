@@ -1,4 +1,5 @@
-// SOCCER LAB look in SwiftUI: electric blue on deep navy (from the logo), chunky 3D buttons, bubble display type.
+// SOCCER LAB look in SwiftUI (2026-11-13): black surfaces, one electric blue accent, flat cards with a hairline
+// border, heavy system type. The cartoon game look (bubble font, 3D buttons, weave) is gone; the names stay.
 // The `char*` names are the dark neutrals (navy now, charcoal before the 2026-11-12 blue retheme).
 // Same values as the web kit (src/ui/game/game.css) so the brand doesn't change ? only the tech does.
 import SwiftUI
@@ -20,17 +21,19 @@ enum C {
     static let brandLip = Color(hex: 0x0A3FA3)
     static let brandInk = Color(hex: 0x06225C)
 
-    static let char950 = Color(hex: 0x050A18)
-    static let char900 = Color(hex: 0x081022)
-    static let char850 = Color(hex: 0x0B1530)
-    static let char800 = Color(hex: 0x101C3D)
-    static let char700 = Color(hex: 0x1A2A52)
-    static let char600 = Color(hex: 0x263A6B)
-    static let charInk = Color(hex: 0x02050D)
+    static let char950 = Color(hex: 0x000000)
+    static let char900 = Color(hex: 0x050608)
+    static let char850 = Color(hex: 0x0C0E13)
+    static let char800 = Color(hex: 0x12141A)
+    static let char700 = Color(hex: 0x1C1F28)
+    static let char600 = Color(hex: 0x2C303C)
+    static let charInk = Color(hex: 0x000000)
+    /// The hairline around cards and controls.
+    static let line = Color(hex: 0x23262F)
 
-    static let creme = Color(hex: 0xF2F6FF)
-    static let creme2 = Color(hex: 0xC9D4EA)
-    static let muted = Color(hex: 0x8493B0)
+    static let creme = Color(hex: 0xFFFFFF)
+    static let creme2 = Color(hex: 0xC5CAD6)
+    static let muted = Color(hex: 0x808797)
     static let gold = Color(hex: 0xFFC531)
     static let goldHi = Color(hex: 0xFFE48A)
     static let goldMid = Color(hex: 0xF4AB12)
@@ -39,17 +42,18 @@ enum C {
 }
 
 enum F {
-    static func display(_ size: CGFloat) -> Font { .custom("LuckiestGuy-Regular", size: size) }
+    /// Headings: the system face, heavy. A little smaller than the old bubble font, which ran wide.
+    static func display(_ size: CGFloat) -> Font { .system(size: (size * 0.84).rounded(), weight: .heavy) }
     static func round(_ size: CGFloat, _ weight: Font.Weight = .medium) -> Font {
         switch weight {
-        case .bold, .heavy, .black: return .custom("Fredoka-Bold", size: size)
-        case .semibold: return .custom("Fredoka-SemiBold", size: size)
-        default: return .custom("Fredoka-Medium", size: size)
+        case .bold, .heavy, .black: return .system(size: size, weight: .bold)
+        case .semibold: return .system(size: size, weight: .semibold)
+        default: return .system(size: size, weight: .medium)
         }
     }
 }
 
-// MARK: - bubble type: the display face with a dark outline and a drop under it
+// MARK: - headings: plain heavy type (was a bubble font with an outline and a drop)
 
 struct Disp: View {
     let text: String
@@ -66,41 +70,20 @@ struct Disp: View {
     }
 
     var body: some View {
-        let o = outline ?? max(1.2, size * 0.065)
-        let drop = max(2, size * 0.14)
-        let t = Text(text).font(F.display(size)).kerning(size * 0.02)
-        ZStack {
-            // drop
-            t.foregroundStyle(ink).offset(y: drop)
-            // outline: 8 directions
-            ForEach(0..<8, id: \.self) { i in
-                let a = Double(i) * .pi / 4
-                t.foregroundStyle(ink).offset(x: cos(a) * o, y: sin(a) * o)
-            }
-            t.foregroundStyle(color)
-        }
-        .padding(.bottom, drop)
-        .fixedSize(horizontal: false, vertical: true)
+        Text(text)
+            .font(F.display(size))
+            .foregroundStyle(color)
+            .fixedSize(horizontal: false, vertical: true)
     }
 }
 
-// MARK: - background: navy with a blue glow from the top and a faint diagonal weave
+// MARK: - background: black, with a faint blue glow at the top
 
 struct AppBackground: View {
     var body: some View {
         ZStack {
             C.char900
-            RadialGradient(colors: [Color(hex: 0x12306E), .clear], center: .top, startRadius: 0, endRadius: 420)
-            Canvas { ctx, size in
-                var p = Path()
-                var x: CGFloat = -size.height
-                while x < size.width {
-                    p.move(to: CGPoint(x: x, y: size.height))
-                    p.addLine(to: CGPoint(x: x + size.height, y: 0))
-                    x += 6
-                }
-                ctx.stroke(p, with: .color(.white.opacity(0.018)), lineWidth: 2)
-            }
+            RadialGradient(colors: [C.brand.opacity(0.16), .clear], center: .top, startRadius: 0, endRadius: 380)
         }
         .ignoresSafeArea()
     }
@@ -116,7 +99,7 @@ enum Tint {
     var lo: Color { switch self { case .brand: C.brandMid; case .charcoal: Color(hex: 0x14213F); case .gold: C.goldMid; case .creme: C.creme2 } }
     var lip: Color { switch self { case .brand: C.brandLip; case .charcoal: Color(hex: 0x070D1F); case .gold: C.goldLip; case .creme: Color(hex: 0x8C9BBD) } }
     var ink: Color { switch self { case .brand: C.brandInk; case .charcoal: C.charInk; case .gold: C.goldInk; case .creme: Color(hex: 0x1B2540) } }
-    var label: Color { switch self { case .creme: C.brandMid; case .charcoal: C.creme; default: .white } }
+    var label: Color { switch self { case .creme: C.brandMid; case .charcoal: C.creme; case .gold: .black; default: .white } }
 }
 
 struct GameButtonStyle: ButtonStyle {
@@ -129,44 +112,25 @@ struct GameButtonStyle: ButtonStyle {
     @Environment(\.isEnabled) private var enabled
 
     func makeBody(configuration: Configuration) -> some View {
-        let depth: CGFloat = height > 50 ? 7 : 5
         let t = enabled ? tint : .charcoal
         let pressed = configuration.isPressed
         let shape = Capsule()
-        return ZStack(alignment: .top) {
-            shape.fill(t.lip)
-                .overlay(shape.stroke(t.ink, lineWidth: 2.5))
-                .frame(height: height)
-                .offset(y: depth)
-                .shadow(color: .black.opacity(0.45), radius: 6, y: 6)
-            ZStack {
-                shape.fill(LinearGradient(colors: [t.hi, t.face, t.lo], startPoint: .top, endPoint: .bottom))
-                shape.inset(by: 3).stroke(.white.opacity(0.28), lineWidth: 2).mask(LinearGradient(colors: [.white, .clear], startPoint: .top, endPoint: .center))
-                // gloss in the upper right
-                GeometryReader { g in
-                    Capsule().fill(.white.opacity(0.5))
-                        .frame(width: g.size.width * (round ? 0.26 : 0.22), height: round ? 6 : 8)
-                        .position(x: g.size.width * (round ? 0.62 : 0.75), y: 9)
-                }
-                configuration.label
-                    .font(F.display(fontSize))
-                    .foregroundStyle(enabled ? t.label : C.muted)
-                    .shadow(color: t.ink, radius: 0, x: 0, y: 2.5)
-                    .padding(.horizontal, round ? 0 : 22)
-                    .lineLimit(1)
-                    .minimumScaleFactor(0.6)
+        return configuration.label
+            .font(.system(size: Swift.max(14, (fontSize * 0.7).rounded()), weight: .bold))
+            .foregroundStyle(enabled ? t.label : C.muted)
+            .lineLimit(1)
+            .minimumScaleFactor(0.7)
+            .padding(.horizontal, round ? 0 : 20)
+            .frame(maxWidth: block ? .infinity : nil)
+            .frame(width: round ? height : nil, height: height)
+            .background(shape.fill(t == .charcoal ? C.char700 : t.face))
+            .overlay(shape.stroke(t == .charcoal ? C.line : Color.white.opacity(0.14), lineWidth: 1))
+            .opacity(pressed ? 0.82 : 1)
+            .scaleEffect(pressed ? 0.98 : 1)
+            .animation(.spring(response: 0.18, dampingFraction: 0.7), value: pressed)
+            .onChange(of: pressed) { _, down in
+                if down { Haptics.play(.press) } else { Haptics.play(feel ?? (tint == .brand && height > 60 ? .kick : .release)) }
             }
-            .frame(height: height)
-            .overlay(shape.stroke(t.ink, lineWidth: 2.5))
-            .clipShape(shape)
-            .offset(y: pressed ? depth - 1 : 0)
-        }
-        .frame(maxWidth: block ? .infinity : nil)
-        .frame(width: round ? height : nil, height: height + depth, alignment: .top)
-        .animation(.spring(response: 0.18, dampingFraction: 0.55), value: pressed)
-        .onChange(of: pressed) { _, down in
-            if down { Haptics.play(.press) } else { Haptics.play(feel ?? (tint == .brand && height > 60 ? .kick : .release)) }
-        }
     }
 }
 

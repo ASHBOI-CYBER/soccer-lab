@@ -94,7 +94,7 @@ struct OnboardingFlow: View {
             // retention: open on what they said they want most. Anything social (or nothing picked) ? the Team tab,
             // where MAKE A TEAM / JOIN WITH A CODE waits; only the training picks ? the Sessions tab (tap an area, clock starts).
             if !Wants.social(store.answers.wants ?? []), !(store.answers.wants ?? []).isEmpty, Team.shared.pendingCode == nil {
-                Nav.shared.tab = .training
+                Nav.shared.tab = .home
             }
             store.onboarded = true
         }

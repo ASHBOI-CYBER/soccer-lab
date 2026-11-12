@@ -14,7 +14,7 @@ struct NutritionTab: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 26) {
-                    TabHeader("NUTRITION")
+                    TabHeader("Nutrition")
                     energy(day, goal)
                     water(day, goal)
                     Button { adding = true } label: { Label("ADD FOOD", systemImage: "plus") }
