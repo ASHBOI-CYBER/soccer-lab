@@ -44,26 +44,13 @@ struct NutritionTab: View {
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 110)
+                .padding(.bottom, 40)
             }
             .scrollIndicators(.hidden)
             // test builds: `-route tab:nutrition:bottom` opens scrolled to the end, for screenshots of the lower half
             .defaultScrollAnchor(DebugRoute.parts.contains("bottom") ? .bottom : .top)
             .tabRoot("Nutrition")
             .page()
-            .overlay(alignment: .bottomTrailing) {
-                if isToday {
-                    Button { adding = true } label: {
-                        Image(systemName: "plus").font(.system(size: 20, weight: .bold)).foregroundStyle(.white)
-                            .frame(width: 54, height: 54)
-                            .background(Circle().fill(LinearGradient(colors: [C.brand, C.brandMid], startPoint: .top, endPoint: .bottom)))
-                            .shadow(color: C.brand.opacity(0.45), radius: 12, y: 3)
-                    }
-                    .buttonStyle(.press(.pop))
-                    .padding(.trailing, 20).padding(.bottom, 16)
-                    .accessibilityLabel("Add food")
-                }
-            }
         }
         .sheet(isPresented: $adding) { FoodSheet() }
         .sheet(isPresented: $editingBody) { FuelBodySheet() }
@@ -214,8 +201,22 @@ struct NutritionTab: View {
 
     private func meals(_ d: FuelDay) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            Text(isToday ? "Today's meals" : "\(FULL_DAY[day]?.capitalized ?? day)'s meals")
-                .font(.system(size: 18, weight: .bold)).foregroundStyle(C.creme)
+            HStack {
+                Text(isToday ? "Today's meals" : "\(FULL_DAY[day]?.capitalized ?? day)'s meals")
+                    .font(.system(size: 18, weight: .bold)).foregroundStyle(C.creme)
+                Spacer()
+                // the add button lives here (2026-11-13): a floating one kept landing on top of other buttons
+                if isToday {
+                    Button { adding = true } label: {
+                        Label("Add food", systemImage: "plus")
+                            .font(F.round(14, .semibold)).foregroundStyle(.white)
+                            .padding(.horizontal, 14).frame(height: 38)
+                            .background(Capsule().fill(LinearGradient(colors: [C.brand, C.brandMid], startPoint: .top, endPoint: .bottom)))
+                            .shadow(color: C.brand.opacity(0.4), radius: 8, y: 2)
+                    }
+                    .buttonStyle(.press(.pop))
+                }
+            }
             if d.entries.isEmpty {
                 LabPanel(padding: 22) {
                     VStack(spacing: 10) {
@@ -226,11 +227,6 @@ struct NutritionTab: View {
                         Text(isToday ? "No meals logged yet" : "Nothing was logged").font(F.round(17, .bold)).foregroundStyle(C.creme)
                         Text(isToday ? "Add what you eat, or log a meal plan below in one tap." : "Pick today to log food.")
                             .font(F.round(14, .medium)).foregroundStyle(C.muted).multilineTextAlignment(.center)
-                        if isToday {
-                            Button { adding = true } label: { Label("Add food", systemImage: "plus") }
-                                .buttonStyle(.game(.brand, height: 46, font: 22, block: false))
-                                .padding(.top, 4)
-                        }
                     }
                     .frame(maxWidth: .infinity)
                 }
