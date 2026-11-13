@@ -276,8 +276,14 @@ struct DrillDetail: View {
         .page()
         .screenTitle("")
         .dock {
-            Button(added.map { "✓ ADDED TO \($0.uppercased())" } ?? "+ ADD TO MY WEEK") { picking = true }
-                .buttonStyle(.gameLarge)
+            // the old week planner is gone (2026-11-13): the button ticks the drill off for today, like the rows do
+            let done = Lab.shared.isDone(drill.id)
+            Button(done ? "Done today" : "Mark as done") {
+                Lab.shared.complete(drill, store: store)
+                Haptics.play(.goal)
+            }
+            .buttonStyle(.gameLarge)
+            .disabled(done)
         }
         .sheet(isPresented: $picking) {
             DayPicker { day in
@@ -323,7 +329,11 @@ struct GearRow: View {
                             if let img = g.image {
                                 Image(uiImage: img).resizable().scaledToFit().padding(8)
                             } else {
-                                Text(g.label.prefix(1)).font(F.display(26)).foregroundStyle(C.creme2)
+                                // no picture for this piece: a plain symbol instead of a letter (2026-11-13)
+                                let l = g.label.lowercased()
+                                Image(systemName: l.contains("cone") ? "cone.fill" : l.contains("ball") ? "soccerball"
+                                      : l.contains("goal") ? "sportscourt.fill" : l.contains("wall") ? "square.fill" : "checkmark")
+                                    .font(.system(size: 26, weight: .semibold)).foregroundStyle(C.brandHi)
                             }
                         }
                         .frame(width: 76, height: 76)

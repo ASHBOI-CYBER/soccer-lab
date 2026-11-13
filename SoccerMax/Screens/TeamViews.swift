@@ -258,21 +258,29 @@ struct TeamStart: View {
                     Text("Join with a friend's code, or make a new one.").font(F.round(15, .semibold)).foregroundStyle(C.muted)
                         .multilineTextAlignment(.center).padding(.top, 4)
                 } else {
-                TabHeader("TEAMS").frame(maxWidth: .infinity, alignment: .leading)
-                Mascot(lines: team.signedIn
-                       ? ["No team yet!", "Make one, or type your friend's code.", "Then we race every week!"]
-                       : ["Training is better with friends!", "Make a team, chat, and race each week.", "Sign in below to start."],
-                       size: team.signedIn ? 170 : 200)
-                    .id(team.signedIn)
-                    .padding(.top, 4)
-                Disp("TRAIN WITH YOUR FRIENDS", size: 29).multilineTextAlignment(.center).padding(.top, 4)
+                TabHeader("Team").frame(maxWidth: .infinity, alignment: .leading)
+                // a plain header (2026-11-13): the talking mascot is gone from this page
+                Image(systemName: "person.3.fill").font(.system(size: 32, weight: .bold)).foregroundStyle(C.brandHi)
+                    .frame(width: 88, height: 88)
+                    .background(Circle().fill(C.brand.opacity(0.18)))
+                    .overlay(Circle().stroke(C.brand.opacity(0.5), lineWidth: 1))
+                    .shadow(color: C.brand.opacity(0.35), radius: 14)
+                    .padding(.top, 18)
+                    .accessibilityHidden(true)
+                Text("Train with your friends").font(.system(size: 26, weight: .bold)).foregroundStyle(C.creme)
+                    .multilineTextAlignment(.center).padding(.top, 16)
+                Text(team.signedIn ? "No team yet. Make one, or type a friend's code."
+                     : "Make a team, chat, and see who trains the most each week. Sign in to start.")
+                    .font(F.round(15, .medium)).foregroundStyle(C.muted)
+                    .multilineTextAlignment(.center).fixedSize(horizontal: false, vertical: true)
+                    .padding(.top, 6).padding(.horizontal, 12)
                 }
 
                 if !team.signedIn {
                     VStack(spacing: 10) {
-                        PerkRow(icon: "bubble.left.and.bubble.right.fill", title: "TEAM CHAT", text: "", tint: C.brand)
-                        PerkRow(icon: "trophy.fill", title: "LEADERBOARD", text: "", tint: C.gold)
-                        PerkRow(icon: "location.fill", title: "TEAMS NEAR YOU", text: "", tint: C.brandHi)
+                        PerkRow(icon: "bubble.left.and.bubble.right.fill", title: "Team chat", text: "", tint: C.brand)
+                        PerkRow(icon: "trophy.fill", title: "Weekly leaderboard", text: "", tint: C.gold)
+                        PerkRow(icon: "location.fill", title: "Teams near you", text: "", tint: C.brandHi)
                     }
                     .padding(.top, 20)
                     if let e = team.error { Text(e).font(F.round(14, .semibold)).foregroundStyle(C.gold).padding(.top, 14) }
