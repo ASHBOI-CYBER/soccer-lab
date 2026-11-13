@@ -7,7 +7,7 @@ import SwiftUI
 
 struct SkillMapCard: View {
     @Environment(AppStore.self) private var store
-    @State private var mode = "Radar"
+    @State private var mode = DebugRoute.parts.contains("ratings") ? "Ratings" : "Radar"   // test builds: `-route tab:profile:ratings`
 
     var body: some View {
         let sp = store.spider

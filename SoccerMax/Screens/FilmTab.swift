@@ -24,7 +24,8 @@ struct ClipFile: Transferable {
 struct FilmTab: View {
     @Environment(AppStore.self) private var store
     @State private var lab = Lab.shared
-    @State private var adding = false
+    // test builds: `-route tab:film:review` / `:questions` / `:result` open the review sheet on that step
+    @State private var adding = ["review", "questions", "result"].contains { DebugRoute.parts.contains($0) }
 
     var body: some View {
         NavigationStack {
@@ -178,6 +179,7 @@ struct FilmReviewSheet: View {
         .presentationDetents([.large])
         .presentationBackground(C.char900)
         .interactiveDismissDisabled(stage == .questions)
+        .onAppear { debugSeed() }
         .onChange(of: item) { _, new in
             guard let new else { return }
             loading = true
@@ -423,6 +425,29 @@ struct FilmReviewSheet: View {
     private func cancel() {
         if let c = clip { try? FileManager.default.removeItem(at: FilmFiles.url(c)) }
         dismiss()
+    }
+
+    /// Test builds only (`-route tab:film:questions` / `:result`): jump to a later step with made-up answers, for
+    /// screenshots. Nothing is saved.
+    private func debugSeed() {
+        #if DEBUG
+        let r = DebugRoute.parts
+        guard stage == .setup, moments.isEmpty, r.contains("questions") || r.contains("result") else { return }
+        let list = Array(FilmGuide.list(position: position).prefix(2))
+        moments = Set(list.map(\.id))
+        for m in list { asked[m.id] = FilmGuide.ask(m) }
+        title = "Saturday game, second half"
+        let qs = list.flatMap { asked[$0.id] ?? [] }
+        if r.contains("questions") {
+            for (i, q) in qs.prefix(3).enumerated() { answers[q.id] = i != 1 }
+            stage = .questions
+        } else {
+            for (i, q) in qs.enumerated() { answers[q.id] = i < 2 ? q.problemIs : !q.problemIs }
+            let found = FilmGuide.mistakes(asked: qs, answers: answers)
+            saved = FilmReview(title: title, mistakes: found, note: "", clip: nil, drills: FilmRules.drills(for: found))
+            stage = .result
+        }
+        #endif
     }
 }
 

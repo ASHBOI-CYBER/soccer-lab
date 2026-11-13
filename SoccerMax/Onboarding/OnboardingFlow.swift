@@ -107,7 +107,7 @@ struct OnboardingFlow: View {
         case .welcome: Welcome(ctx: ctx)
         case .name: NameStep(ctx: ctx)
         case .position: PositionStep(ctx: ctx)
-        case .gender: PickStep(ctx: ctx, title: "Nice to meet you, \(n)! Are you a…", options: ["Male", "Female", "Prefer not to say"], key: \.gender)
+        case .gender: PickStep(ctx: ctx, title: "Tell us about you, \(n)", options: ["Male", "Female", "Prefer not to say"], key: \.gender)
         case .foot: PickStep(ctx: ctx, title: "Which is your strong foot?", options: ["Right", "Left", "Both"], key: \.foot)
         case .wants: WantsStep(ctx: ctx)
         case .source: PickStep(ctx: ctx, title: "Where did you find us?", options: ["TikTok", "Instagram", "YouTube", "A friend", "App Store", "Other"], key: \.source,
@@ -312,7 +312,7 @@ struct SignBackInSheet: View {
         VStack(spacing: 18) {
             Disp("WELCOME BACK", size: 34).padding(.top, 26)
             if backup.found == false {
-                Text("No saved player on that account yet. Let's build one!")
+                Text("No saved player on that account yet. Set one up now.")
                     .font(F.round(16, .semibold)).foregroundStyle(C.muted).multilineTextAlignment(.center)
                 Button("BUILD MY PLAYER") { none() }.buttonStyle(.gameLarge)
             } else if team.signedIn && backup.found == nil {
@@ -383,7 +383,7 @@ struct NameStep: View {
 
     var body: some View {
         @Bindable var store = store
-        OBShell(ctx: ctx, title: "Hi! I'm your coach. What's your name?", sub: Text("So your teammates know it's you."),
+        OBShell(ctx: ctx, title: "What's your name?", sub: Text("So your teammates know it's you."),
                 canNext: !store.answers.first.trimmingCharacters(in: .whitespaces).isEmpty) {
             VStack(spacing: 14) {
                 // Last name back (user, 2026-11-08) but OPTIONAL: only the first name unlocks CONTINUE ? on launch night
@@ -555,7 +555,7 @@ struct JoinTeamStep: View {
 
     var body: some View {
         let any = where_.allowed || book.allowed || team.pendingCode != nil
-        OBShell(ctx: ctx, title: "Let's get you on a team, \(store.answers.firstName)!",
+        OBShell(ctx: ctx, title: "Join a team, \(store.answers.firstName)",
                 sub: Text("Pick any of these. You can always do them later."),
                 cta: any ? "CONTINUE" : "SKIP FOR NOW") {
             VStack(spacing: 12) {

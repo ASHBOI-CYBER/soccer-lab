@@ -65,6 +65,10 @@ jobs:
           xcrun simctl status_bar "$UDID" override --time "9:41" --batteryState charged --batteryLevel 100 --cellularBars 4 --wifiBars 3 || true
           xcrun simctl ui "$UDID" appearance dark || true
           xcrun simctl install "$UDID" build/Build/Products/Debug-iphonesimulator/SoccerMax.app
+          # the live run screen: location allowed up front (no system question over the screenshot) and a moving test route
+          BUNDLE=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" build/Build/Products/Debug-iphonesimulator/SoccerMax.app/Info.plist)
+          xcrun simctl privacy "$UDID" grant location "$BUNDLE" || true
+          xcrun simctl location "$UDID" run "City Run" || xcrun simctl location "$UDID" set 51.5560,-0.2796 || true
 
       - name: Take the screenshots
         env:
@@ -80,7 +84,8 @@ jobs:
             # each screen starts from a clean launch; the photo prompt is switched off so it doesn't cover the screen
             xcrun simctl terminate "$UDID" "$BUNDLE" 2>/dev/null || true
             xcrun simctl launch "$UDID" "$BUNDLE" -route "$route" -sm.photo.asked YES -sm.photo.opens 0 >/dev/null
-            sleep 7
+            # the live run needs longer: the GPS has to find itself and cover some ground
+            case "$route" in *:run) sleep 25 ;; *) sleep 7 ;; esac
             xcrun simctl io "$UDID" screenshot "shots/$name.png" >/dev/null 2>&1 && echo "captured $name ($route)" || echo "FAILED $name ($route)"
           done
           ls -la shots

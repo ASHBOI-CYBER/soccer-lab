@@ -10,19 +10,20 @@ import WidgetKit
 enum W {
     static let brand = Color(hex: 0x1E78FF)
     static let brandHi = Color(hex: 0x7DB8FF)
-    static let char950 = Color(hex: 0x050A18)
-    static let char900 = Color(hex: 0x081022)
-    static let char850 = Color(hex: 0x0B1530)
-    static let char700 = Color(hex: 0x1A2A52)
-    static let creme = Color(hex: 0xF2F6FF)
-    static let creme2 = Color(hex: 0xC9D4EA)
-    static let muted = Color(hex: 0x8493B0)
+    static let char950 = Color(hex: 0x000000)
+    static let char900 = Color(hex: 0x000000)
+    static let char850 = Color(hex: 0x0E1015)
+    static let char700 = Color(hex: 0x20232C)
+    static let creme = Color(hex: 0xF5F7FA)
+    static let creme2 = Color(hex: 0xC4C9D4)
+    static let muted = Color(hex: 0x808797)
     static let gold = Color(hex: 0xFFC531)
     static let goldHi = Color(hex: 0xFFE48A)
     static let ember = Color(hex: 0xFF7A1A)
 
-    static func display(_ size: CGFloat) -> Font { .custom("LuckiestGuy-Regular", size: size) }
-    static func round(_ size: CGFloat) -> Font { .custom("Fredoka-Bold", size: size) }
+    // system type, like the app since 2026-11-13 (the cartoon faces are gone)
+    static func display(_ size: CGFloat) -> Font { .system(size: size * 0.82, weight: .bold) }
+    static func round(_ size: CGFloat) -> Font { .system(size: size, weight: .semibold) }
 
     static func registerFonts() {
         for f in ["LuckiestGuy-Regular", "Fredoka-Bold"] {
@@ -418,7 +419,7 @@ struct ConsistencyWidget: Widget {
     var body: some WidgetConfiguration {
         StaticConfiguration(kind: "consistency", provider: Provider()) { ConsistencyView(entry: $0) }
             .configurationDisplayName("Consistency")
-            .description("A square for every day. Green means you trained.")
+            .description("A square for every day. Blue means you trained.")
             .supportedFamilies([.systemSmall, .systemMedium])
     }
 }

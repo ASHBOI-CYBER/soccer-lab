@@ -9,7 +9,8 @@ struct NutritionTab: View {
     @State private var editingBody = false
     /// The day being looked at ("Mon"..."Sun" of this week); today when the tab opens.
     @State private var day = todayKey()
-    @State private var planCategory = MealPlan.categories[0]
+    // test builds: `-route tab:nutrition:snacks:bottom` opens on that category
+    @State private var planCategory = MealPlan.categories.first { DebugRoute.parts.contains($0.lowercased()) } ?? MealPlan.categories[0]
 
     private var key: String { dateKey(dateOf(day)) }
     private var isToday: Bool { day == todayKey() }

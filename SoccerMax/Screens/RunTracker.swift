@@ -178,7 +178,8 @@ struct RunView: View {
     @Environment(\.openURL) private var openURL
     @State private var run = RunTracker.shared
     @State private var camera: MapCameraPosition = .userLocation(fallback: .automatic)
-    @State private var done: RunLog?
+    // test builds: `-route tab:training:runsaved` shows the summary with a made-up run (nothing is saved)
+    @State private var done: RunLog? = DebugRoute.parts.contains("runsaved") ? RunLog(meters: 5230, seconds: 1684, topSpeed: 6.4) : nil
     @State private var confirmEnd = false
 
     var body: some View {

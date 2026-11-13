@@ -524,6 +524,8 @@ enum ChartRange: String, CaseIterable, Identifiable {
     case thisWeek = "THIS WEEK", lastWeek = "LAST WEEK", thisMonth = "THIS MONTH", lastMonth = "LAST MONTH"
     var id: String { rawValue }
     var isMonth: Bool { self == .thisMonth || self == .lastMonth }
+    /// "This week"
+    var title: String { let s = rawValue.lowercased(); return s.prefix(1).uppercased() + s.dropFirst() }
 }
 
 /// Training minutes only, for the picked time frame. No card, no border.
@@ -543,24 +545,33 @@ struct TrainingChart: View {
         let gap: CGFloat = range.isMonth ? 3 : 10
         let h: CGFloat = 150
         let picked = sel.flatMap { days.indices.contains($0) ? days[$0] : nil }
+        let sub: String = picked.map { $0.date.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()) + " \u{00B7} " + minText($0.train) }
+            ?? (minText(total) + " in total")
         VStack(alignment: .leading, spacing: 14) {
             HStack(alignment: .center) {
-                Menu {
-                    Picker("Time frame", selection: $range) {
-                        ForEach(ChartRange.allCases) { Text($0.rawValue.capitalized).tag($0) }
-                    }
-                } label: { GlassMenuLabel(text: range.rawValue) }
-                .menuStyle(.button).buttonStyle(.plain)
-                Spacer(minLength: 8)
                 // the total, or the day under your finger
-                VStack(alignment: .trailing, spacing: 0) {
-                    Text(minText(picked?.train ?? total).uppercased())
-                        .font(F.display(picked == nil ? 17 : 22)).foregroundStyle(picked == nil ? C.creme : C.brand)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Training").font(.system(size: 18, weight: .bold)).foregroundStyle(C.creme)
+                    Text(sub)
+                        .font(F.round(13, .semibold)).foregroundStyle(picked == nil ? C.muted : C.brandHi)
                         .contentTransition(.numericText())
-                    Text(picked.map { $0.date.formatted(.dateTime.weekday(.abbreviated).month(.abbreviated).day()).uppercased() } ?? "TRAINING")
-                        .font(F.round(12, .bold)).kerning(1).foregroundStyle(C.muted)
                 }
                 .animation(.snappy(duration: 0.18), value: sel)
+                Spacer(minLength: 8)
+                Menu {
+                    Picker("Time frame", selection: $range) {
+                        ForEach(ChartRange.allCases) { Text($0.title).tag($0) }
+                    }
+                } label: {
+                    HStack(spacing: 6) {
+                        Text(range.title).font(F.round(14, .semibold)).foregroundStyle(C.creme)
+                        Image(systemName: "chevron.down").font(.system(size: 11, weight: .bold)).foregroundStyle(C.muted)
+                    }
+                    .padding(.horizontal, 12).frame(height: 34)
+                    .background(Capsule().fill(C.char700))
+                    .contentShape(Capsule())
+                }
+                .menuStyle(.button).buttonStyle(.plain)
             }
             HStack(alignment: .bottom, spacing: gap) {
                 ForEach(Array(days.enumerated()), id: \.element.date) { i, d in
@@ -569,7 +580,7 @@ struct TrainingChart: View {
                     let r: CGFloat = range.isMonth ? 3 : 9
                     VStack(spacing: 6) {
                         if !range.isMonth {
-                            Text(d.train > 0 ? "\(Int(d.train.rounded()))" : " ").font(F.display(13))
+                            Text(d.train > 0 ? "\(Int(d.train.rounded()))" : " ").font(F.round(12, .semibold))
                                 .foregroundStyle(sel == i ? C.creme : C.creme2)
                         }
                         ZStack(alignment: .bottom) {
@@ -608,7 +619,7 @@ struct TrainingChart: View {
                 if total == 0 {
                     VStack(spacing: 8) {
                         Image(systemName: "soccerball").font(.system(size: 26, weight: .bold)).foregroundStyle(C.muted.opacity(0.6))
-                        Text("Nothing logged \(range.rawValue.lowercased())").font(F.round(16, .bold)).foregroundStyle(C.muted)
+                        Text("Nothing logged \(range.rawValue.lowercased())").font(F.round(15, .semibold)).foregroundStyle(C.muted)
                     }
                     .padding(.bottom, 24)
                     .allowsHitTesting(false)
@@ -636,6 +647,7 @@ struct TrainingChart: View {
 
             if let i = sel, let d = picked { DaySessions(date: d.date, minutes: d.train).id(i) }
         }
+        .gameCard(padding: 16, radius: 18)   // a card like the others on Profile (2026-11-13)
         .onAppear { withAnimation(.spring(response: 0.6, dampingFraction: 0.75)) { grow = 1 } }
         .onChange(of: range) { _, _ in
             sel = nil

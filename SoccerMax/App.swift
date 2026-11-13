@@ -200,6 +200,7 @@ struct MainTabs: View {
         // a code from a link (team invite, gift, creator) opens the Team page, which has the code box
         .onChange(of: Team.shared.pendingCode) { _, c in if c != nil { Nav.shared.team = true } }
         .onAppear { if Team.shared.pendingCode != nil { Nav.shared.team = true } }
+        .onAppear { if DebugRoute.parts.first == "team" { Nav.shared.team = true } }   // test builds: `-route team` / `team:demo`
         // TEAM lives behind Profile now: chat, leaderboard, invites and the code box, full screen with a Close bar
         .fullScreenCover(isPresented: Binding(get: { Nav.shared.team }, set: { Nav.shared.team = $0 })) {
             TeamTab()

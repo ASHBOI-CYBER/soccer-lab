@@ -9,7 +9,17 @@ struct TrainingTab: View {
     @State private var lab = Lab.shared
     /// The day whose session is showing ("Mon"..."Sun"); today when the tab opens.
     @State private var day = todayKey()
-    @State private var running = false
+    // test builds: `-route tab:training:run` opens the live run, `:runsaved` its summary
+    @State private var running = DebugRoute.parts.contains("run") || DebugRoute.parts.contains("runsaved")
+    // test builds: `:drills` opens the drill library, `:drill` the first drill's page, `:session` the first ready-made session
+    @State private var path: NavigationPath = {
+        var p = NavigationPath()
+        let r = DebugRoute.parts
+        if r.contains("drills") { p.append(LabRoute.drills) }
+        if r.contains("drill"), let d = Library.shared.drills.first { p.append(d) }
+        if r.contains("session"), let s = (Library.shared.technique + Library.shared.hybrid + Library.shared.workouts).first { p.append(s) }
+        return p
+    }()
 
     private var date: Date { dateOf(day) }
     private var isToday: Bool { day == todayKey() }
@@ -18,7 +28,7 @@ struct TrainingTab: View {
     private var sessions: [ProSession] { Library.shared.technique + Library.shared.hybrid + Library.shared.workouts }
 
     var body: some View {
-        NavigationStack {
+        NavigationStack(path: $path) {
             ScrollView {
                 VStack(alignment: .leading, spacing: 26) {
                     TabHeader("Training")
@@ -26,6 +36,7 @@ struct TrainingTab: View {
                     session
                     if !fixes.isEmpty { fixList }
                     runCard
+                    library
                     readyMade
                     free
                 }
@@ -36,6 +47,7 @@ struct TrainingTab: View {
             .tabRoot("Training")
             .navigationDestination(for: Drill.self) { DrillDetail(drill: $0) }
             .navigationDestination(for: ProSession.self) { LabSessionPage(session: $0) }
+            .navigationDestination(for: LabRoute.self) { _ in LabDrillLibrary() }
             // a session tapped on Profile's graph opens here
             .navigationDestination(item: Binding(get: { Nav.shared.log }, set: { Nav.shared.log = $0 })) { LoggedDetail(c: $0) }
             .page()
@@ -182,6 +194,33 @@ struct TrainingTab: View {
                     }
                 }
             }
+        }
+    }
+
+    // MARK: drill library
+
+    private var library: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            LabKicker("ALL DRILLS")
+            NavigationLink(value: LabRoute.drills) {
+                HStack(spacing: 12) {
+                    Image(systemName: "square.grid.2x2.fill")
+                        .font(.system(size: 18, weight: .bold)).foregroundStyle(.white)
+                        .frame(width: 44, height: 44)
+                        .background(Circle().fill(C.brand))
+                    VStack(alignment: .leading, spacing: 2) {
+                        Text("Drill library").font(F.round(17, .bold)).foregroundStyle(C.creme)
+                        Text("\(Library.shared.drills.count) drills, sorted by skill")
+                            .font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                    }
+                    Spacer(minLength: 0)
+                    Image(systemName: "chevron.right").font(.system(size: 13, weight: .heavy)).foregroundStyle(C.muted)
+                }
+                .padding(12)
+                .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.char800)
+                    .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(C.line, lineWidth: 1)))
+            }
+            .buttonStyle(.plain)
         }
     }
 
