@@ -1,0 +1,73 @@
+<!doctype html>
+<!-- JOIN WITH A CODE (2026-11-14). Every code link lands here: a creator's link, a team invite, a gift.
+     /join/123456 is served by this page (see _redirects). It shows the code big, with a Copy button and the App Store
+     button; in the app the player types it under "I have a code" (first screen) or "Have a code?" (paywall). -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Your Soccer Lab code</title>
+<style>
+  :root { --bg: #000; --card: #0E1015; --line: #20232C; --text: #F5F7FA; --muted: #9AA1B0; --brand: #1E78FF; --hi: #7DB8FF; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.55 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         background-image: radial-gradient(640px 360px at 50% -120px, #0F3A8A, transparent); background-repeat: no-repeat; }
+  main { max-width: 520px; margin: 0 auto; padding: 48px 16px; text-align: center; }
+  .brand { font-weight: 800; letter-spacing: .08em; font-size: 22px; }
+  .brand span { color: var(--brand); }
+  h1 { font-size: 26px; margin: 28px 0 6px; }
+  .sub { color: var(--muted); margin: 0 0 22px; }
+  .code { background: var(--card); border: 1px solid var(--line); border-radius: 20px; padding: 20px; margin-bottom: 14px; }
+  .digits { font-size: 44px; font-weight: 800; letter-spacing: .18em; font-variant-numeric: tabular-nums; margin: 4px 0 12px; }
+  button, .btn { display: inline-block; border: 0; cursor: pointer; font: inherit; font-weight: 700; text-decoration: none; border-radius: 999px; padding: 13px 24px; }
+  button { background: #1B1F29; color: var(--text); }
+  .btn { background: var(--brand); color: #fff; box-shadow: 0 0 28px rgba(30,120,255,.45); margin-top: 8px; }
+  button:focus-visible, .btn:focus-visible { outline: 3px solid var(--hi); outline-offset: 3px; }
+  ol { text-align: left; color: #D9DEE7; background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px 16px 16px 38px; margin: 22px 0; }
+  li { margin: 6px 0; }
+  .muted { color: var(--muted); font-size: 14px; }
+  [hidden] { display: none !important; }
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">SOCCER <span>LAB</span></div>
+  <div id="has" hidden>
+    <h1>You've got a code</h1>
+    <p class="sub">Use it when you open Soccer Lab.</p>
+    <div class="code">
+      <div class="muted">Your code</div>
+      <div class="digits" id="digits"></div>
+      <button type="button" id="copy">Copy code</button>
+    </div>
+    <a class="btn" href="https://apps.apple.com/app/id6814847450">Get Soccer Lab on the App Store</a>
+    <ol>
+      <li>Install Soccer Lab and open it.</li>
+      <li>On the first screen, tap <b>I have a code</b>. (Already set up? Use <b>Have a code?</b> on the plans screen, or <b>My team</b> on your profile.)</li>
+      <li>Type the code above.</li>
+    </ol>
+  </div>
+  <div id="none" hidden>
+    <h1>No code in this link</h1>
+    <p class="sub">Ask the person who sent it for their 6-digit code.</p>
+    <a class="btn" href="https://apps.apple.com/app/id6814847450">Get Soccer Lab on the App Store</a>
+  </div>
+  <p class="muted" style="margin-top:28px"><a href="/privacy" style="color:var(--hi)">Privacy policy</a></p>
+</main>
+<script>
+  // the code is the last part of the address: /join/123456
+  const m = location.pathname.match(/(\d{6})\/?$/);
+  if (m) {
+    document.getElementById("digits").textContent = m[1];
+    document.getElementById("has").hidden = false;
+    document.getElementById("copy").addEventListener("click", async (e) => {
+      try { await navigator.clipboard.writeText(m[1]); e.target.textContent = "Copied"; }
+      catch { e.target.textContent = m[1]; }
+    });
+  } else {
+    document.getElementById("none").hidden = false;
+  }
+</script>
+</body>
+</html>

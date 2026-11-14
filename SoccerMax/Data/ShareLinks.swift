@@ -8,7 +8,7 @@ import SwiftUI
 import UIKit
 
 enum ShareLinks {
-    static let site = "https://soccermax.app"
+    static let site = "https://glittery-banoffee-bbbd05.netlify.app"
     private static let key = "sm-share-1"
     @MainActor private static var made: [String: URL] = [:]
     /// What each made link is (gift · invite · session · film), so the Share sheet can report it.

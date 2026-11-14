@@ -1,0 +1,3 @@
+# Netlify: every code link (/join/123456) shows join.html; other share links go to the front page for now.
+/join/*      /join.html    200
+/s/*         /index.html   200
