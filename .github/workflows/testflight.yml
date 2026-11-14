@@ -50,7 +50,9 @@ jobs:
           UNSPLASH_ACCESS_KEY: ${{ secrets.UNSPLASH_ACCESS_KEY }}
         run: |
           mkdir -p "$RUNNER_TEMP/keys"
-          printf '%s\n' "$P8" > "$RUNNER_TEMP/keys/AuthKey_$ID.p8"
+          # clean up what pasting can add: Windows line ends, a byte-order mark, spaces around lines, blank lines
+          printf '%s\n' "$P8" | tr -d '\r' | sed -e '1s/^\xEF\xBB\xBF//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' | grep -v '^$' > "$RUNNER_TEMP/keys/AuthKey_$ID.p8"
+          echo "key file: $(wc -l < "$RUNNER_TEMP/keys/AuthKey_$ID.p8") lines, first: $(head -1 "$RUNNER_TEMP/keys/AuthKey_$ID.p8"), last: $(tail -1 "$RUNNER_TEMP/keys/AuthKey_$ID.p8")"
           {
             echo "REVENUECAT_API_KEY = $REVENUECAT_API_KEY"
             echo "POSTHOG_PROJECT_TOKEN = $POSTHOG_PROJECT_TOKEN"
@@ -74,6 +76,30 @@ jobs:
           EOF
           # every upload needs a build number Apple hasn't seen: 7 + this workflow's run number
           echo "BUILD=$((7 + ${{ github.run_number }}))" >> "$GITHUB_ENV"
+
+      - name: Check the key works with Apple
+        env:
+          ID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+        run: |
+          python3 -m pip install --quiet --break-system-packages pyjwt cryptography 2>/dev/null || python3 -m pip install --quiet pyjwt cryptography
+          python3 - <<'PY'
+          import os, time, jwt, urllib.request, urllib.error
+          kid, iss = os.environ["ID"], os.environ["ISS"]
+          print("key id:", len(kid), "characters", "(has spaces!)" if kid != kid.strip() else "")
+          print("issuer id:", len(iss), "characters", "(has spaces!)" if iss != iss.strip() else "")
+          key = open(os.path.join(os.environ["RUNNER_TEMP"], "keys", "AuthKey_" + kid + ".p8")).read()
+          now = int(time.time())
+          tok = jwt.encode({"iss": iss.strip(), "iat": now, "exp": now + 600, "aud": "appstoreconnect-v1"}, key,
+                           algorithm="ES256", headers={"kid": kid.strip(), "typ": "JWT"})
+          req = urllib.request.Request("https://api.appstoreconnect.apple.com/v1/apps?limit=1", headers={"Authorization": "Bearer " + tok})
+          try:
+              r = urllib.request.urlopen(req, timeout=30)
+              print("Apple accepted the key:", r.status)
+          except urllib.error.HTTPError as e:
+              print("Apple refused the key:", e.code, e.read().decode()[:600])
+              raise SystemExit(1)
+          PY
 
       - name: Archive
         env:
