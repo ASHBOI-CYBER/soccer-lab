@@ -49,7 +49,7 @@ enum Legal {
     /// Support email shown in the app. CHANGE before release to an inbox someone reads (see site/privacy.html too).
     static let supportEmail = "asherk348@gmail.com"
     static let terms = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
-    static let privacy = URL(string: "https://soccermax.app/privacy")!
+    static let privacy = URL(string: "https://glittery-banoffee-bbbd05.netlify.app/privacy")!
 }
 
 @MainActor @Observable
