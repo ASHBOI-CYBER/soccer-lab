@@ -2,20 +2,29 @@
 // summary of the player (position, today's session, fix list, food so far); this asks Claude Haiku 5.5 and sends
 // the reply back. The Anthropic key lives only here, as a secret, never in the app.
 //
-// Who may call it: signed-in players only (their Supabase token is checked below), at most DAILY_LIMIT messages a
-// day each (counted in the database by public.coach_take, so the bill has a ceiling).
+// Who may call it: signed-in players only (their Supabase token is checked below), with a daily allowance counted in
+// the database by public.coach_take, so the bill has a ceiling:
+//   - paying subscribers: PAID_LIMIT a day;
+//   - on a free trial or intro offer, or in the first 7 days after their first purchase: TRIAL_LIMIT a day;
+//   - everyone else (and everyone while RevenueCat isn't connected, i.e. while the app is free): COACH_FREE_LIMIT,
+//     default TRIAL_LIMIT. Set it to 0 once the paywall is on if Coach should be for subscribers only.
+// Who has paid is read from RevenueCat (the app logs in to RevenueCat with the Supabase user id).
 //
 // Deploy (JWT is checked in the code, so the gateway check is off):
 //   supabase functions deploy coach --no-verify-jwt
 //   supabase secrets set ANTHROPIC_API_KEY=<key from console.anthropic.com>
+//   supabase secrets set RC_SECRET_KEY=<RevenueCat secret API key, sk_...>      (optional until payments are on)
 import Anthropic from "npm:@anthropic-ai/sdk@1.8.0";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const MODEL = "claude-haiku-5-5";
-const DAILY_LIMIT = 30;
+const PAID_LIMIT = 80;
+const TRIAL_LIMIT = 20;
+const ENTITLEMENT = "soccer_max_pro";
+const FIRST_WEEK_MS = 7 * 24 * 3600 * 1000;
 const MAX_TURNS = 16;          // earlier messages are dropped; the app keeps its own full copy
 const MAX_TEXT = 1500;         // characters per message
-const MAX_CONTEXT = 4000;      // characters of player summary
+const MAX_CONTEXT = 8000;      // characters of player summary (it includes the app's drill list)
 
 const SYSTEM = `You are Coach, the training assistant inside Soccer Lab, an app for soccer players who train on their own.
 
@@ -62,6 +71,35 @@ function clean(raw: unknown): Turn[] | null {
   return turns;
 }
 
+/** Today's allowance for this player, from their RevenueCat subscription. */
+async function dailyLimit(uid: string): Promise<number> {
+  const freeEnv = Deno.env.get("COACH_FREE_LIMIT");
+  const free = freeEnv !== undefined && freeEnv !== "" && Number.isFinite(Number(freeEnv)) ? Math.max(0, Number(freeEnv)) : TRIAL_LIMIT;
+  const key = Deno.env.get("RC_SECRET_KEY");
+  if (!key) return free;
+  try {
+    const r = await fetch(`https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(uid)}`, {
+      headers: { Authorization: `Bearer ${key}` },
+      signal: AbortSignal.timeout(5000),
+    });
+    if (!r.ok) {
+      console.error("coach: RevenueCat answered", r.status);
+      return TRIAL_LIMIT;   // can't tell: the smaller paid allowance, never nothing
+    }
+    const sub = (await r.json())?.subscriber ?? {};
+    const ent = sub.entitlements?.[ENTITLEMENT];
+    const now = Date.now();
+    if (!ent || (ent.expires_date && Date.parse(ent.expires_date) <= now)) return free;
+    const s = sub.subscriptions?.[ent.product_identifier] ?? {};
+    const first = Date.parse(s.original_purchase_date ?? ent.purchase_date ?? "");
+    const trial = s.period_type === "trial" || s.period_type === "intro" || (Number.isFinite(first) && now - first < FIRST_WEEK_MS);
+    return trial ? TRIAL_LIMIT : PAID_LIMIT;
+  } catch (e) {
+    console.error("coach: RevenueCat check failed", e);
+    return TRIAL_LIMIT;
+  }
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") return new Response("ok", { headers: cors });
   if (req.method !== "POST") return reply({ error: "no" }, 405);
@@ -89,13 +127,15 @@ Deno.serve(async (req) => {
   const context = typeof body.context === "string" ? body.context.slice(0, MAX_CONTEXT) : "";
 
   // one message off today's allowance (runs as the player, so it can only count their own)
-  const { data: left, error: limitErr } = await db.rpc("coach_take", { p_limit: DAILY_LIMIT });
+  const limit = await dailyLimit(who.user.id);
+  if (limit < 1) return reply({ error: "Coach is part of Soccer Lab Pro.", remaining: 0 }, 403);
+  const { data: left, error: limitErr } = await db.rpc("coach_take", { p_limit: limit });
   if (limitErr) {
     console.error("coach_take failed", limitErr.message);
     return reply({ error: "Coach is busy. Try again in a minute." }, 500);
   }
   if (typeof left !== "number" || left < 0) {
-    return reply({ error: `That's your ${DAILY_LIMIT} messages for today. Coach is back tomorrow.`, remaining: 0 }, 429);
+    return reply({ error: `That's your ${limit} messages for today. Coach is back tomorrow.`, remaining: 0 }, 429);
   }
 
   const client = new Anthropic({ apiKey: key, maxRetries: 2, timeout: 60_000 });
