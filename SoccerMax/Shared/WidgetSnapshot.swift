@@ -20,7 +20,7 @@ struct WidgetSnapshot: Codable {
     var match: Match?
     var updated = Date()
 
-    static let group = "group.com.jacksteiner.soccermax"
+    static let group = "group.com.skillerai.ios"
     static var folder: URL? { FileManager.default.containerURL(forSecurityApplicationGroupIdentifier: group) }
     static var file: URL? { folder?.appendingPathComponent("widget.json") }
     static func crest(_ side: String) -> URL? { folder?.appendingPathComponent("crest-\(side).png") }

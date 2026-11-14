@@ -58,8 +58,8 @@ final class SceneDelegate: NSObject, UIWindowSceneDelegate {
 @MainActor @Observable
 final class QuickActions {
     static let shared = QuickActions()
-    static let stay = "com.jacksteiner.soccermax.stay"
-    static let why = "com.jacksteiner.soccermax.why"
+    static let stay = "com.skillerai.ios.stay"
+    static let why = "com.skillerai.ios.why"
     /// How long the 40% OFF lasts once opened.
     static let window: TimeInterval = 10 * 60
     private static let startKey = "sm.offer40.start"

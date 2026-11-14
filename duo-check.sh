@@ -11,7 +11,7 @@ APP=build/Build/Products/Debug-iphonesimulator/SoccerMax.app
 xcrun simctl install $SIM $APP
 xcrun simctl status_bar $SIM override --time 9:41 --batteryState charged --batteryLevel 100 2>/dev/null || true
 for r in ob:welcome ob:name ob:paywall tab:sessions tab:matchday tab:team tab:stats tab:profile launch40 stay; do
-  xcrun simctl launch --terminate-running-process $SIM com.jacksteiner.soccermax -route "$r" >/dev/null
+  xcrun simctl launch --terminate-running-process $SIM com.skillerai.ios -route "$r" >/dev/null
   sleep 9
   # the Duo has 2 screens: 1 = outer (closed), 3 = inner (open) ? the one that's off comes out black
   xcrun simctl io $SIM screenshot --display=1 "$OUT/${r/:/-}-outer.png" >/dev/null 2>&1 || true

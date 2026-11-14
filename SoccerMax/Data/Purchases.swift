@@ -15,20 +15,20 @@ import SwiftUI
 private typealias RC = RevenueCat.Purchases
 
 enum PayID {
-    static let monthly = "com.jacksteiner.soccermax.monthly"
-    static let yearly = "com.jacksteiner.soccermax.yearly"
-    static let lifetime = "com.jacksteiner.soccermax.lifetime"
+    static let monthly = "com.skillerai.ios.monthly"
+    static let yearly = "com.skillerai.ios.annual"   // Skiller AI's existing yearly plan
+    static let lifetime = "com.skillerai.ios.lifetime"
     /// The same $29.99 yearly with NO free week ? sold to anyone who already had their one free week (2026-10-29).
-    static let yearlyNoTrial = "com.jacksteiner.soccermax.yearly.notrial"
+    static let yearlyNoTrial = "com.skillerai.ios.yearly.notrial"
     /// "WAIT, DON'T DELETE ME" (Screens/StayOffer.swift): the same yearly at 50% off, $14.99 a year, no trial ? only
     /// offered from the long-press menu to people on their way out.
-    static let stay = "com.jacksteiner.soccermax.yearly.stay"
+    static let stay = "com.skillerai.ios.yearly.stay"
     /// The 40% OFF offer (2026-10-30, Screens/StayOffer.swift): every plan 40% off ? $5.99/mo · $17.99/yr (no trial) ·
     /// $23.99 lifetime. Only sold from the long-press "WAIT, DON'T DELETE ME!" page, during its one 10-minute window.
     /// (The 50% `stay` plan is retired from the UI; kept here so anyone who bought it still has access.)
-    static let monthlyOff = "com.jacksteiner.soccermax.monthly.off40"
-    static let yearlyOff = "com.jacksteiner.soccermax.yearly.off40"
-    static let lifetimeOff = "com.jacksteiner.soccermax.lifetime.off40"
+    static let monthlyOff = "com.skillerai.ios.monthly.off40"
+    static let yearlyOff = "com.skillerai.ios.yearly.off40"
+    static let lifetimeOff = "com.skillerai.ios.lifetime.off40"
     static let all = [yearly, monthly, lifetime, yearlyNoTrial, stay, monthlyOff, yearlyOff, lifetimeOff]
     /// The RevenueCat entitlement every product above unlocks (attach ALL of them to it in the dashboard).
     static let entitlement = "soccer_max_pro"

@@ -10,6 +10,6 @@ xcodebuild -project SoccerMax.xcodeproj -scheme SoccerMax -destination "id=$SIM"
 xcrun simctl install "$SIM" build/Build/Products/Debug-iphonesimulator/SoccerMax.app
 pkill -f "simctl launch --console-pty $SIM" 2>/dev/null || true
 if [ -n "$ROUTE" ]; then ARGS=(-route "$ROUTE"); else ARGS=(-route ""); fi
-nohup xcrun simctl launch --console-pty "$SIM" com.jacksteiner.soccermax --terminate-running-process "${ARGS[@]}" > build/console.log 2>&1 &
+nohup xcrun simctl launch --console-pty "$SIM" com.skillerai.ios --terminate-running-process "${ARGS[@]}" > build/console.log 2>&1 &
 sleep 4
 echo "launched ${ROUTE:-home}"

@@ -13,7 +13,7 @@
           "locale": "en_US"
         }
       ],
-      "productID": "com.jacksteiner.soccermax.lifetime",
+      "productID": "com.skillerai.ios.lifetime",
       "referenceName": "Lifetime",
       "type": "NonConsumable"
     },
@@ -28,14 +28,14 @@
           "locale": "en_US"
         }
       ],
-      "productID": "com.jacksteiner.soccermax.lifetime.off40",
+      "productID": "com.skillerai.ios.lifetime.off40",
       "referenceName": "Lifetime (40% off)",
       "type": "NonConsumable"
     }
   ],
   "settings": {
     "_applicationInternalID": "6754000000",
-    "_developerTeamID": "M9YGAL979V",
+    "_developerTeamID": "DMBB7V39Y5",
     "_failTransactionsEnabled": false,
     "_locale": "en_US",
     "_storefront": "USA",
@@ -66,7 +66,7 @@
               "locale": "en_US"
             }
           ],
-          "productID": "com.jacksteiner.soccermax.yearly",
+          "productID": "com.skillerai.ios.annual",
           "recurringSubscriptionPeriod": "P1Y",
           "referenceName": "Yearly",
           "subscriptionGroupID": "21800001",
@@ -87,7 +87,7 @@
               "locale": "en_US"
             }
           ],
-          "productID": "com.jacksteiner.soccermax.monthly",
+          "productID": "com.skillerai.ios.monthly",
           "recurringSubscriptionPeriod": "P1M",
           "referenceName": "Monthly",
           "subscriptionGroupID": "21800001",
@@ -109,7 +109,7 @@
               "locale": "en_US"
             }
           ],
-          "productID": "com.jacksteiner.soccermax.yearly.notrial",
+          "productID": "com.skillerai.ios.yearly.notrial",
           "recurringSubscriptionPeriod": "P1Y",
           "referenceName": "SOCCER MAX Yearly (no trial)",
           "subscriptionGroupID": "21800001",
@@ -131,7 +131,7 @@
               "locale": "en_US"
             }
           ],
-          "productID": "com.jacksteiner.soccermax.yearly.stay",
+          "productID": "com.skillerai.ios.yearly.stay",
           "recurringSubscriptionPeriod": "P1Y",
           "referenceName": "SOCCER MAX Yearly (stay, 50% off)",
           "subscriptionGroupID": "21800001",
@@ -153,7 +153,7 @@
               "locale": "en_US"
             }
           ],
-          "productID": "com.jacksteiner.soccermax.yearly.off40",
+          "productID": "com.skillerai.ios.yearly.off40",
           "recurringSubscriptionPeriod": "P1Y",
           "referenceName": "SOCCER MAX Yearly (40% off)",
           "subscriptionGroupID": "21800001",
@@ -175,7 +175,7 @@
               "locale": "en_US"
             }
           ],
-          "productID": "com.jacksteiner.soccermax.monthly.off40",
+          "productID": "com.skillerai.ios.monthly.off40",
           "recurringSubscriptionPeriod": "P1M",
           "referenceName": "SOCCER MAX Monthly (40% off)",
           "subscriptionGroupID": "21800001",

@@ -352,7 +352,7 @@ struct SettingsView: View {
                         SettingRow(icon: "person.2.wave.2.fill", title: "Invite a friend") { Chevron(out: true) }
                     }
                     line
-                    Link(destination: URL(string: "https://apps.apple.com/app/id6828180179?action=write-review")!) {
+                    Link(destination: URL(string: "https://apps.apple.com/app/id6814847450?action=write-review")!) {
                         SettingRow(icon: "star.fill", title: "Rate Soccer Lab") { Chevron(out: true) }
                     }
                 }

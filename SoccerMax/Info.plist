@@ -24,7 +24,7 @@
 	<key>CFBundleURLTypes</key>
 	<array>
 		<dict>
-			<key>CFBundleURLName</key><string>com.jacksteiner.soccermax</string>
+			<key>CFBundleURLName</key><string>com.skillerai.ios</string>
 			<key>CFBundleURLSchemes</key><array><string>soccermax</string></array>
 		</dict>
 	</array>
