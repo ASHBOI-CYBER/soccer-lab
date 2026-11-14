@@ -352,7 +352,7 @@ final class Team {
     /// Signed in with Apple (an account on the server). Nothing team-related works before this.
     var signedIn: Bool { api.hasAccount || debugSignedIn }
     /// DEBUG `-route team:in`: look signed in with no team (the join / make page), nothing sent.
-    private let debugSignedIn = DebugRoute.parts.first == "team" && (DebugRoute.parts.contains("in") || DebugRoute.parts.contains("demo"))
+    private let debugSignedIn = ["team", "coach"].contains(DebugRoute.parts.first) && (DebugRoute.parts.contains("in") || DebugRoute.parts.contains("demo"))
 
     /// Sign in with Apple ? a Supabase account. `nonce` = the raw nonce whose SHA-256 went to Apple.
     func signIn(_ result: Result<ASAuthorization, Error>, nonce: String, store: AppStore) async {
@@ -453,6 +453,7 @@ final class Team {
             UserDefaults.standard.removeObject(forKey: k)
         }
         blocked = []; hidden = []
+        Coach.shared.reset()
         signOut()
         Haptics.play(.latch)
         return true

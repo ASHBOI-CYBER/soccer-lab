@@ -150,6 +150,8 @@ enum AppTab: Hashable { case home, training, film, nutrition, profile }
 
 struct MainTabs: View {
     @State private var demoDone = DebugRoute.parts == ["done", "demo"]
+    /// test builds: `-route paywall` shows the paywall over the app (it is off while the app is free)
+    @State private var demoPaywall = DebugRoute.parts.first == "paywall"
     @State private var tab: AppTab = {
         switch DebugRoute.parts.first {
         case "tab": return ["home": .home, "training": .training, "sessions": .training, "film": .film, "nutrition": .nutrition, "stats": .profile, "card": .profile, "profile": .profile][DebugRoute.parts[safe: 1] ?? ""] ?? .training
@@ -196,6 +198,7 @@ struct MainTabs: View {
         .onAppear { LiveRun.endAll() }
         // DEBUG `-route done:demo`: the session-done screen with a level-up, saving nothing
         .fullScreenCover(isPresented: $demoDone) { DemoDone() }
+        .fullScreenCover(isPresented: $demoPaywall) { PaywallGate() }
         .onChange(of: tab) { _, _ in Haptics.play(.stud) }
         // a code from a link (team invite, gift, creator) opens the Team page, which has the code box
         .onChange(of: Team.shared.pendingCode) { _, c in if c != nil { Nav.shared.team = true } }

@@ -165,8 +165,8 @@ struct SoccerMaxPaywall: View {
                      price: pay.price(PayID.yearly), unit: "/yr", sub: "\(pay.yearlyPerMonth)/mo") { pick = PayID.yearly }
             PlanTile(on: pick == PayID.monthly, badge: nil, name: "MONTHLY",
                      price: pay.price(PayID.monthly), unit: "/mo", sub: "Cancel anytime") { pick = PayID.monthly }
-            PlanTile(on: pick == PayID.lifetime, badge: "ONCE", name: "LIFETIME",
-                     price: pay.price(PayID.lifetime), unit: "", sub: "Yours forever") { pick = PayID.lifetime }
+            // no LIFETIME tile (2026-11-14): Skiller AI's listing sells yearly and monthly only. Lifetime code passes
+            // (free-pass links) still work; they never went through this tile.
         }
         .padding(.top, 10)
         .animation(.spring(response: 0.3, dampingFraction: 0.7), value: pick)

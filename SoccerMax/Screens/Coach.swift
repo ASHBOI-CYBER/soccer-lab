@@ -25,6 +25,14 @@ final class Coach {
     private(set) var remaining: Int?
 
     private static let key = "coach.chat.v1"
+    private static let consentKey = "coach.consent.v1"
+
+    /// The player agreed to send their messages and training summary to the AI company (App Store 5.1.2(i)).
+    private(set) var consented = UserDefaults.standard.bool(forKey: "coach.consent.v1")
+    func consent(_ yes: Bool) {
+        consented = yes
+        UserDefaults.standard.set(yes, forKey: Self.consentKey)
+    }
     private static let keep = 60
 
     private init() {
@@ -38,7 +46,7 @@ final class Coach {
 
     /// Ask something new, or with no text, try the last question again.
     func send(_ text: String? = nil, store: AppStore) async {
-        guard !thinking else { return }
+        guard !thinking, consented || DebugRoute.parts.contains("demo") else { return }
         if let t = text?.trimmingCharacters(in: .whitespacesAndNewlines), !t.isEmpty {
             messages.append(CoachMessage(role: "user", text: String(t.prefix(1500))))
         }
@@ -72,6 +80,13 @@ final class Coach {
         save()
     }
 
+    /// Account deleted: the chat and the permission go too.
+    func reset() {
+        clear()
+        consent(false)
+        remaining = nil
+    }
+
     private func save() {
         #if DEBUG
         if DebugRoute.parts.first == "coach" { return }
@@ -86,7 +101,6 @@ final class Coach {
         let lab = Lab.shared
         let lib = Library.shared
         var l: [String] = []
-        l.append("Name: \(a.firstName)")
         l.append("Position: \(a.positionName)")
         if let f = a.foot { l.append("Strong foot: \(f)") }
         if let age = a.age { l.append("Age: \(age)") }
@@ -120,6 +134,10 @@ final class Coach {
         let t = lab.targets
         let kcal = d.entries.reduce(0) { $0 + $1.kcal }
         let protein = Int(d.entries.reduce(0) { $0 + $1.protein }.rounded())
+        // every drill in the app, by skill, so Coach recommends ones the player can open and follow
+        let groups = Dictionary(grouping: lib.drills, by: \.skill)
+        let skills = lib.categories.filter { groups[$0] != nil } + groups.keys.filter { !lib.categories.contains($0) }.sorted()
+        l.append("Drills in the app, by skill: " + skills.map { s in "\(s): " + (groups[s] ?? []).map(\.name).joined(separator: ", ") }.joined(separator: " | "))
         l.append("Food today: \(kcal) of \(t.kcal) kcal, \(protein) of \(t.protein) g protein, water \(d.water) of \(t.water) glasses")
         if !d.entries.isEmpty { l.append("Eaten today: " + d.entries.suffix(8).map(\.name).joined(separator: ", ")) }
         return l.joined(separator: "\n")
@@ -146,7 +164,7 @@ struct CoachView: View {
     @State private var confirmClear = false
     @FocusState private var typing: Bool
 
-    private var canChat: Bool { team.signedIn || DebugRoute.parts.contains("demo") }
+    private var canChat: Bool { (team.signedIn && coach.consented) || DebugRoute.parts.contains("demo") }
 
     private let starters = [
         "What should I train today?",
@@ -219,7 +237,7 @@ struct CoachView: View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 6) {
                 Text("Hi \(store.answers.firstName), ask me anything.").font(.system(size: 22, weight: .bold)).foregroundStyle(C.creme)
-                Text("I know your position, today's session, your Fix List and what you've eaten today, so my answers fit you.")
+                Text("I know your position, today's session, your Fix List and what you've eaten today, so my answers fit you. Ask for a drill and I'll pick from the ones in the app.")
                     .font(F.round(15, .medium)).foregroundStyle(C.muted)
                     .fixedSize(horizontal: false, vertical: true)
             }
@@ -293,7 +311,9 @@ struct CoachView: View {
 
     @ViewBuilder private var bottom: some View {
         VStack(spacing: 8) {
-            if canChat {
+            if team.signedIn && !coach.consented && !DebugRoute.parts.contains("demo") {
+                consentPanel
+            } else if canChat {
                 HStack(alignment: .bottom, spacing: 10) {
                     TextField("", text: $draft, prompt: Text("Ask Coach…").foregroundStyle(C.muted), axis: .vertical)
                         .lineLimit(1...5)
@@ -329,6 +349,24 @@ struct CoachView: View {
         .padding(.horizontal, 16).padding(.top, 10).padding(.bottom, 8)
         .background(C.char900.opacity(0.92).ignoresSafeArea())
         .overlay(alignment: .top) { Rectangle().fill(C.line).frame(height: 1) }
+    }
+
+    /// Asked once, before the first message (App Store 5.1.2(i): say who the data goes to, and get a yes first).
+    private var consentPanel: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            Text("Before you start").font(.system(size: 17, weight: .bold)).foregroundStyle(C.creme)
+            Text("To answer you, Coach sends your messages and a short summary of your training to Anthropic, the company that makes the Claude AI. The summary has your position, age, level, goals, today's session, your Fix List, this week's training and today's food log. Your name, email and videos are not sent.")
+                .font(F.round(14, .medium)).foregroundStyle(C.creme2)
+                .fixedSize(horizontal: false, vertical: true)
+            Link("How your data is used", destination: Legal.privacy)
+                .font(F.round(14, .semibold)).foregroundStyle(C.brandHi)
+            HStack(spacing: 10) {
+                Button("Not now") { dismiss() }
+                    .buttonStyle(.game(.charcoal, height: 48, font: 17))
+                Button("I agree") { coach.consent(true); Haptics.play(.latch) }
+                    .buttonStyle(.game(.brand, height: 48, font: 17))
+            }
+        }
     }
 
     private func ask(_ text: String) {
