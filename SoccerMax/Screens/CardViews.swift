@@ -357,7 +357,7 @@ struct SettingsView: View {
                     }
                 }
                 group("HELP") {
-                    Link(destination: URL(string: "mailto:support@soccermax.app")!) {
+                    Link(destination: URL(string: "mailto:\(Legal.supportEmail)")!) {
                         SettingRow(icon: "envelope.fill", title: "Email support") { Chevron(out: true) }
                     }
                     line
@@ -458,7 +458,7 @@ struct SettingsView: View {
         .alert(deleteResult == true ? "Account deleted" : "Couldn't delete your account",
                isPresented: Binding(get: { deleteResult != nil }, set: { if !$0 { deleteResult = nil } })) { Button("OK") {} } message: {
             Text(deleteResult == true ? "Your account and team data are gone. Don't forget to cancel your subscription in your App Store settings if you have one."
-                 : "Check your signal and try again, or email support@soccermax.app and we'll delete it for you.")
+                 : "Check your signal and try again, or email \(Legal.supportEmail) and we'll delete it for you.")
         }
         .confirmationDialog("Start onboarding again? Your answers are cleared.", isPresented: $confirmReset, titleVisibility: .visible) {
             Button("Start again", role: .destructive) { store.resetOnboarding() }

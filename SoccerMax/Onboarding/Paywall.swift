@@ -75,32 +75,28 @@ struct SoccerMaxPaywall: View {
 
     var body: some View {
         let a = store.answers
-        // ONE screen, no scrolling (user, 2026-10-30): the drills play first and you swipe through them, then the
-        // headline, the plans and a small team-code link; the buy button sits in the dock.
-        GeometryReader { g in
-            let top = g.safeAreaInsets.top
-            VStack(spacing: 0) {
-                PaywallReel(topInset: top)
-                    .frame(height: top + max(200, g.size.height - 324))   // ?54 for the big SEE ALL FEATURES button
-                VStack(spacing: 14) {
-                    headline(a)
-                        .padding(.top, -44)
-                    plans
-                    haveCode
-                }
-                .padding(.horizontal, 16)
-                Spacer(minLength: 0)
+        // v2 (SOCCER LAB, 2026-11-14): black and blue like the rest of the app, and only what the app really has
+        ScrollView {
+            VStack(spacing: 18) {
+                headline(a)
+                features
+                plans
+                haveCode
             }
-            .ignoresSafeArea(edges: .top)
+            .padding(.horizontal, 20)
+            .padding(.top, 12)
+            .padding(.bottom, 12)
         }
+        .scrollIndicators(.hidden)
+        .background(AppBackground())
         .dock {
             VStack(spacing: 8) {
                 Button {
                     Task { if await pay.buy(pick) { finish() } }
                 } label: {
-                    if pay.busy { ProgressView().tint(C.goldInk) } else { Text(cta) }
+                    if pay.busy { ProgressView().tint(.white) } else { Text(cta) }
                 }
-                .buttonStyle(.gameLarge(.gold, feel: .kick))
+                .buttonStyle(.gameLarge(.brand, feel: .kick))
                 .disabled(pay.busy)
                 Text(fine).font(F.round(12)).foregroundStyle(C.muted).multilineTextAlignment(.center)
                 HStack(spacing: 14) {
@@ -143,27 +139,53 @@ struct SoccerMaxPaywall: View {
     // MARK: - pieces
 
     private func headline(_ a: Answers) -> some View {
-        let name = a.firstName.trimmingCharacters(in: .whitespaces).uppercased()
-        return VStack(spacing: 8) {
-            (Text(name.isEmpty ? "" : "\(name),\n") + Text("TRAIN LIKE A ") + Text("PRO").foregroundColor(C.brand))
-                .font(F.display(32)).lineSpacing(-4).foregroundStyle(C.creme)
+        let name = a.firstName.trimmingCharacters(in: .whitespaces)
+        return VStack(spacing: 10) {
+            Image("AppBall").resizable().scaledToFit().frame(width: 96, height: 96)
+                .shadow(color: C.brand.opacity(0.6), radius: 24)
+                .accessibilityHidden(true)
+            Text(name.isEmpty ? "Unlock Soccer Lab" : "\(name), unlock Soccer Lab")
+                .font(.system(size: 28, weight: .bold)).foregroundStyle(C.creme)
                 .multilineTextAlignment(.center)
-                .shadow(color: C.charInk, radius: 0, y: 4)
-                .shadow(color: .black.opacity(0.6), radius: 16)
-            Text("408 drills in 3D. A week built for you.")
-                .font(F.round(15, .semibold)).foregroundStyle(C.creme2)
+            Text("Everything you need to train on your own and get better every week.")
+                .font(F.round(15, .medium)).foregroundStyle(C.muted)
                 .multilineTextAlignment(.center)
-            ShinyFeaturesButton { Haptics.play(.stud); showFeatures = true }
-                .padding(.top, 2)
         }
         .frame(maxWidth: .infinity)
     }
 
+    /// What a subscription opens, in the app's words (only things the app really does).
+    private var features: some View {
+        VStack(alignment: .leading, spacing: 12) {
+            featureRow("figure.soccer", "A session every day for your position")
+            featureRow("sparkles", "Ask Coach, your AI training coach")
+            featureRow("video.fill", "Review your clips and get the drills that fix them")
+            featureRow("fork.knife", "Fuel targets, meal plans and hydration")
+            featureRow("location.fill", "Live GPS runs with distance and pace")
+        }
+        .padding(16)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(C.char800)
+            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.line, lineWidth: 1)))
+    }
+
+    private func featureRow(_ icon: String, _ text: String) -> some View {
+        HStack(spacing: 12) {
+            Image(systemName: icon).font(.system(size: 14, weight: .bold)).foregroundStyle(C.brandHi)
+                .frame(width: 32, height: 32)
+                .background(Circle().fill(C.brand.opacity(0.18)))
+            Text(text).font(F.round(15, .semibold)).foregroundStyle(C.creme)
+                .fixedSize(horizontal: false, vertical: true)
+            Spacer(minLength: 0)
+        }
+        .accessibilityElement(children: .combine)
+    }
+
     private var plans: some View {
         HStack(alignment: .bottom, spacing: 8) {
-            PlanTile(on: pick == PayID.yearly, badge: pay.trialOffered ? "7 DAYS FREE" : "BEST VALUE", name: "YEARLY",
+            PlanTile(on: pick == PayID.yearly, badge: pay.trialOffered ? "7 DAYS FREE" : "BEST VALUE", name: "Yearly",
                      price: pay.price(PayID.yearly), unit: "/yr", sub: "\(pay.yearlyPerMonth)/mo") { pick = PayID.yearly }
-            PlanTile(on: pick == PayID.monthly, badge: nil, name: "MONTHLY",
+            PlanTile(on: pick == PayID.monthly, badge: nil, name: "Monthly",
                      price: pay.price(PayID.monthly), unit: "/mo", sub: "Cancel anytime") { pick = PayID.monthly }
             // no LIFETIME tile (2026-11-14): Skiller AI's listing sells yearly and monthly only. Lifetime code passes
             // (free-pass links) still work; they never went through this tile.
@@ -177,20 +199,20 @@ struct SoccerMaxPaywall: View {
         Button { joining = true } label: {
             HStack(spacing: 6) {
                 Image(systemName: "ticket.fill").font(.system(size: 13, weight: .heavy))
-                Text(team.pendingCode != nil ? "YOUR CODE IS READY · USE IT" : "HAVE A CODE?").font(F.display(13))
+                Text(team.pendingCode != nil ? "Your code is ready. Use it" : "Have a code?").font(F.round(14, .semibold))
                 Image(systemName: "chevron.right").font(.system(size: 11, weight: .heavy))
             }
-            .foregroundStyle(C.brand)
-            .frame(height: 30)
+            .foregroundStyle(C.brandHi)
+            .frame(height: 36)
         }
         .buttonStyle(.press(.pop))
     }
 
     private var cta: String {
         switch pick {
-        case PayID.yearly: trial ? "START MY FREE TRIAL" : "GO YEARLY"
-        case PayID.monthly: "SUBSCRIBE"
-        default: "BUY LIFETIME"
+        case PayID.yearly: trial ? "Start my free week" : "Continue with yearly"
+        case PayID.monthly: "Continue with monthly"
+        default: "Buy lifetime"
         }
     }
 
@@ -314,43 +336,39 @@ private struct PlanTile: View {
     var body: some View {
         Button(action: pick) {
             VStack(spacing: 6) {
-                Text(name).font(F.display(17)).foregroundStyle(on ? C.gold : C.creme).lineLimit(1).minimumScaleFactor(0.7)
-                (Text(price).font(F.round(21, .bold)) + Text(unit).font(F.round(12, .semibold))).foregroundStyle(C.creme)
+                Text(name).font(F.round(15, .semibold)).foregroundStyle(on ? C.brandHi : C.creme2).lineLimit(1).minimumScaleFactor(0.7)
+                (Text(price).font(.system(size: 22, weight: .bold)) + Text(unit).font(F.round(12, .semibold))).foregroundStyle(C.creme)
                     .lineLimit(1).minimumScaleFactor(0.6)
-                Text(sub).font(F.round(11, .semibold)).foregroundStyle(on ? C.creme2 : C.muted).lineLimit(1).minimumScaleFactor(0.7)
+                Text(sub).font(F.round(12, .medium)).foregroundStyle(C.muted).lineLimit(1).minimumScaleFactor(0.7)
             }
             .frame(maxWidth: .infinity)
             .padding(.top, 20).padding(.bottom, 14).padding(.horizontal, 4)
             .background(
-                RoundedRectangle(cornerRadius: 20, style: .continuous)
-                    .fill(C.char850)
-                    .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(on ? LinearGradient(colors: [C.gold.opacity(0.24), C.gold.opacity(0.06)], startPoint: .top, endPoint: .bottom)
-                             : LinearGradient(colors: [C.char800, C.char850], startPoint: .top, endPoint: .bottom)))
-                    .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(on ? C.gold : C.charInk, lineWidth: on ? 3 : 2.5))
-                    .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(on ? C.goldLip : C.charInk).offset(y: 5))
+                RoundedRectangle(cornerRadius: 18, style: .continuous)
+                    .fill(on ? AnyShapeStyle(LinearGradient(colors: [C.brand.opacity(0.26), C.char800], startPoint: .top, endPoint: .bottom)) : AnyShapeStyle(C.char800))
+                    .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(on ? C.brand : C.line, lineWidth: on ? 2 : 1))
             )
             .overlay(alignment: .top) {
                 if let badge {
-                    Text(badge).font(F.display(11)).foregroundStyle(C.goldInk)
+                    Text(badge).font(F.round(11, .bold)).kerning(0.6).foregroundStyle(.white)
                         .lineLimit(1).minimumScaleFactor(0.7)
-                        .padding(.horizontal, 8).padding(.vertical, 4)
-                        .background(Capsule().fill(LinearGradient(colors: [C.goldHi, C.gold], startPoint: .top, endPoint: .bottom))
-                            .overlay(Capsule().stroke(C.goldInk, lineWidth: 1.5)))
+                        .padding(.horizontal, 10).padding(.vertical, 4)
+                        .background(Capsule().fill(C.brand))
                         .offset(y: -11)
                 }
             }
             .overlay(alignment: .topTrailing) {
                 if on {
-                    Image(systemName: "checkmark").font(.system(size: 10, weight: .black)).foregroundStyle(C.goldInk)
-                        .frame(width: 20, height: 20).background(Circle().fill(C.gold))
+                    Image(systemName: "checkmark").font(.system(size: 10, weight: .black)).foregroundStyle(.white)
+                        .frame(width: 20, height: 20).background(Circle().fill(C.brand))
                         .offset(x: 5, y: -6)
                         .transition(.scale.combined(with: .opacity))
                 }
             }
-            .scaleEffect(on ? 1.04 : 1)
-            .shadow(color: on ? C.gold.opacity(0.3) : .clear, radius: 14)
+            .shadow(color: on ? C.brand.opacity(0.35) : .clear, radius: 14)
         }
         .buttonStyle(.press(.pop))
+        .accessibilityAddTraits(on ? .isSelected : [])
     }
 }
 

@@ -1814,7 +1814,7 @@ extension View {
                    isPresented: Binding(get: { reported.wrappedValue != nil }, set: { if !$0 { reported.wrappedValue = nil } })) {
                 Button("OK") {}
             } message: {
-                Text(reported.wrappedValue == false ? "Check your signal and try again, or email support@soccermax.app."
+                Text(reported.wrappedValue == false ? "Check your signal and try again, or email \(Legal.supportEmail)."
                      : "We look at every report within 24 hours and remove anything that breaks the rules.")
             }
     }
@@ -1848,7 +1848,7 @@ private struct SafetyButtons: View {
         } message: { Text("You won't see their messages or activity in any team. They won't be told.") }
         .alert(reported == false ? "Couldn't send the report" : "Thanks for telling us",
                isPresented: Binding(get: { reported != nil }, set: { if !$0 { reported = nil } })) { Button("OK") {} } message: {
-            Text(reported == false ? "Check your signal and try again, or email support@soccermax.app."
+            Text(reported == false ? "Check your signal and try again, or email \(Legal.supportEmail)."
                  : "We look at every report within 24 hours and remove anything that breaks the rules.")
         }
     }
