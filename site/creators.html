@@ -1,0 +1,90 @@
+<!doctype html>
+<!-- CREATOR PROGRAM (2026-11-14). The public page that explains the affiliate deal to creators: how it works, what
+     they earn per plan, when they're paid and the rules. Numbers follow the Soccer Lab proposal (20% of net, Apple 15%)
+     and the rules the database actually applies (supabase/2026-11-12-creators.sql). DRAFT until the terms are agreed. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Soccer Lab Creator Program</title>
+<meta name="description" content="Earn 20% for every player you bring to Soccer Lab.">
+<style>
+  :root { --bg: #000; --card: #0E1015; --line: #20232C; --text: #F5F7FA; --muted: #9AA1B0; --brand: #1E78FF; --hi: #7DB8FF; --gold: #FFC531; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 17px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         background-image: radial-gradient(640px 360px at 50% -120px, #0F3A8A, transparent); background-repeat: no-repeat; }
+  main { max-width: 760px; margin: 0 auto; padding: 44px 16px 56px; }
+  .brand { font-weight: 800; letter-spacing: .08em; font-size: 20px; }
+  .brand span { color: var(--brand); }
+  h1 { font-size: 34px; line-height: 1.15; margin: 18px 0 8px; }
+  h2 { font-size: 22px; margin: 36px 0 10px; }
+  p, li { color: #D9DEE7; }
+  .sub { color: var(--muted); font-size: 18px; margin: 0 0 8px; }
+  .big { color: var(--gold); }
+  .steps { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin: 16px 0; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; }
+  .card b { display: block; color: var(--text); margin-bottom: 4px; }
+  .n { color: var(--brand); font-weight: 800; }
+  .table-wrap { overflow-x: auto; background: var(--card); border: 1px solid var(--line); border-radius: 18px; }
+  table { width: 100%; border-collapse: collapse; font-size: 16px; min-width: 560px; }
+  th, td { text-align: left; padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { color: var(--muted); font-size: 13px; text-transform: uppercase; letter-spacing: .05em; font-weight: 600; }
+  tr:last-child td { border-bottom: 0; }
+  td.money { color: var(--gold); font-weight: 700; font-variant-numeric: tabular-nums; }
+  .note { color: var(--muted); font-size: 14px; }
+  a { color: var(--hi); }
+</style>
+</head>
+<body>
+<main>
+  <div class="brand">SOCCER <span>LAB</span></div>
+  <h1>Creator Program</h1>
+  <p class="sub">Bring players to Soccer Lab and earn <b class="big">20%</b> of what we receive from every subscriber you bring, for a full year.</p>
+
+  <h2>How it works</h2>
+  <div class="steps">
+    <div class="card"><span class="n">1</span><b>Get your code</b>We send you a 6-digit code, a link to share and a private page with your earnings.</div>
+    <div class="card"><span class="n">2</span><b>Share it</b>Put your link or code in your videos, bio and stories.</div>
+    <div class="card"><span class="n">3</span><b>Players join</b>They install Soccer Lab and enter your code before they subscribe.</div>
+    <div class="card"><span class="n">4</span><b>You earn</b>20% of every payment they make for 12 months, paid monthly.</div>
+  </div>
+
+  <h2>What you earn per subscriber</h2>
+  <p>Your share is 20% of what Soccer Lab receives after Apple's 15% fee. US prices shown; other countries vary with local prices and tax.</p>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Plan</th><th>Player pays</th><th>After Apple's fee</th><th>You earn per payment</th><th>If they stay 12 months</th></tr></thead>
+      <tbody>
+        <tr><td>Weekly</td><td>$7.99 a week</td><td>$6.79</td><td class="money">$1.36 a week</td><td class="money">about $70</td></tr>
+        <tr><td>Monthly</td><td>$9.99 a month</td><td>$8.49</td><td class="money">$1.70 a month</td><td class="money">about $20</td></tr>
+        <tr><td>Yearly</td><td>$36.50 a year</td><td>$31.03</td><td class="money">$6.21</td><td class="money">$6.21</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <p class="note">Example: 100 players on the weekly plan for 3 months is about $1,770 for you. Prices are set in the App Store and may change; you always earn 20% of what we actually receive.</p>
+
+  <h2>When you get paid</h2>
+  <ul>
+    <li>Once a month, by PayPal, Wise or bank transfer.</li>
+    <li>Each payment is counted 30 days after the player pays, so refunds can come back first.</li>
+    <li>Minimum payout $50. Smaller amounts roll over to the next month.</li>
+    <li>Your private earnings page shows sign-ups, sales and what you're owed at any time. It shows totals only, never who the players are.</li>
+  </ul>
+
+  <h2>The rules</h2>
+  <ul>
+    <li><b>Your player stays yours.</b> The first creator code a player uses is the one that counts, and it can't be swapped for another creator's code later.</li>
+    <li><b>The code must come before the first purchase.</b> Players who already paid before entering a code don't count.</li>
+    <li><b>12 months per player.</b> You earn on every payment a player makes in the 12 months after they used your code: new subscriptions, renewals, and re-subscribing after cancelling. After 12 months, that player no longer earns you a share. Using your link again does not restart the 12 months.</li>
+    <li><b>Refunds.</b> If Apple refunds a payment, your share of it is taken back from your next payout.</li>
+    <li><b>No self-referral.</b> Your own account can't use your code. Fake sign-ups, paid ads on our brand name and misleading claims end the partnership and forfeit unpaid earnings.</li>
+    <li><b>Net means</b> the price after Apple's fee, sales tax or VAT, and refunds.</li>
+    <li>We may change these terms with 30 days' notice. Payments already earned are always paid.</li>
+  </ul>
+
+  <h2>Want to join?</h2>
+  <p>Email <a href="mailto:asherk348@gmail.com">asherk348@gmail.com</a> with your name, your channels and roughly how many followers you have.</p>
+  <p class="note"><a href="/">Soccer Lab</a> · <a href="/privacy">Privacy policy</a></p>
+</main>
+</body>
+</html>
