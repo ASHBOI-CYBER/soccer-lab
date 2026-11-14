@@ -47,7 +47,7 @@ enum PayID {
 /// Links the paywall and Settings need. Apple's standard EULA covers Terms; the privacy page must exist before review.
 enum Legal {
     /// Support email shown in the app. CHANGE before release to an inbox someone reads (see site/privacy.html too).
-    static let supportEmail = "support@soccermax.app"
+    static let supportEmail = "asherk348@gmail.com"
     static let terms = URL(string: "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/")!
     static let privacy = URL(string: "https://soccermax.app/privacy")!
 }
