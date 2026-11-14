@@ -219,6 +219,11 @@ struct MainTabs: View {
                 }
                 .duoColumn()
         }
+        // the AI Coach chat, from Home (Screens/Coach.swift). Test builds: `-route coach` / `coach:demo`
+        .fullScreenCover(isPresented: Binding(get: { Nav.shared.coach }, set: { Nav.shared.coach = $0 })) {
+            CoachView().duoColumn()
+        }
+        .onAppear { if DebugRoute.parts.first == "coach" { Nav.shared.coach = true } }
         .onChange(of: Nav.shared.tab) { _, t in if let t { tab = t; Nav.shared.tab = nil } }
         .sheet(item: Binding(get: { Nav.shared.session }, set: { Nav.shared.session = $0 })) { SharedSessionSheet(meta: $0.meta) }
         .onAppear { if let t = Nav.shared.tab { tab = t; Nav.shared.tab = nil } }
@@ -244,6 +249,8 @@ final class Nav {
     var tab: AppTab?
     /// The Team page is showing (opened from Profile, or by a code from a link).
     var team = false
+    /// The Coach chat is showing (Screens/Coach.swift).
+    var coach = false
     var tape: Int?
     /// A logged session picked on Profile's graph ? opens in the Sessions tab.
     var log: Completion?

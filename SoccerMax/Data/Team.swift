@@ -1138,6 +1138,22 @@ final class SupabaseREST {
     func sendReturning<T: Decodable>(_ method: String, _ path: String, _ body: Any) async throws -> T {
         try JSONDecoder().decode(T.self, from: try await request(method, path, body, prefer: "return=representation"))
     }
+    /// One of our server functions (supabase/functions/<name>), as the signed-in player. Hands back the status code
+    /// and body as they are: the function's own JSON says what went wrong.
+    func function(_ name: String, _ body: [String: Any]) async throws -> (Int, Data) {
+        let s = try await token()
+        var r = URLRequest(url: URL(string: "functions/v1/\(name)", relativeTo: SupabaseConfig.url)!)
+        r.httpMethod = "POST"
+        r.timeoutInterval = 75
+        r.setValue(SupabaseConfig.key, forHTTPHeaderField: "apikey")
+        r.setValue("Bearer \(s.access)", forHTTPHeaderField: "Authorization")
+        r.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        r.httpBody = try JSONSerialization.data(withJSONObject: body)
+        let (data, resp) = try await URLSession.shared.data(for: r)
+        let code = (resp as? HTTPURLResponse)?.statusCode ?? 0
+        if code == 401 { session?.expires = .distantPast }
+        return (code, data)
+    }
     func rpc<T: Decodable>(_ fn: String, _ args: [String: Any]) async throws -> T {
         let d = try await request("POST", "rpc/\(fn)", args)
         if T.self == EmptyReply.self { return try JSONDecoder().decode(T.self, from: Data("{}".utf8)) }

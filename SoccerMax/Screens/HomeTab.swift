@@ -15,6 +15,7 @@ struct HomeTab: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 18) {
                     header
+                    coachCard
                     today
                     week
                     shortcuts
@@ -165,6 +166,32 @@ struct HomeTab: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .ignore)
         .accessibilityLabel("This week, \(trained) days trained. Opens Training.")
+    }
+
+    // MARK: AI coach
+
+    private var coachCard: some View {
+        Button { Nav.shared.coach = true } label: {
+            HStack(spacing: 14) {
+                CoachBadge(size: 46)
+                VStack(alignment: .leading, spacing: 3) {
+                    Text("Ask Coach").font(.system(size: 17, weight: .bold)).foregroundStyle(C.creme)
+                    Text("Your AI coach knows your position, sessions and food.")
+                        .font(F.round(13, .medium)).foregroundStyle(C.muted)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right").font(.system(size: 13, weight: .bold)).foregroundStyle(C.muted)
+            }
+            .padding(14)
+            .background(
+                RoundedRectangle(cornerRadius: 20, style: .continuous)
+                    .fill(LinearGradient(colors: [C.brand.opacity(0.22), C.char800], startPoint: .topLeading, endPoint: .bottomTrailing))
+                    .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.brand.opacity(0.45), lineWidth: 1))
+            )
+        }
+        .buttonStyle(.press(.stud))
+        .accessibilityLabel("Ask Coach, your AI training coach")
     }
 
     // MARK: shortcuts
