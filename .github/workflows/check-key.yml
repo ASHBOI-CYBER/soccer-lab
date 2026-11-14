@@ -1,0 +1,34 @@
+# Checks what the App Store Connect key may do (apps, App IDs, certificates, profiles). Runs on Linux, takes a minute.
+name: Check key
+
+on:
+  workflow_dispatch:
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ask Apple
+        env:
+          ID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+          P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          python3 -m pip install --quiet pyjwt cryptography
+          python3 - <<'PY'
+          import os, time, json, jwt, urllib.request, urllib.error
+          key = "\n".join(l.strip() for l in os.environ["P8"].replace("\r", "").split("\n") if l.strip())
+          now = int(time.time())
+          tok = jwt.encode({"iss": os.environ["ISS"].strip(), "iat": now, "exp": now + 600, "aud": "appstoreconnect-v1"}, key,
+                           algorithm="ES256", headers={"kid": os.environ["ID"].strip(), "typ": "JWT"})
+          for path in ["/v1/apps?limit=1", "/v1/bundleIds?filter[identifier]=com.skillerai.ios,com.skillerai.ios.widgets",
+                       "/v1/certificates?limit=5", "/v1/profiles?limit=5", "/v1/devices?limit=1"]:
+              req = urllib.request.Request("https://api.appstoreconnect.apple.com" + path, headers={"Authorization": "Bearer " + tok})
+              try:
+                  d = json.load(urllib.request.urlopen(req, timeout=30))
+                  items = d.get("data", [])
+                  print("OK ", path, "->", len(items), "items", [ (i.get("attributes", {}).get("identifier") or i.get("attributes", {}).get("name") or i.get("attributes", {}).get("certificateType")) for i in items ])
+              except urllib.error.HTTPError as e:
+                  print("NO ", path, "->", e.code, e.read().decode()[:300])
+          PY
