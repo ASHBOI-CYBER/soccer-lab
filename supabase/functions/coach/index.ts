@@ -6,8 +6,8 @@
 // the database by public.coach_take, so the bill has a ceiling:
 //   - paying subscribers: PAID_LIMIT a day;
 //   - on a free trial or intro offer, or in the first 7 days after their first purchase: TRIAL_LIMIT a day;
-//   - everyone else (and everyone while RevenueCat isn't connected, i.e. while the app is free): COACH_FREE_LIMIT,
-//     default TRIAL_LIMIT. Set it to 0 once the paywall is on if Coach should be for subscribers only.
+//   - no subscription: no Coach (there is no free version);
+//   - while RevenueCat isn't connected yet (testing): TRIAL_LIMIT for everyone.
 // Who has paid is read from RevenueCat (the app logs in to RevenueCat with the Supabase user id).
 //
 // Deploy (JWT is checked in the code, so the gateway check is off):
@@ -73,10 +73,11 @@ function clean(raw: unknown): Turn[] | null {
 
 /** Today's allowance for this player, from their RevenueCat subscription. */
 async function dailyLimit(uid: string): Promise<number> {
-  const freeEnv = Deno.env.get("COACH_FREE_LIMIT");
-  const free = freeEnv !== undefined && freeEnv !== "" && Number.isFinite(Number(freeEnv)) ? Math.max(0, Number(freeEnv)) : TRIAL_LIMIT;
+  // no free version: without a subscription there is no Coach. Until RevenueCat is connected (testing, before
+  // payments are on) nobody can be checked, so everyone gets the trial allowance.
   const key = Deno.env.get("RC_SECRET_KEY");
-  if (!key) return free;
+  if (!key) return TRIAL_LIMIT;
+  const free = 0;
   try {
     const r = await fetch(`https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(uid)}`, {
       headers: { Authorization: `Bearer ${key}` },
