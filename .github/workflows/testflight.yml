@@ -113,8 +113,9 @@ jobs:
         run: |
           if [ "${NO_APP_GROUP:-}" = "1" ]; then
             echo "::warning::App group not on the profiles yet: building without it (widget won't show the app's data)."
-            plutil -remove com.apple.security.application-groups SoccerMax/SoccerMax.entitlements
-            plutil -remove com.apple.security.application-groups SoccerMaxWidgets/SoccerMaxWidgets.entitlements
+            # PlistBuddy, not plutil: plutil reads the dots in the key as a path
+            /usr/libexec/PlistBuddy -c "Delete :com.apple.security.application-groups" SoccerMax/SoccerMax.entitlements
+            /usr/libexec/PlistBuddy -c "Delete :com.apple.security.application-groups" SoccerMaxWidgets/SoccerMaxWidgets.entitlements
           fi
           python3 - <<'PY'
           import os, re
