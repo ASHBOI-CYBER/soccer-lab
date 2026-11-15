@@ -51,6 +51,11 @@ struct FoodScanSheet: View {
         .presentationDetents([.large])
         .presentationBackground(C.char900)
         .interactiveDismissDisabled(stage == .scanning)
+        .onAppear {
+            #if DEBUG
+            if DebugRoute.parts.contains("scan"), scan == nil { scan = .demo; stage = .review }   // screenshots only
+            #endif
+        }
         .fullScreenCover(isPresented: $camera) {
             CameraPicker { img in
                 camera = false

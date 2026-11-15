@@ -80,7 +80,8 @@ export async function take(db: Db, uid: string, kind: Kind, noun: string): Promi
     return reply({ error: "Something went wrong. Try again in a minute." }, 500);
   }
   if (typeof left !== "number" || left < 0) {
-    return reply({ error: `That's all ${limit} ${noun.toLowerCase()}s for today. You get ${limit} more tomorrow.`, remaining: 0, limit }, 429);
+    const what = kind === "film" ? "AI film reviews" : "food scans";
+    return reply({ error: `That's all ${limit} ${what} for today. You get ${limit} more tomorrow.`, remaining: 0, limit }, 429);
   }
   return left;
 }

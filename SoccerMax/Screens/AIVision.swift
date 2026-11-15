@@ -141,6 +141,25 @@ struct FilmAIReport: Codable, Hashable {
     var cues: [String]
 }
 
+extension FilmAIReport {
+    /// Test builds only: a made-up report for screenshots (`-route tab:film:airesult`).
+    static let demo = FilmAIReport(
+        usable: true, problem: "", action: "Receiving on the half-turn", score: 64,
+        verdict: "Good body shape on most touches, but you're checking your shoulder late, so your first touch goes back toward pressure instead of away from it.",
+        strengths: ["Open hips on the half-turn in frames 2 and 3", "Soft first touch with the inside of the foot", "Head up quickly after the ball is controlled"],
+        fixes: [FilmAIFix(title: "Scan before the ball arrives", detail: "In frames 4 to 6 you only look up after the ball reaches you. Check over your shoulder while the pass is travelling so you already know where the space is.", drill_ids: ["scan-and-turn"]),
+                FilmAIFix(title: "First touch into space", detail: "Your touch stays under your body, so you need a second touch to get away. Push it a step forward and away from the defender.", drill_ids: ["wall-first-touch"])],
+        cues: ["Look before it comes", "Touch away from pressure", "Open up your hips"])
+}
+
+extension FoodScanResult {
+    /// Test builds only: a made-up scan for screenshots (`-route tab:nutrition:scan`).
+    static let demo = FoodScanResult(is_food: true, message: "A solid recovery plate: carbs to refuel and protein to rebuild.", items: [
+        FoodScanItem(name: "Chicken biryani", portion: "1 plate", grams: 350, kcal: 620, protein: 32, carbs: 78, fat: 19),
+        FoodScanItem(name: "Raita", portion: "1 small bowl", grams: 120, kcal: 90, protein: 5, carbs: 7, fat: 4.5),
+        FoodScanItem(name: "Salad", portion: "1 side", grams: 80, kcal: 25, protein: 1, carbs: 5, fat: 0)])
+}
+
 struct FilmAIFix: Codable, Hashable {
     var title: String
     var detail: String

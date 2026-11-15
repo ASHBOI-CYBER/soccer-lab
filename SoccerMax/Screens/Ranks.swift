@@ -96,7 +96,8 @@ struct GlobalBoardCard: View {
     @Environment(AppStore.self) private var store
     @State private var ranks = Ranks.shared
     @State private var team = Team.shared
-    @State private var open = false
+    // test builds: `-route tab:home:board` opens the full table
+    @State private var open = DebugRoute.parts.contains("board")
 
     var body: some View {
         Button { open = true } label: {

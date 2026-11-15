@@ -6,8 +6,9 @@ import SwiftUI
 
 struct NutritionTab: View {
     @State private var lab = Lab.shared
-    @State private var adding = false
-    @State private var scanning = false
+    // test builds: `-route tab:nutrition:addfood` / `:scan` open those sheets
+    @State private var adding = DebugRoute.parts.contains("addfood")
+    @State private var scanning = DebugRoute.parts.contains("scan")
     @State private var editingBody = false
     /// The day being looked at ("Mon"..."Sun" of this week); today when the tab opens.
     @State private var day = todayKey()

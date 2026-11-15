@@ -28,7 +28,7 @@ struct FilmTab: View {
     @Environment(AppStore.self) private var store
     @State private var lab = Lab.shared
     // test builds: `-route tab:film:review` / `:questions` / `:result` open the review sheet on that step
-    @State private var adding = ["review", "questions", "result"].contains { DebugRoute.parts.contains($0) }
+    @State private var adding = ["review", "questions", "result", "airesult"].contains { DebugRoute.parts.contains($0) }
 
     var body: some View {
         NavigationStack {
@@ -619,6 +619,12 @@ struct FilmReviewSheet: View {
     private func debugSeed() {
         #if DEBUG
         let r = DebugRoute.parts
+        if r.contains("airesult"), saved == nil {
+            saved = FilmReview(title: "Saturday game, second half", mistakes: [], note: "", clip: nil,
+                               drills: ["wall-first-touch", "scan-and-turn"], ai: FilmAIReport.demo)
+            stage = .aiResult
+            return
+        }
         guard stage == .setup, moments.isEmpty, r.contains("questions") || r.contains("result") else { return }
         let list = Array(FilmGuide.list(position: position).prefix(2))
         moments = Set(list.map(\.id))

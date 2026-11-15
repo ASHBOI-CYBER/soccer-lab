@@ -40,7 +40,8 @@ struct TrainingPartPicker: View {
 
 struct TrainingDrillsPart: View {
     @Environment(AppStore.self) private var store
-    @State private var voice: VoiceDrill.Mode?
+    // test builds: `-route tab:training:drillstab:voice` (cones) / `:voicemoves` open a voice drill
+    @State private var voice: VoiceDrill.Mode? = DebugRoute.parts.contains("voicemoves") ? .moves : DebugRoute.parts.contains("voice") ? .cones : nil
     @State private var skill = "For you"
 
     private var lib: Library { Library.shared }
