@@ -46,7 +46,11 @@ struct TrainingDrillsPart: View {
     private var lib: Library { Library.shared }
     private var sessions: [ProSession] { lib.technique + lib.hybrid }
     /// Ball-work skills (no-ball ones live under Fitness).
-    private var skills: [String] { ["For you"] + lib.categories.filter { !["Fitness", "Runs", "Core", "Stretching"].contains($0) && lib.drills.contains(where: { d in d.skill == $0 }) } }
+    private var skills: [String] {
+        ["For you"] + lib.categories.filter { c in
+            !["Fitness", "Runs", "Core", "Stretching"].contains(c) && lib.drills.contains { $0.skill == c }
+        }
+    }
     private var quick: [Drill] {
         if skill == "For you" {
             let ids = LabPlan.focus(LabPlan.group(store.answers.position)) + LabPlan.core

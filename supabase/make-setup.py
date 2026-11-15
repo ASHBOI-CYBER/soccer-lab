@@ -26,6 +26,7 @@ ORDER = [
     "2026-11-12-creators.sql",
     "2026-11-14-coach.sql",
     "2026-11-14-creator-links.sql",
+    "2026-11-15-ai-and-ranks.sql",
     "2026-11-13-new-project-finish.sql",
 ]
 
