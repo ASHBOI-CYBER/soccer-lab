@@ -102,6 +102,8 @@ final class AIUsage {
 
 enum AICall {
     struct Failure: Error { let message: String }
+    /// The parts every AI reply may carry, whatever else is in it.
+    private struct Meta: Decodable { let error: String?; let remaining: Int? }
 
     /// POST to an AI edge function. Returns the decoded reply, or throws the server's own message.
     @MainActor static func post<T: Decodable>(_ fn: String, _ body: [String: Any], kind: String, as: T.Type) async throws -> T {
@@ -113,7 +115,6 @@ enum AICall {
         } catch {
             throw Failure(message: "Couldn't connect. Check your internet and try again.")
         }
-        struct Meta: Decodable { let error: String?; let remaining: Int? }
         let meta = try? JSONDecoder().decode(Meta.self, from: data)
         if let n = meta?.remaining { AIUsage.shared.set(kind, n) }
         guard (200..<300).contains(code) else {
