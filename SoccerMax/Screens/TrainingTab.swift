@@ -20,6 +20,8 @@ struct TrainingTab: View {
         let r = DebugRoute.parts
         if r.contains("drills") { p.append(LabRoute.drills) }
         if r.contains("drill"), let d = Library.shared.drills.first { p.append(d) }
+        // `drill.cone-slalom`: that drill's page
+        if let id = r.first(where: { $0.hasPrefix("drill.") })?.dropFirst(6), Library.shared.has(String(id)) { p.append(Library.shared.drill(String(id))) }
         if r.contains("session"), let s = (Library.shared.technique + Library.shared.hybrid + Library.shared.workouts).first { p.append(s) }
         return p
     }()

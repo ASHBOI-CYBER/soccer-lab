@@ -86,7 +86,17 @@ jobs:
             xcrun simctl launch "$UDID" "$BUNDLE" -route "$route" -sm.photo.asked YES -sm.photo.opens 0 >/dev/null
             # the live run needs longer: the GPS has to find itself and cover some ground
             case "$route" in *:run) sleep 25 ;; *) sleep 7 ;; esac
-            xcrun simctl io "$UDID" screenshot "shots/$name.png" >/dev/null 2>&1 && echo "captured $name ($route)" || echo "FAILED $name ($route)"
+            case "$name" in
+              rec-*)
+                # a name starting rec- records 10 seconds of video instead (animations)
+                xcrun simctl io "$UDID" recordVideo --codec=h264 --force "shots/$name.mp4" >/dev/null 2>&1 &
+                REC=$!
+                sleep 10
+                kill -INT $REC 2>/dev/null; wait $REC 2>/dev/null || true
+                [ -s "shots/$name.mp4" ] && echo "recorded $name ($route)" || echo "FAILED $name ($route)" ;;
+              *)
+                xcrun simctl io "$UDID" screenshot "shots/$name.png" >/dev/null 2>&1 && echo "captured $name ($route)" || echo "FAILED $name ($route)" ;;
+            esac
           done
           ls -la shots
 

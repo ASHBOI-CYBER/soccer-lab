@@ -19,7 +19,11 @@ PI = math.pi
 # ---------------------------------------------------------------------------------------------------------------
 # board helpers
 # ---------------------------------------------------------------------------------------------------------------
-def cone(x, z): return {"k": "cone", "x": x, "z": z, "yaw": 0}
+def cone(x, z, c=None):
+    """A disc cone; c = "red" / "blue" / "yellow" / "green" for drills that call colours (the app draws it that colour)."""
+    d = {"k": "cone", "x": x, "z": z, "yaw": 0}
+    if c: d["c"] = c
+    return d
 def goal(x=0, z=-8): return {"k": "goal", "x": x, "z": z, "yaw": 0}
 def ladder(x, z, rungs=6): return {"k": "ladder", "x": x, "z": z, "yaw": 0, "rungs": rungs}
 def hurdle(x, z, yaw=0): return {"k": "hurdle", "x": x, "z": z, "yaw": yaw}   # yaw 0: the bar lies across a run going up or down
@@ -983,7 +987,7 @@ D("colour-cones", "Colour Corners", "Awareness", 2, 4, f"3 {X} 60 s",
    "Dribble round that cone and back to the middle as fast as you can.", "Get set again, ready for the next call."],
   ["Know where every colour is before the first call.", "Turn tight round the cone with small touches.", "Get back to the middle and get set: the next call is coming."],
   ["DRI", "BC"], ["Vision", "Dribbling", "Speed"],
-  board([cone(-2.5, -2.5), cone(2.5, -2.5), cone(-2.5, 2.5), cone(2.5, 2.5)], [you(0, 0.3)], [[0, -0.1]],
+  board([cone(-2.5, -2.5, "red"), cone(2.5, -2.5, "blue"), cone(-2.5, 2.5, "green"), cone(2.5, 2.5, "yellow")], [you(0, 0.3)], [[0, -0.1]],
         [run((0.2, -0.2), (2.2, -2.6), (2.9, -2.9), (2.7, -2.1), (0.4, 0.1))]),
   gear=["Ball", "4 coloured cones"], space="5 m square", progression="Faster calls, or two colours in a row before you come back.",
   tags=["quick feet"])

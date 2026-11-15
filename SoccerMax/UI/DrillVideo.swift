@@ -98,7 +98,7 @@ struct DrillStageView: View {
         if let url = DrillVideo.url(id) {
             LoopingVideo(url: url, fit: fit, paused: paused)
         } else if let board = Library.shared.drill(id).board {
-            DrillBoard(board: board)  // no video: the flat coach's board, so it never looks like a paused video
+            DrillBoard(board: board, animated: !paused)  // no video: the coach's board, playing the drill (2026-11-16)
         } else {
             Stage3DView(params: .setup(id: id), interactive: interactive)
         }
