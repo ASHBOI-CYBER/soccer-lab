@@ -25,10 +25,12 @@ final class Coach {
     private(set) var remaining: Int?
 
     private static let key = "coach.chat.v1"
-    private static let consentKey = "coach.consent.v1"
+    /// One yes covers Coach, AI film reviews and food scans (AIVision.swift; v2 since 2026-11-15, so everyone is asked
+    /// again with the wording that names film frames and meal photos).
+    private static let consentKey = AIConsent.key
 
     /// The player agreed to send their messages and training summary to the AI company (App Store 5.1.2(i)).
-    private(set) var consented = UserDefaults.standard.bool(forKey: "coach.consent.v1")
+    private(set) var consented = UserDefaults.standard.bool(forKey: AIConsent.key)
     func consent(_ yes: Bool) {
         consented = yes
         UserDefaults.standard.set(yes, forKey: Self.consentKey)
@@ -121,8 +123,14 @@ final class Coach {
             l.append("Fix List from film: " + fixes.map { "\(lib.drill($0).name) (\(lab.fixCount[$0] ?? 0) of \(Lab.fixGoal) done)" }.joined(separator: "; "))
         }
         for r in lab.reviews.prefix(3) {
-            let found = r.mistakes.compactMap { FilmRules.find($0)?.label }
-            l.append("Film review \"\(r.title)\" on \(r.date.formatted(.dateTime.day().month(.abbreviated))): " + (found.isEmpty ? "nothing to fix" : found.joined(separator: ", ")))
+            let when = r.date.formatted(.dateTime.day().month(.abbreviated))
+            if let ai = r.ai {
+                l.append("AI film review \"\(r.title)\" on \(when): \(ai.action), score \(ai.score)/100. To fix: " +
+                         (ai.fixes.isEmpty ? "nothing" : ai.fixes.map(\.title).joined(separator: "; ")))
+            } else {
+                let found = r.mistakes.compactMap { FilmRules.find($0)?.label }
+                l.append("Film review \"\(r.title)\" on \(when): " + (found.isEmpty ? "nothing to fix" : found.joined(separator: ", ")))
+            }
         }
         l.append("Training this week: \(store.minutesThisWeek) min. Streak: \(store.air.days) days.")
         let weekStart = dateOf("Mon")
@@ -355,7 +363,7 @@ struct CoachView: View {
     private var consentPanel: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Before you start").font(.system(size: 17, weight: .bold)).foregroundStyle(C.creme)
-            Text("To answer you, Coach sends your messages and a short summary of your training to Anthropic, the company that makes the Claude AI. The summary has your position, age, level, goals, today's session, your Fix List, this week's training and today's food log. Your name, email and videos are not sent.")
+            Text(AIConsent.text)
                 .font(F.round(14, .medium)).foregroundStyle(C.creme2)
                 .fixedSize(horizontal: false, vertical: true)
             Link("How your data is used", destination: Legal.privacy)

@@ -1,6 +1,9 @@
-// FILM tab (SOCCER LAB, 2026-11-12). The player reviews their own clip: attach it (optional), tick what went wrong,
-// and the app adds the matching drills to the Fix List on the Training tab. The matching is a fixed table
-// (FilmRules in LabData.swift), not an AI service, and the clip never leaves the phone.
+// FILM tab (SOCCER LAB, 2026-11-12). The player reviews their own clip, two ways:
+//   AI REVIEW (2026-11-15, the main one): up to 8 still frames from the clip + the phone's body reading go to
+//     supabase/functions/film-review (Claude), which returns a score, what went well, what to fix with drills from
+//     the app, and cues. Needs sign-in and the AI yes (AIVision.swift); a daily allowance. The video stays here.
+//   QUESTIONS (no clip needed): tick what went wrong; a fixed table (FilmRules in LabData.swift) picks the drills.
+// Either way the drills join the Fix List on the Training tab.
 import AVKit
 import CoreTransferable
 import PhotosUI
@@ -58,9 +61,12 @@ struct FilmTab: View {
                 HStack(spacing: 12) {
                     Image(systemName: "video.fill").font(.system(size: 20, weight: .bold)).foregroundStyle(C.brandHi)
                         .frame(width: 48, height: 48).background(Circle().fill(C.brand.opacity(0.18)))
-                    Disp("Review your game", size: 24)
+                    VStack(alignment: .leading, spacing: 2) {
+                        Disp("AI film review", size: 24)
+                        Text(AIUsage.shared.line("film")).font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                    }
                 }
-                Text("Watch a clip of yourself and answer a few questions. Your coach tells you what to work on and adds the drills to your training.")
+                Text("Upload a clip of yourself. The AI looks at your technique frame by frame, scores it, and tells you what went well, what to fix and which drills to do.")
                     .font(F.round(15, .semibold)).foregroundStyle(C.creme2)
                     .fixedSize(horizontal: false, vertical: true)
                 Button { adding = true } label: { Label("REVIEW A CLIP", systemImage: "plus") }
@@ -73,9 +79,9 @@ struct FilmTab: View {
         VStack(alignment: .leading, spacing: 12) {
             Text("How it works").font(.system(size: 20, weight: .heavy)).foregroundStyle(C.creme)
             HStack(alignment: .top, spacing: 10) {
-                step(1, "Pick", "Choose what happens in your clip.", "hand.tap.fill")
-                step(2, "Answer", "A few yes or no questions on each.", "questionmark.bubble.fill")
-                step(3, "Train", "Get coaching and the drills to do.", "figure.soccer")
+                step(1, "Upload", "A clip of a touch, pass, shot, dribble or run.", "video.badge.plus")
+                step(2, "AI breakdown", "Frame by frame: your body, the ball, your choices.", "sparkles")
+                step(3, "Your plan", "A score, what to fix, and the drills to do.", "figure.soccer")
             }
         }
     }
@@ -118,13 +124,19 @@ struct FilmTab: View {
             ForEach(lab.reviews) { r in
                 NavigationLink(value: r) {
                     HStack(spacing: 12) {
-                        Image(systemName: r.clip == nil ? "note.text" : "play.rectangle.fill")
-                            .font(.system(size: 18, weight: .bold)).foregroundStyle(C.brandInk)
-                            .frame(width: 42, height: 42).background(Circle().fill(C.brand))
+                        if let ai = r.ai {
+                            Text("\(ai.score)").font(F.round(16, .heavy)).foregroundStyle(.white).monospacedDigit()
+                                .frame(width: 42, height: 42).background(Circle().fill(FilmScore.color(ai.score)))
+                        } else {
+                            Image(systemName: r.clip == nil ? "note.text" : "play.rectangle.fill")
+                                .font(.system(size: 18, weight: .bold)).foregroundStyle(C.brandInk)
+                                .frame(width: 42, height: 42).background(Circle().fill(C.brand))
+                        }
                         VStack(alignment: .leading, spacing: 2) {
                             Text(r.title).font(F.round(16, .bold)).foregroundStyle(C.creme).lineLimit(1)
-                            Text("\(r.date.formatted(.dateTime.day().month(.abbreviated))) · \(r.mistakes.isEmpty ? "nothing to fix" : "\(r.mistakes.count) to fix") · \(r.drills.count) drills")
-                                .font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                            Text(r.ai.map { "\(r.date.formatted(.dateTime.day().month(.abbreviated))) · AI review · \($0.fixes.count) to fix" }
+                                 ?? "\(r.date.formatted(.dateTime.day().month(.abbreviated))) · \(r.mistakes.isEmpty ? "nothing to fix" : "\(r.mistakes.count) to fix") · \(r.drills.count) drills")
+                                .font(F.round(13, .semibold)).foregroundStyle(C.muted).lineLimit(1)
                         }
                         Spacer(minLength: 0)
                         Image(systemName: "chevron.right").font(.system(size: 13, weight: .heavy)).foregroundStyle(C.muted)
@@ -144,10 +156,16 @@ struct FilmTab: View {
 struct FilmReviewSheet: View {
     let position: String
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppStore.self) private var store
     @State private var lab = Lab.shared
 
-    private enum Stage { case setup, questions, result }
+    private enum Stage { case setup, questions, result, analysing, aiResult }
     @State private var stage: Stage = .setup
+    // AI review
+    @State private var clipKind = "game"
+    @State private var whoAmI = ""
+    @State private var aiError: String?
+    @State private var progress = ""
     @State private var title = ""
     @State private var note = ""
     @State private var moments: Set<String> = []
@@ -173,12 +191,14 @@ struct FilmReviewSheet: View {
             case .setup: setup
             case .questions: questions
             case .result: result
+            case .analysing: analysing
+            case .aiResult: aiResult
             }
         }
         .scrollIndicators(.hidden)
         .presentationDetents([.large])
         .presentationBackground(C.char900)
-        .interactiveDismissDisabled(stage == .questions)
+        .interactiveDismissDisabled(stage == .questions || stage == .analysing)
         .onAppear { debugSeed() }
         .onChange(of: item) { _, new in
             guard let new else { return }
@@ -215,7 +235,7 @@ struct FilmReviewSheet: View {
             }
 
             VStack(alignment: .leading, spacing: 8) {
-                LabKicker("THE CLIP (OPTIONAL)")
+                LabKicker("THE CLIP")
                 PhotosPicker(selection: $item, matching: .videos) {
                     HStack(spacing: 10) {
                         Image(systemName: clip == nil ? "video.badge.plus" : "checkmark.circle.fill")
@@ -230,26 +250,193 @@ struct FilmReviewSheet: View {
                 if clipError {
                     Text("That video couldn't be added. Try another one.").font(F.round(13, .semibold)).foregroundStyle(C.gold)
                 }
-                Text("Your clip stays on this phone.").font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                Text("Your video stays on this phone. For an AI review, a few still frames from it are sent.")
+                    .font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            VStack(alignment: .leading, spacing: 10) {
+                LabKicker("WHAT TYPE OF CLIP?")
+                HStack(spacing: 8) {
+                    kindChip("game", "In a game", "sportscourt.fill")
+                    kindChip("training", "Training", "person.3.fill")
+                    kindChip("solo", "On my own", "figure.soccer")
+                }
+            }
+
+            if clipKind != "solo" {
+                VStack(alignment: .leading, spacing: 8) {
+                    LabKicker("WHICH PLAYER ARE YOU?")
+                    TextField("Red shirt, number 8, left side", text: $whoAmI)
+                        .font(F.round(16, .semibold)).foregroundStyle(C.creme)
+                        .padding(12)
+                        .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(C.char950))
+                }
             }
 
             VStack(alignment: .leading, spacing: 10) {
                 LabKicker("WHAT HAPPENS IN THE CLIP?")
-                Text("Pick everything you did in it. You'll get \(FilmGuide.perMoment) questions on each, and they change every review.")
+                Text("Pick what you did in it, so the review looks at the right things.")
                     .font(F.round(14, .semibold)).foregroundStyle(C.muted)
                 ForEach(FilmGuide.list(position: position)) { m in momentRow(m) }
             }
 
-            Button(moments.isEmpty ? "PICK AT LEAST ONE" : "NEXT") {
+            VStack(alignment: .leading, spacing: 8) {
+                LabKicker("ANYTHING ELSE? (OPTIONAL)")
+                TextField("A shot from outside the box, it went wide", text: $note, axis: .vertical)
+                    .lineLimit(1...3)
+                    .font(F.round(16, .semibold)).foregroundStyle(C.creme)
+                    .padding(12)
+                    .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(C.char950))
+            }
+
+            if let aiError {
+                Label(aiError, systemImage: "exclamationmark.triangle.fill")
+                    .font(F.round(14, .semibold)).foregroundStyle(C.gold)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+
+            AIGate(what: "AI film reviews", onNo: {}) {
+                VStack(spacing: 8) {
+                    Button(clip == nil ? "ADD A CLIP FIRST" : "GET MY AI REVIEW") { runAI() }
+                        .buttonStyle(.gameLarge(.brand, feel: .goal))
+                        .disabled(clip == nil || loading)
+                    Text(AIUsage.shared.line("film")).font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                }
+            }
+
+            Button(moments.isEmpty ? "No clip? Pick what happened, then answer questions" : "No clip? Answer questions instead") {
                 Haptics.play(.kick)
                 for m in chosen where asked[m.id] == nil { asked[m.id] = FilmGuide.ask(m) }
                 withAnimation(.snappy) { stage = .questions }
             }
-            .buttonStyle(.gameLarge(.brand))
+            .font(F.round(15, .bold)).foregroundStyle(moments.isEmpty ? C.muted : C.brandHi)
+            .frame(maxWidth: .infinity)
             .disabled(moments.isEmpty || loading)
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 24)
+    }
+
+    private func kindChip(_ id: String, _ label: String, _ icon: String) -> some View {
+        let on = clipKind == id
+        return Button {
+            clipKind = id
+            Haptics.play(.stud)
+        } label: {
+            VStack(spacing: 6) {
+                Image(systemName: icon).font(.system(size: 17, weight: .bold))
+                Text(label).font(F.round(13, .bold)).lineLimit(1).minimumScaleFactor(0.8)
+            }
+            .foregroundStyle(on ? Color.white : C.creme2)
+            .frame(maxWidth: .infinity).frame(height: 64)
+            .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(on ? C.brand : C.char800))
+        }
+        .buttonStyle(.plain)
+        .accessibilityAddTraits(on ? .isSelected : [])
+    }
+
+    // AI: working…
+
+    private var analysing: some View {
+        VStack(spacing: 18) {
+            ProgressView().controlSize(.large).tint(C.brandHi).padding(.top, 80)
+            Disp("REVIEWING YOUR CLIP", size: 26).multilineTextAlignment(.center)
+            Text(progress).font(F.round(15, .semibold)).foregroundStyle(C.creme2).multilineTextAlignment(.center)
+            Text("This takes about 20 seconds.").font(F.round(13, .semibold)).foregroundStyle(C.muted)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.horizontal, 20)
+    }
+
+    // AI: the report
+
+    private var aiResult: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            if let r = saved?.ai {
+                FilmAIReportView(report: r).padding(.top, 28)
+                Text("The drills are on your Fix List in Training now. Do each one \(Lab.fixGoal) times and it clears.")
+                    .font(F.round(14, .semibold)).foregroundStyle(C.muted)
+                    .fixedSize(horizontal: false, vertical: true)
+            }
+            Button("DONE") { dismiss() }.buttonStyle(.gameLarge(.brand, feel: .kick))
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 24)
+    }
+
+    private func runAI() {
+        guard let clip else { return }
+        aiError = nil
+        progress = "Picking frames and reading your body position…"
+        Haptics.play(.kick)
+        withAnimation(.snappy) { stage = .analysing }
+        Task {
+            do {
+                let frames = try await ClipFrames.make(FilmFiles.url(clip))
+                guard frames.withPerson > 0 else {
+                    fail("We couldn't see a player in this clip. Try one where you're clearly in the picture.")
+                    return
+                }
+                progress = "The AI is watching your clip…"
+                struct Reply: Decodable { let report: FilmAIReport }
+                let reply = try await AICall.post("film-review", [
+                    "frames": frames.frames.map { $0.base64EncodedString() },
+                    "context": aiContext(frames),
+                ], kind: "film", as: Reply.self)
+                let r = reply.report
+                guard r.usable else {
+                    fail(r.problem.isEmpty ? "The AI couldn't review this clip. Try a clearer one of you playing." : r.problem)
+                    return
+                }
+                var drills: [String] = []
+                for f in r.fixes { for d in f.drills where !drills.contains(d) { drills.append(d) } }
+                let name = title.trimmingCharacters(in: .whitespacesAndNewlines)
+                let review = FilmReview(title: name.isEmpty ? (r.action.isEmpty ? "Clip review" : String(r.action.prefix(60))) : String(name.prefix(60)),
+                                        mistakes: [], note: String(note.trimmingCharacters(in: .whitespacesAndNewlines).prefix(400)),
+                                        clip: clip, drills: drills, ai: r)
+                lab.add(review)
+                saved = review
+                Haptics.play(.goal)
+                withAnimation(.snappy) { stage = .aiResult }
+            } catch let e as ClipFrames.Failure {
+                fail(e.message)
+            } catch let e as AICall.Failure {
+                fail(e.message)
+            } catch {
+                fail("Something went wrong. Try again.")
+            }
+        }
+    }
+
+    private func fail(_ message: String) {
+        aiError = message
+        Haptics.play(.post)
+        withAnimation(.snappy) { stage = .setup }
+    }
+
+    /// Who the player is and what the clip is, for the AI. No name, no email.
+    private func aiContext(_ f: ClipFrames.Result) -> String {
+        let a = store.answers
+        let lib = Library.shared
+        var l: [String] = []
+        l.append("Player: \(a.positionName)" + (a.foot.map { ", \($0) foot" } ?? "") + (a.age.map { ", age \($0)" } ?? "") + (a.level.map { ", level: \($0)" } ?? ""))
+        l.append("Clip: " + (clipKind == "game" ? "in a game" : clipKind == "training" ? "at team training" : "practising on their own") + String(format: ", %.0f seconds long, %d frames sent.", f.seconds, f.frames.count))
+        if clipKind != "solo" {
+            let who = whoAmI.trimmingCharacters(in: .whitespacesAndNewlines)
+            l.append("Which player they are: " + (who.isEmpty ? "not said" : String(who.prefix(120))))
+        }
+        if !chosen.isEmpty { l.append("What happens in the clip (their pick): " + chosen.map(\.title).joined(separator: ", ")) }
+        let n = note.trimmingCharacters(in: .whitespacesAndNewlines)
+        if !n.isEmpty { l.append("Their note: " + String(n.prefix(300))) }
+        l.append("Phone body reading (Apple Vision, can be wrong):")
+        l += f.notes
+        let groups = Dictionary(grouping: lib.drills, by: \.skill)
+        l.append("App drills, by skill (id = name):")
+        for s in lib.categories where groups[s] != nil {
+            l.append("\(s): " + (groups[s] ?? []).map { "\($0.id) = \($0.name)" }.joined(separator: "; "))
+        }
+        return l.joined(separator: "\n")
     }
 
     private func momentRow(_ m: FilmMoment) -> some View {
@@ -473,7 +660,9 @@ struct FilmReviewPage: View {
                         .clipShape(RoundedRectangle(cornerRadius: 18, style: .continuous))
                 }
 
-                VStack(alignment: .leading, spacing: 8) {
+                if let ai = review.ai {
+                    FilmAIReportView(report: ai)
+                } else { VStack(alignment: .leading, spacing: 8) {
                     LabKicker(review.mistakes.isEmpty ? "NOTHING TO FIX" : "WHAT TO WORK ON")
                     ForEach(review.mistakes, id: \.self) { id in
                         if let m = FilmRules.find(id) {
@@ -487,7 +676,7 @@ struct FilmReviewPage: View {
                             }
                         }
                     }
-                }
+                } }
 
                 if !review.note.isEmpty {
                     VStack(alignment: .leading, spacing: 8) {
@@ -530,6 +719,92 @@ struct FilmReviewPage: View {
             Button("Cancel", role: .cancel) {}
         } message: {
             Text("The clip and notes are removed. Drills already on your Fix List stay.")
+        }
+    }
+}
+
+// MARK: - the AI report (the result screen and a saved review)
+
+enum FilmScore {
+    static func color(_ s: Int) -> Color { s >= 80 ? C.brand : s >= 60 ? Color(hex: 0x2BB673) : s >= 40 ? C.gold : Color(hex: 0xE5484D) }
+    static func word(_ s: Int) -> String { s >= 85 ? "Excellent" : s >= 70 ? "Good" : s >= 50 ? "Getting there" : "Lots to work on" }
+}
+
+struct FilmAIReportView: View {
+    let report: FilmAIReport
+
+    var body: some View {
+        VStack(alignment: .leading, spacing: 18) {
+            HStack(spacing: 16) {
+                LabRing(value: Double(report.score), goal: 100) {
+                    VStack(spacing: 0) {
+                        Text("\(report.score)").font(F.round(26, .heavy)).foregroundStyle(C.creme).monospacedDigit()
+                        Text("/ 100").font(F.round(11, .bold)).foregroundStyle(C.muted)
+                    }
+                }
+                .frame(width: 92, height: 92)
+                VStack(alignment: .leading, spacing: 4) {
+                    Text(FilmScore.word(report.score).uppercased()).font(F.round(13, .heavy)).foregroundStyle(FilmScore.color(report.score))
+                    Text(report.action.isEmpty ? "Your clip" : report.action)
+                        .font(F.round(18, .bold)).foregroundStyle(C.creme)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Label("AI review", systemImage: "sparkles").font(F.round(12, .bold)).foregroundStyle(C.brandHi)
+                }
+                Spacer(minLength: 0)
+            }
+
+            Text(report.verdict).font(F.round(16, .semibold)).foregroundStyle(C.creme2)
+                .fixedSize(horizontal: false, vertical: true)
+
+            if !report.strengths.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    LabKicker("WHAT WENT WELL")
+                    ForEach(report.strengths, id: \.self) { s in
+                        Label { Text(s).fixedSize(horizontal: false, vertical: true) } icon: {
+                            Image(systemName: "checkmark.circle.fill").foregroundStyle(C.brand)
+                        }
+                        .font(F.round(15, .semibold)).foregroundStyle(C.creme)
+                    }
+                }
+            }
+
+            if !report.fixes.isEmpty {
+                VStack(alignment: .leading, spacing: 10) {
+                    LabKicker("WHAT TO FIX")
+                    ForEach(Array(report.fixes.enumerated()), id: \.offset) { i, f in
+                        VStack(alignment: .leading, spacing: 8) {
+                            HStack(alignment: .firstTextBaseline, spacing: 8) {
+                                Text("\(i + 1)").font(F.round(13, .heavy)).foregroundStyle(C.char900)
+                                    .frame(width: 22, height: 22).background(Circle().fill(C.gold))
+                                Text(f.title).font(F.round(16, .bold)).foregroundStyle(C.gold)
+                                    .fixedSize(horizontal: false, vertical: true)
+                            }
+                            Text(f.detail).font(F.round(15, .semibold)).foregroundStyle(C.creme)
+                                .fixedSize(horizontal: false, vertical: true)
+                            ForEach(f.drills, id: \.self) { id in
+                                LabDrillRow(drill: Library.shared.drill(id), canTick: false)
+                            }
+                        }
+                        .padding(12)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                        .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(C.char800))
+                    }
+                }
+            }
+
+            if !report.cues.isEmpty {
+                VStack(alignment: .leading, spacing: 8) {
+                    LabKicker("NEXT TIME, THINK")
+                    ForEach(report.cues, id: \.self) { c in
+                        Text("“\(c)”").font(F.round(15, .bold)).foregroundStyle(C.brandHi)
+                            .fixedSize(horizontal: false, vertical: true)
+                    }
+                }
+            }
+
+            Text("AI reviews can get things wrong. They look at still frames, not the whole video.")
+                .font(F.round(12, .medium)).foregroundStyle(C.muted)
+                .fixedSize(horizontal: false, vertical: true)
         }
     }
 }

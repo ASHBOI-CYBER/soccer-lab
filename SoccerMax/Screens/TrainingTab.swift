@@ -1,7 +1,8 @@
-// TRAINING tab (SOCCER LAB, 2026-11-12). Top to bottom: the coach's hello, this week's calendar (which week, which
-// day, which days were trained), the session for the picked day (built from onboarding: a warm-up, ball work every
-// player does, and drills for the player's position, LabPlan), the Fix List from Film, the live GPS run, the
-// ready-made sessions and the free session logger.
+// TRAINING tab (SOCCER LAB, 2026-11-12; three parts since 2026-11-15).
+//   PLAN     this week's calendar, the session for the picked day (built from onboarding: a warm-up, ball work every
+//            player does, and drills for the player's position, LabPlan), the Fix List from Film.
+//   DRILLS   tools (voice drills, library, Coach), ready-made sessions, quick drills by skill (TrainingHub.swift).
+//   FITNESS  the live GPS run, workouts, fitness drills and the free session logger (TrainingHub.swift).
 import SwiftUI
 
 struct TrainingTab: View {
@@ -9,6 +10,8 @@ struct TrainingTab: View {
     @State private var lab = Lab.shared
     /// The day whose session is showing ("Mon"..."Sun"); today when the tab opens.
     @State private var day = todayKey()
+    // test builds: `-route tab:training:drillstab` / `:fitness` open that part
+    @State private var part: TrainingPart = DebugRoute.parts.contains("fitness") ? .fitness : DebugRoute.parts.contains("drillstab") ? .drills : .plan
     // test builds: `-route tab:training:run` opens the live run, `:runsaved` its summary
     @State private var running = DebugRoute.parts.contains("run") || DebugRoute.parts.contains("runsaved")
     // test builds: `:drills` opens the drill library, `:drill` the first drill's page, `:session` the first ready-made session
@@ -32,13 +35,17 @@ struct TrainingTab: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 26) {
                     TabHeader("Training")
-                    week
-                    session
-                    if !fixes.isEmpty { fixList }
-                    runCard
-                    library
-                    readyMade
-                    free
+                    TrainingPartPicker(part: $part)
+                    switch part {
+                    case .plan:
+                        week
+                        session
+                        if !fixes.isEmpty { fixList }
+                    case .drills:
+                        TrainingDrillsPart()
+                    case .fitness:
+                        TrainingFitnessPart { runCard } free: { free }
+                    }
                 }
                 .padding(.horizontal, 20)
                 .padding(.bottom, 40)

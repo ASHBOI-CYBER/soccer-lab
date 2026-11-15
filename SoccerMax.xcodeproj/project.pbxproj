@@ -61,6 +61,11 @@
 		9A3C9C849F063C4E08F0480E /* Matchday.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25C20692BD219DE50953FB6 /* Matchday.swift */; };
 		9A6DD11E33BA2F2210B53C87 /* ProfileViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321081A7E10807BC492CE684 /* ProfileViews.swift */; };
 		9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B54515A513BD184531E29 /* MapTab.swift */; };
+		89830AABCF184F9B4BE5C6C0 /* TrainingHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = A921FA85435094AB89830AAB /* TrainingHub.swift */; };
+		AE3CEFBBDF3C81B2CC5C0962 /* Ranks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA38A0E4E7FE80FAE3CEFBB /* Ranks.swift */; };
+		AF474E30C2F3DC1D027771B7 /* FoodList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9626D713BF730237AF474E30 /* FoodList.swift */; };
+		D3DB4193051721BBD68C20B8 /* FoodScan.swift in Sources */ = {isa = PBXBuildFile; fileRef = DAF3AAF1E1F5D580D3DB4193 /* FoodScan.swift */; };
+		F3CACABB659059DBFCEE9291 /* AIVision.swift in Sources */ = {isa = PBXBuildFile; fileRef = 98EC31E389EDDA5EF3CACABB /* AIVision.swift */; };
 		6FEBA74D8F1047BB796C2174 /* Coach.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7A941C0FF7C19A7C6FEBA74D /* Coach.swift */; };
 		1E10322544001E43942E45B7 /* DrillLibrary.swift in Sources */ = {isa = PBXBuildFile; fileRef = C7D18A61EE9B8D371E103225 /* DrillLibrary.swift */; };
 		BFEBEC8F441092222A02A504 /* ProfileExtras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 231677850EE09D11BFEBEC8F /* ProfileExtras.swift */; };
@@ -127,6 +132,11 @@
 
 /* Begin PBXFileReference section */
 		008B54515A513BD184531E29 /* MapTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTab.swift; sourceTree = "<group>"; };
+		A921FA85435094AB89830AAB /* TrainingHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingHub.swift; sourceTree = "<group>"; };
+		4BA38A0E4E7FE80FAE3CEFBB /* Ranks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ranks.swift; sourceTree = "<group>"; };
+		9626D713BF730237AF474E30 /* FoodList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodList.swift; sourceTree = "<group>"; };
+		DAF3AAF1E1F5D580D3DB4193 /* FoodScan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodScan.swift; sourceTree = "<group>"; };
+		98EC31E389EDDA5EF3CACABB /* AIVision.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AIVision.swift; sourceTree = "<group>"; };
 		7A941C0FF7C19A7C6FEBA74D /* Coach.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Coach.swift; sourceTree = "<group>"; };
 		C7D18A61EE9B8D371E103225 /* DrillLibrary.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DrillLibrary.swift; sourceTree = "<group>"; };
 		231677850EE09D11BFEBEC8F /* ProfileExtras.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileExtras.swift; sourceTree = "<group>"; };
@@ -321,6 +331,11 @@
 				84384AF82E40D2BD83DFB35E /* LocalTeamViews.swift */,
 				457EAABAD4522119C8D6381B /* LoggedViews.swift */,
 				008B54515A513BD184531E29 /* MapTab.swift */,
+				A921FA85435094AB89830AAB /* TrainingHub.swift */,
+				4BA38A0E4E7FE80FAE3CEFBB /* Ranks.swift */,
+				9626D713BF730237AF474E30 /* FoodList.swift */,
+				DAF3AAF1E1F5D580D3DB4193 /* FoodScan.swift */,
+				98EC31E389EDDA5EF3CACABB /* AIVision.swift */,
 				7A941C0FF7C19A7C6FEBA74D /* Coach.swift */,
 				C7D18A61EE9B8D371E103225 /* DrillLibrary.swift */,
 				231677850EE09D11BFEBEC8F /* ProfileExtras.swift */,
@@ -567,6 +582,11 @@
 				410B5D77DB3B7434D4C9F886 /* LocalTeams.swift in Sources */,
 				2A313F5883861E364088C2C7 /* LoggedViews.swift in Sources */,
 				9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */,
+				89830AABCF184F9B4BE5C6C0 /* TrainingHub.swift in Sources */,
+				AE3CEFBBDF3C81B2CC5C0962 /* Ranks.swift in Sources */,
+				AF474E30C2F3DC1D027771B7 /* FoodList.swift in Sources */,
+				D3DB4193051721BBD68C20B8 /* FoodScan.swift in Sources */,
+				F3CACABB659059DBFCEE9291 /* AIVision.swift in Sources */,
 				6FEBA74D8F1047BB796C2174 /* Coach.swift in Sources */,
 				1E10322544001E43942E45B7 /* DrillLibrary.swift in Sources */,
 				BFEBEC8F441092222A02A504 /* ProfileExtras.swift in Sources */,

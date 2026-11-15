@@ -1,5 +1,5 @@
-// HOME tab (SOCCER LAB, 2026-11-13). The day at a glance: today's session and how far through it you are, this
-// week's training days, shortcuts into each part of the app, today's fuel and what Film has asked you to fix.
+// HOME tab (SOCCER LAB, 2026-11-13). The day at a glance: today's session and how far through it you are, your rank
+// and the global leaderboard (Ranks.swift, 2026-11-15), this week's training days, shortcuts into each part of the app, today's fuel and what Film has asked you to fix.
 // It only reads what the other tabs keep (Lab, AppStore); every card opens the tab that owns it.
 import SwiftUI
 
@@ -17,6 +17,8 @@ struct HomeTab: View {
                     header
                     coachCard
                     today
+                    HomeRankCard()
+                    GlobalBoardCard()
                     week
                     shortcuts
                     fuel

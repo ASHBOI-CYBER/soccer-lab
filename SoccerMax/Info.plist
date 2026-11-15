@@ -19,6 +19,7 @@
 	<key>NSLocationWhenInUseUsageDescription</key><string>Measure the distance, pace and route of your runs, and find soccer teams near you. Your run route stays on your phone.</string>
 	<key>UIBackgroundModes</key>
 	<array><string>location</string></array>
+	<key>NSCameraUsageDescription</key><string>Take a photo of your meal so the food scan can count its calories and protein. The photo isn't kept.</string>
 	<key>NSContactsUsageDescription</key><string>Invite friends from your contacts to your team. Your contacts stay on your phone and are never uploaded.</string>
 	<!-- team invite links: soccermax://join/ABC123 -->
 	<key>CFBundleURLTypes</key>

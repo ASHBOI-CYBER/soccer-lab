@@ -358,10 +358,12 @@ final class Team {
     func signIn(_ result: Result<ASAuthorization, Error>, nonce: String, store: AppStore) async {
         switch result {
         case .failure(let e):
-            if (e as? ASAuthorizationError)?.code != .canceled { error = "Couldn't sign in with Apple. Try again." }
+            // the code tells us why on a tester's screenshot (2026-11-15: TestFlight sign-in failed with no detail)
+            let ns = e as NSError
+            if (e as? ASAuthorizationError)?.code != .canceled { error = "Couldn't sign in with Apple (\(ns.domain.split(separator: ".").last ?? "") \(ns.code)). Try again." }
         case .success(let auth):
             guard let cred = auth.credential as? ASAuthorizationAppleIDCredential, let t = cred.identityToken,
-                  let token = String(data: t, encoding: .utf8) else { error = "Couldn't sign in with Apple. Try again."; return }
+                  let token = String(data: t, encoding: .utf8) else { error = "Couldn't sign in with Apple (no token). Try again."; return }
             do {
                 // The raw nonce that matches THIS token (its `nonce` claim = the SHA-256 we sent), not whatever the
                 // button's state holds now ? a second tap or a redraw swapped it ? "Nonces mismatch" (2026-10-30).
@@ -1060,7 +1062,9 @@ final class SupabaseREST {
         guard (resp as? HTTPURLResponse)?.statusCode == 200, let a = try? JSONDecoder().decode(A.self, from: data) else {
             let msg = String(data: data, encoding: .utf8) ?? ""
             if msg.contains("provider_disabled") || msg.contains("is not enabled") || msg.contains("Unsupported provider") { throw SupabaseError(message: "Teams aren't switched on yet.") }
-            throw SupabaseError(message: "Couldn't sign in. Try again.")
+            let code = (resp as? HTTPURLResponse)?.statusCode ?? 0
+            let why = (try? JSONSerialization.jsonObject(with: data) as? [String: Any]).flatMap { ($0["error_code"] ?? $0["msg"] ?? $0["error"]) as? String } ?? ""
+            throw SupabaseError(message: "Couldn't sign in (\(code)\(why.isEmpty ? "" : ", " + String(why.prefix(60)))). Try again.")
         }
         return Session(access: a.access_token, refresh: a.refresh_token, expires: Date().addingTimeInterval(a.expires_in), user: a.user.id)
     }

@@ -1,11 +1,13 @@
-// NUTRITION tab (SOCCER LAB, 2026-11-12). A manual fuel log: daily targets from the player's own numbers
-// (FuelTargets in LabData.swift), quick-add from a list of common foods, your own entries, and water. Everything
-// stays on the phone. It is about eating enough to train and recover: there is no weight-loss mode.
+// NUTRITION tab (SOCCER LAB, 2026-11-12). A fuel log: daily targets from the player's own numbers
+// (FuelTargets in LabData.swift), quick-add from ~270 common foods (search, recent first), your own entries, water,
+// and (2026-11-15) an AI photo scan of a meal (FoodScan.swift). The log stays on the phone. It is about eating
+// enough to train and recover: there is no weight-loss mode.
 import SwiftUI
 
 struct NutritionTab: View {
     @State private var lab = Lab.shared
     @State private var adding = false
+    @State private var scanning = false
     @State private var editingBody = false
     /// The day being looked at ("Mon"..."Sun" of this week); today when the tab opens.
     @State private var day = todayKey()
@@ -38,6 +40,7 @@ struct NutritionTab: View {
                     macros(d, goal)
                     if isToday { tip(d, goal) }
                     water(d, goal)
+                    if isToday { FoodScanCard { scanning = true } }
                     meals(d)
                     mealPlans
                     Text("A general guide for active players, not medical advice. If you have a health condition, follow your doctor.")
@@ -54,6 +57,7 @@ struct NutritionTab: View {
             .page()
         }
         .sheet(isPresented: $adding) { FoodSheet() }
+        .sheet(isPresented: $scanning) { FoodScanSheet() }
         .sheet(isPresented: $editingBody) { FuelBodySheet() }
     }
 
@@ -499,7 +503,10 @@ struct MealPlan: Identifiable {
 struct FoodSheet: View {
     @Environment(\.dismiss) private var dismiss
     @State private var lab = Lab.shared
-    @State private var group = Foods.groups[0]
+    /// "Recent" when the player has logged list foods before, else the first group.
+    @State private var group = Lab.shared.recentFoods.isEmpty ? Foods.groups[0] : "Recent"
+    @State private var query = ""
+    @State private var scanning = false
     @State private var addedNow: [String: Int] = [:]
     @State private var custom = false
     @State private var name = ""
@@ -523,9 +530,24 @@ struct FoodSheet: View {
                 }
                 .padding(.top, 24)
 
-                ScrollView(.horizontal) {
+                FoodScanCard { scanning = true }
+
+                HStack(spacing: 8) {
+                    Image(systemName: "magnifyingglass").foregroundStyle(C.muted)
+                    TextField("Search foods: biryani, eggs, banana…", text: $query)
+                        .font(F.round(16, .semibold)).foregroundStyle(C.creme)
+                        .autocorrectionDisabled()
+                    if !query.isEmpty {
+                        Button { query = "" } label: { Image(systemName: "xmark.circle.fill").foregroundStyle(C.muted) }
+                            .buttonStyle(.plain).accessibilityLabel("Clear search")
+                    }
+                }
+                .padding(12)
+                .background(RoundedRectangle(cornerRadius: 14, style: .continuous).fill(C.char950))
+
+                if query.isEmpty { ScrollView(.horizontal) {
                     HStack(spacing: 8) {
-                        ForEach(Foods.groups + ["My own"], id: \.self) { g in
+                        ForEach((lab.recentFoods.isEmpty ? [] : ["Recent"]) + Foods.groups + ["My own"], id: \.self) { g in
                             let on = custom ? g == "My own" : g == group
                             Button(g) {
                                 if g == "My own" { custom = true } else { custom = false; group = g }
@@ -538,9 +560,9 @@ struct FoodSheet: View {
                         }
                     }
                 }
-                .scrollIndicators(.hidden)
+                .scrollIndicators(.hidden) }
 
-                if custom { ownEntry } else { list }
+                if custom && query.isEmpty { ownEntry } else { list }
             }
             .padding(.horizontal, 20)
             .padding(.bottom, 24)
@@ -548,11 +570,30 @@ struct FoodSheet: View {
         .scrollIndicators(.hidden)
         .presentationDetents([.large])
         .presentationBackground(C.char900)
+        .sheet(isPresented: $scanning) { FoodScanSheet() }
+    }
+
+    /// What the list shows: search results (every word must match), the recent foods, or one group.
+    private var shown: [FoodItem] {
+        let words = query.lowercased().split(separator: " ").map(String.init)
+        if !words.isEmpty {
+            return Foods.all.filter { f in
+                let hay = (f.name + " " + f.group + " " + f.serving).lowercased()
+                return words.allSatisfy { hay.contains($0) }
+            }
+        }
+        if group == "Recent" { return lab.recentFoods }
+        return Foods.all.filter { $0.group == group }
     }
 
     private var list: some View {
         VStack(spacing: 8) {
-            ForEach(Foods.all.filter { $0.group == group }) { f in
+            if shown.isEmpty {
+                Text(query.isEmpty ? "Nothing here yet." : "No food called that. Try another word, scan it, or add it under My own.")
+                    .font(F.round(14, .semibold)).foregroundStyle(C.muted)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+            ForEach(shown) { f in
                 let n = addedNow[f.name] ?? 0
                 HStack(spacing: 10) {
                     VStack(alignment: .leading, spacing: 2) {

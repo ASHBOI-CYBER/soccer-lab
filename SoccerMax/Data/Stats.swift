@@ -47,8 +47,9 @@ extension AppStore {
 
     // MARK: levels
 
-    var xp: Int { completions.reduce(0) { $0 + $1.xp } }
-    var level: Level { Level(xp: xp) }
+    /// Finished sessions plus what Soccer Lab's tabs earn (Lab.bonusXP: drills, full sessions, film, runs, food).
+    @MainActor var xp: Int { completions.reduce(0) { $0 + $1.xp } + Lab.shared.bonusXP }
+    @MainActor var level: Level { Level(xp: xp) }
 
     /// Record a finished session (only when it put training time in).
     @MainActor func complete(_ name: String?, minutes: Double, seconds: Int? = nil, drills: [LoggedDrill]? = nil,
@@ -108,7 +109,7 @@ extension AppStore {
         trained = t
         film = fm
         completions = done
-        seenLevel = max(1, level.lv - 1)   // so the demo shows a NEW badge
+        seenLevel = max(1, Level(xp: completions.reduce(0) { $0 + $1.xp }).lv - 1)   // so the demo shows a NEW badge
     }
 }
 

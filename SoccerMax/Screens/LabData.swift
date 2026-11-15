@@ -363,6 +363,8 @@ struct FilmReview: Codable, Identifiable, Hashable {
     /// File name of the clip inside Documents/film, if one was attached.
     var clip: String?
     var drills: [String]
+    /// The AI film review (2026-11-15), when the player asked for one; nil for answer-the-questions reviews.
+    var ai: FilmAIReport? = nil
 }
 
 /// Where attached clips live: Documents/film/<name>. Not tied to the main thread.
@@ -390,8 +392,10 @@ struct FoodItem: Identifiable, Hashable {
 
 /// Common foods with rounded, typical values per serving. A guide for a training log, not a lab measurement.
 enum Foods {
-    static let groups = ["Meals", "Protein", "Carbs", "Fruit and veg", "Snacks", "Drinks"]
-    static let all: [FoodItem] = [
+    static let groups = ["Meals", "South Asian", "Breakfast", "Protein", "Carbs", "Fruit and veg", "Snacks", "Drinks", "Fast food"]
+    /// The first 39 plus Screens/FoodList.swift's 227 (2026-11-15).
+    static let all: [FoodItem] = base + more
+    static let base: [FoodItem] = [
         FoodItem(name: "Chicken and rice", serving: "1 plate", kcal: 550, protein: 40, carbs: 65, fat: 12, group: "Meals"),
         FoodItem(name: "Pasta with tomato sauce", serving: "1 bowl", kcal: 480, protein: 16, carbs: 85, fat: 8, group: "Meals"),
         FoodItem(name: "Beef burger", serving: "1 burger", kcal: 520, protein: 28, carbs: 40, fat: 27, group: "Meals"),
@@ -505,6 +509,13 @@ final class Lab {
     var body: FuelBody { didSet { save(body, "lab.body.v1") } }
     /// GPS runs, newest first (Screens/RunTracker.swift).
     var runs: [RunLog] { didSet { save(runs, "lab.runs.v1") } }
+    /// XP earned in Soccer Lab's tabs (2026-11-15): drills ticked, full sessions, film reviews, runs, days with food
+    /// logged. Added to the finished-session XP for levels, badges and the global leaderboard (Data/Stats.swift).
+    var bonusXP: Int { didSet { UserDefaults.standard.set(bonusXP, forKey: "lab.xp.v1") } }
+    /// The last day the full-session bonus was given ("2026-11-15").
+    private var sessionBonusDay: String { didSet { UserDefaults.standard.set(sessionBonusDay, forKey: "lab.xp.session") } }
+
+    static let xpDrill = 20, xpSession = 50, xpReview = 40, xpFoodDay = 10
     /// The first day the player opened Training: week 1 starts on that week's Monday.
     let startDate: Date
 
@@ -518,6 +529,8 @@ final class Lab {
         fuel = Self.load("lab.fuel.v1") ?? [:]
         body = Self.load("lab.body.v1") ?? FuelBody()
         runs = Self.load("lab.runs.v1") ?? []
+        bonusXP = UserDefaults.standard.integer(forKey: "lab.xp.v1")
+        sessionBonusDay = UserDefaults.standard.string(forKey: "lab.xp.session") ?? ""
         if let t = UserDefaults.standard.object(forKey: "lab.start") as? Date {
             startDate = t
         } else {
@@ -544,6 +557,13 @@ final class Lab {
         guard !isDone(drill.id) else { return }
         done[today, default: []].append(drill.id)
         store.logDrill(PlanItem(drill.id), seconds: Double(drill.min) * 60)
+        bonusXP += Self.xpDrill
+        // the whole of today's session done: a bonus, once a day
+        let plan = LabPlan.today(position: store.answers.position)
+        if sessionBonusDay != today, !plan.isEmpty, plan.allSatisfy({ isDone($0.id) }) {
+            sessionBonusDay = today
+            bonusXP += Self.xpSession
+        }
         if fixList.contains(drill.id) {
             let n = (fixCount[drill.id] ?? 0) + 1
             fixCount[drill.id] = n
@@ -555,7 +575,10 @@ final class Lab {
 
     // runs and the calendar
 
-    func add(run: RunLog) { runs = Array(([run] + runs).prefix(200)) }
+    func add(run: RunLog) {
+        runs = Array(([run] + runs).prefix(200))
+        bonusXP += min(100, Int(run.meters / 50))   // 1 XP per 50 m, up to 100 a run
+    }
 
     /// Which training week this is, counting from the week the player started (1, 2, 3...).
     func week(of date: Date = Date()) -> Int {
@@ -570,6 +593,7 @@ final class Lab {
     @discardableResult
     func add(_ review: FilmReview) -> [String] {
         reviews.insert(review, at: 0)
+        bonusXP += Self.xpReview
         var list = fixList
         for d in review.drills.reversed() {
             list.removeAll { $0 == d }
@@ -592,12 +616,14 @@ final class Lab {
     func eat(_ f: FoodItem, servings: Double = 1) {
         let e = FoodEntry(name: f.name, kcal: Int((Double(f.kcal) * servings).rounded()), protein: f.protein * servings,
                           carbs: f.carbs * servings, fat: f.fat * servings)
+        foodDayXP()
         var day = fuelToday
         day.entries.append(e)
         fuel[today] = day
         trimFuel()
     }
     func eat(custom name: String, kcal: Int, protein: Double, carbs: Double, fat: Double) {
+        foodDayXP()
         var day = fuelToday
         day.entries.append(FoodEntry(name: name, kcal: kcal, protein: protein, carbs: carbs, fat: fat))
         fuel[today] = day
@@ -605,6 +631,7 @@ final class Lab {
     }
     /// Log a meal plan: every food in it, and its glasses of water (Screens/NutritionTab.swift MealPlan).
     func eat(plan: MealPlan) {
+        foodDayXP()
         var day = fuelToday
         for f in plan.items {
             day.entries.append(FoodEntry(name: f.name, kcal: f.kcal, protein: f.protein, carbs: f.carbs, fat: f.fat))
@@ -613,6 +640,15 @@ final class Lab {
         fuel[today] = day
         trimFuel()
     }
+    /// List foods logged in the last 30 days, most-logged first (the add-food sheet's Recent tab).
+    var recentFoods: [FoodItem] {
+        let byName = Dictionary(Foods.all.map { ($0.name, $0) }, uniquingKeysWith: { a, _ in a })
+        let since = dateKey(Calendar.current.date(byAdding: .day, value: -30, to: Date()) ?? Date())
+        var count: [String: Int] = [:]
+        for (k, day) in fuel where k >= since { for e in day.entries where byName[e.name] != nil { count[e.name, default: 0] += 1 } }
+        return count.sorted { $0.value != $1.value ? $0.value > $1.value : $0.key < $1.key }.prefix(15).compactMap { byName[$0.key] }
+    }
+
     func remove(_ e: FoodEntry) {
         var day = fuelToday
         day.entries.removeAll { $0.id == e.id }
@@ -623,6 +659,9 @@ final class Lab {
         day.water = min(30, max(0, day.water + change))
         fuel[today] = day
     }
+    /// Called before a food is added: the first one of the day earns the food-day XP.
+    private func foodDayXP() { if fuelToday.entries.isEmpty { bonusXP += Self.xpFoodDay } }
+
     private func trimFuel() {
         if fuel.count > 100 { for k in fuel.keys.sorted().dropLast(90) { fuel[k] = nil } }
     }
