@@ -11,6 +11,8 @@ struct Board: Codable, Hashable {
         let k: String; let x: Double; let z: Double; let yaw: Double; let rungs: Int?
         /// A cone's colour when the drill calls colours ("red", "blue", "yellow", "green"); nil = training orange.
         let c: String?
+        /// A wall's width in metres (centred on x).
+        let w: Double?
     }
     struct Man: Codable, Hashable { let kit: String; let x: Double; let z: Double; let yaw: Double }
     struct Path: Codable, Hashable { let pts: [[Double]]; let ball: Bool?; let both: Bool? }
@@ -163,6 +165,7 @@ struct BoardPainter {
             xs.append(p.x); zs.append(p.z)
             if p.k == "ladder" { xs.append(p.x + Double(p.rungs ?? 4) * 0.45) }
             if p.k == "goal" { xs += [p.x - 3.66, p.x + 3.66]; zs.append(p.z - 1.2) }
+            if p.k == "wall" { let h = (p.w ?? 4) / 2; xs += [p.x - h, p.x + h]; zs.append(p.z - 0.4) }
         }
         for m in board.players { xs.append(m.x); zs.append(m.z) }
         for b in board.balls { xs.append(b[0]); zs.append(b[1]) }
@@ -195,9 +198,6 @@ struct BoardPainter {
                 let f = BoardScript.ease(min(1, (t - leg.start) / leg.dur))
                 line(&ctx, BoardScript.partial(leg.pts, f).map(pt), ball: leg.ball, alpha: 0.95 * fadeOut, head: f >= 1)
             }
-        }
-        if numbered {
-            for leg in script.legs { badge(&ctx, "\(leg.index + 1)", at: pt(leg.pts[0]), lit: t.map { $0 >= leg.start && $0 < leg.start + leg.dur } ?? false) }
         }
 
         // where you and the ball are now
@@ -247,6 +247,10 @@ struct BoardPainter {
             if let tap, tap < 0.5 { ripple(&ctx, at: pt(ball), k: tap / 0.5) }
             self.ball(&ctx, at: pt(ball), spin: rolled * 2.2)
         }
+        // step numbers last, so the player never hides number 1
+        if numbered {
+            for leg in script.legs { badge(&ctx, "\(leg.index + 1)", at: pt(leg.pts[0]), lit: t.map { $0 >= leg.start && $0 < leg.start + leg.dur } ?? false) }
+        }
     }
 
     // MARK: pieces
@@ -288,6 +292,25 @@ struct BoardPainter {
             var bar = Path(); bar.move(to: a); bar.addLine(to: b)
             ctx.stroke(bar, with: .color(Color(hex: 0xFF8A1F)), style: StrokeStyle(lineWidth: 4.5 * u, lineCap: .round))
             for e in [a, b] { ctx.fill(Path(ellipseIn: CGRect(x: e.x - 3 * u, y: e.y - 3 * u, width: 6 * u, height: 6 * u)), with: .color(.white)) }
+        case "wall":
+            // a brick wall seen from above, with its shadow on the grass
+            let h = (p.w ?? 4) / 2
+            let a = pt(p.x - h, p.z - 0.32), b = pt(p.x + h, p.z)
+            let r = CGRect(x: a.x, y: a.y, width: b.x - a.x, height: max(b.y - a.y, 9 * u))
+            ctx.fill(Path(r.offsetBy(dx: 0, dy: 4 * u)), with: .color(.black.opacity(0.3)))
+            ctx.fill(Path(r), with: .linearGradient(Gradient(colors: [Color(hex: 0xC9B79C), Color(hex: 0xA8957A)]),
+                                                     startPoint: CGPoint(x: r.midX, y: r.minY), endPoint: CGPoint(x: r.midX, y: r.maxY)))
+            var bricks = Path()
+            let rows = 2, bw = 12 * u
+            for row in 0..<rows {
+                let y0 = r.minY + r.height * CGFloat(row) / CGFloat(rows), y1 = r.minY + r.height * CGFloat(row + 1) / CGFloat(rows)
+                if row > 0 { bricks.move(to: CGPoint(x: r.minX, y: y0)); bricks.addLine(to: CGPoint(x: r.maxX, y: y0)) }
+                var x = r.minX + (row % 2 == 0 ? bw : bw / 2)
+                while x < r.maxX { bricks.move(to: CGPoint(x: x, y: y0)); bricks.addLine(to: CGPoint(x: x, y: y1)); x += bw }
+            }
+            ctx.stroke(bricks, with: .color(.black.opacity(0.18)), lineWidth: 0.8 * u)
+            ctx.stroke(Path(r), with: .color(.black.opacity(0.35)), lineWidth: 1 * u)
+            ctx.stroke(Path(CGRect(x: r.minX, y: r.minY, width: r.width, height: 1.2 * u)), with: .color(.white.opacity(0.35)), lineWidth: 1 * u)
         case "goal":
             let a = pt(p.x - 3.66, p.z), b = pt(p.x + 3.66, p.z - 1.0)
             let net = CGRect(x: a.x, y: b.y, width: b.x - a.x, height: a.y - b.y)
@@ -353,7 +376,7 @@ struct BoardPainter {
 
     private func badge(_ ctx: inout GraphicsContext, _ s: String, at c: CGPoint, lit: Bool) {
         let r = (lit ? 9.5 : 8) * u
-        let at = CGPoint(x: c.x - 14 * u, y: c.y - 12 * u)
+        let at = CGPoint(x: c.x - 19 * u, y: c.y - 17 * u)
         let e = Path(ellipseIn: CGRect(x: at.x - r, y: at.y - r, width: 2 * r, height: 2 * r))
         ctx.fill(e, with: .color(lit ? C.brand : Color.black.opacity(0.55)))
         ctx.stroke(e, with: .color(.white.opacity(lit ? 0.9 : 0.5)), lineWidth: 1.2 * u)

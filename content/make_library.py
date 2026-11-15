@@ -44,8 +44,8 @@ def spot(with_ball=True):
     """Work on one spot: you, a small square of cones to stay inside, the ball at your feet."""
     return board([cone(-1, -1), cone(1, -1), cone(-1, 1), cone(1, 1)], [you(0, 0.2)], [[0, -0.2]] if with_ball else [])
 def wall(z=-3.0, half=2.0):
-    """A wall drawn as a tight row of cones across the top."""
-    return [cone(x * 0.5, z) for x in range(int(-half * 2), int(half * 2) + 1)]
+    """A wall across the top, centred on x = 0 (the app draws bricks; 2026-11-16, was a row of cones)."""
+    return [{"k": "wall", "x": 0, "z": z, "yaw": 0, "w": half * 2}]
 def lane(length=20.0, width=3.0):
     return [cone(-width / 2, 0), cone(width / 2, 0), cone(-width / 2, -length), cone(width / 2, -length)]
 def mat():
