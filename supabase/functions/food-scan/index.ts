@@ -3,7 +3,7 @@
 // calories, protein, carbs and fat. The app shows the list for the player to check and adjust before anything is
 // logged. The photo is not stored.
 //
-// Signed-in players only, with a daily allowance (functions/_shared/ai.ts LIMITS.food: trial 5, paid 15), counted by
+// Signed-in players only, with a daily allowance (functions/_shared/ai.ts LIMITS.food: 2 a day), counted by
 // public.ai_take. A failed AI call gives the use back.
 //
 // Deploy: supabase functions deploy food-scan --no-verify-jwt   (needs the ANTHROPIC_API_KEY secret, like coach)

@@ -7,10 +7,11 @@ export const MODEL = "claude-haiku-5-5";
 const ENTITLEMENT = "soccer_max_pro";
 const FIRST_WEEK_MS = 7 * 24 * 3600 * 1000;
 
-/** Daily allowances. Trial = a free trial, an intro offer, or the first 7 days after the first purchase. */
+/** Daily allowances. Trial = a free trial, an intro offer, or the first 7 days after the first purchase.
+ *  2026-11-15: 2 a day each for everyone (keeps the worst-case AI bill well under what a yearly plan pays). */
 export const LIMITS = {
-  film: { trial: 2, paid: 5 },
-  food: { trial: 5, paid: 15 },
+  film: { trial: 2, paid: 2 },
+  food: { trial: 2, paid: 2 },
 } as const;
 export type Kind = keyof typeof LIMITS;
 

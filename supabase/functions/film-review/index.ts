@@ -4,7 +4,7 @@
 // frames and returns a structured report: what the clip shows, a score, what went well, up to 3 things to fix with
 // drills from the app, and cues for next time. The video itself never leaves the phone; the frames are not stored.
 //
-// Signed-in players only, with a daily allowance (functions/_shared/ai.ts LIMITS.film: trial 2, paid 5), counted by
+// Signed-in players only, with a daily allowance (functions/_shared/ai.ts LIMITS.film: 2 a day), counted by
 // public.ai_take. A failed AI call gives the use back.
 //
 // Deploy: supabase functions deploy film-review --no-verify-jwt   (needs the ANTHROPIC_API_KEY secret, like coach)

@@ -78,8 +78,8 @@ struct AIGate<Content: View>: View {
 final class AIUsage {
     static let shared = AIUsage()
     /// The daily allowances (supabase/functions/_shared/ai.ts LIMITS). Payments aren't on yet: everyone has trial.
-    static let trial: [String: Int] = ["film": 2, "food": 5]
-    static let paid: [String: Int] = ["film": 5, "food": 15]
+    static let trial: [String: Int] = ["film": 2, "food": 2]
+    static let paid: [String: Int] = ["film": 2, "food": 2]
 
     private var left: [String: Int] = (UserDefaults.standard.dictionary(forKey: "ai.left.v1") as? [String: Int]) ?? [:]
 

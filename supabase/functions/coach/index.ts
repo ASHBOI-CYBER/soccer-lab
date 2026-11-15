@@ -18,7 +18,7 @@ import Anthropic from "npm:@anthropic-ai/sdk@1.8.0";
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const MODEL = "claude-haiku-5-5";
-const PAID_LIMIT = 80;
+const PAID_LIMIT = 40;   // was 80; 40 keeps a yearly subscriber who maxes it out profitable (2026-11-15)
 const TRIAL_LIMIT = 20;
 const ENTITLEMENT = "soccer_max_pro";
 const FIRST_WEEK_MS = 7 * 24 * 3600 * 1000;
