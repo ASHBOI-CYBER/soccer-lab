@@ -33,6 +33,19 @@ struct Answers: Codable, Equatable {
     var notify: Bool?
     var drills: [String] = []
     var pledged = false
+    /// Onboarding v4 (2026-11-17): the body and routine behind the personal fuel targets and plan. Optional so older
+    /// saves still decode.
+    var heightCm: Double?
+    var weightKg: Double?
+    /// "1-2 days", "3-4 days", "5-6 days", "Every day"
+    var trainDays: String?
+    /// What they want from food: "Build muscle", "Stay lean and fast", "More energy for games", "Just eat better"
+    var fuelGoal: String?
+
+    /// Training days a week from the routine answer (for the fuel targets).
+    var trainingDaysPerWeek: Int {
+        switch trainDays { case "1-2 days": return 2; case "3-4 days": return 4; case "5-6 days": return 6; case "Every day": return 7; default: return 3 }
+    }
 
     var firstName: String { first.trimmingCharacters(in: .whitespaces).isEmpty ? "Player" : first.trimmingCharacters(in: .whitespaces) }
     /// FC cards show the surname when there is one.

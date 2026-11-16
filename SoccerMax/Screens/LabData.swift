@@ -465,6 +465,10 @@ struct FuelBody: Codable, Hashable {
     var heightCm: Double = 0
     var age: Int = 0
     var trainingDays: Int = 3
+    /// From onboarding (2026-11-17): "Build muscle" / "Stay lean and fast" / "More energy for games" / "Just eat better"
+    var goal: String? = nil
+    /// Position code ("ST", "CM", "GK"...): midfielders run the most, keepers the least.
+    var position: String? = nil
     var isSet: Bool { weightKg > 0 && heightCm > 0 && age > 0 }
 }
 
@@ -476,14 +480,23 @@ struct FuelTargets: Hashable {
     let water: Int
 
     /// Energy to train and recover on, never a diet: resting energy (Mifflin-St Jeor, the middle of its two
-    /// constants) times an activity factor that rises with training days. Protein 1.6 g per kg, fat a quarter of
-    /// the energy, carbohydrate the rest. Without the player's numbers, a typical active teenager's day.
+    /// constants) times an activity factor that rises with training days, a little more for midfielders (they run the
+    /// most) and a little less for keepers, plus the player's food goal: building muscle adds 300 kcal and more
+    /// protein, "more energy" adds carbs. "Stay lean" never cuts below what training needs (no weight-loss mode:
+    /// many players are teenagers). Protein 1.6 g/kg (1.8 to build muscle), fat a quarter of the energy, carbs the
+    /// rest. Without the player's numbers, a typical active teenager's day.
     static func make(_ b: FuelBody) -> FuelTargets {
         guard b.isSet else { return FuelTargets(kcal: 2400, protein: 100, carbs: 330, fat: 70, water: 8) }
         let rest = 10 * b.weightKg + 6.25 * b.heightCm - 5 * Double(b.age) - 78
-        let active = 1.4 + 0.075 * Double(min(max(b.trainingDays, 0), 7))
-        let kcal = max(1800, min(4500, rest * active))
-        let protein = 1.6 * b.weightKg
+        var active = 1.4 + 0.075 * Double(min(max(b.trainingDays, 0), 7))
+        switch b.position.map(LabPlan.group) {
+        case "Midfielder": active += 0.05
+        case "Goalkeeper": active -= 0.05
+        default: break
+        }
+        let extra: Double = b.goal == "Build muscle" ? 300 : b.goal == "More energy for games" ? 150 : 0
+        let kcal = max(1800, min(4500, rest * active + extra))
+        let protein = (b.goal == "Build muscle" ? 1.8 : 1.6) * b.weightKg
         let fat = kcal * 0.25 / 9
         let carbs = max(0, (kcal - protein * 4 - fat * 9) / 4)
         let water = Int((b.weightKg * 35 / 250).rounded())
@@ -611,6 +624,18 @@ final class Lab {
     // nutrition
 
     var targets: FuelTargets { FuelTargets.make(body) }
+
+    /// The end of onboarding: the player's own numbers become their fuel targets.
+    func setBody(from a: Answers) {
+        var b = body
+        if let w = a.weightKg { b.weightKg = w }
+        if let h = a.heightCm { b.heightCm = h }
+        if let s = a.age, let n = Int(s) { b.age = n }
+        if a.trainDays != nil { b.trainingDays = a.trainingDaysPerWeek }
+        b.goal = a.fuelGoal ?? b.goal
+        b.position = a.position
+        body = b
+    }
     var fuelToday: FuelDay { fuel[today] ?? FuelDay() }
 
     func eat(_ f: FoodItem, servings: Double = 1) {

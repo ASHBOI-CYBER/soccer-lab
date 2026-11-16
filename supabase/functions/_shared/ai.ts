@@ -12,6 +12,7 @@ const FIRST_WEEK_MS = 7 * 24 * 3600 * 1000;
 export const LIMITS = {
   film: { trial: 2, paid: 2 },
   food: { trial: 2, paid: 2 },
+  plan: { trial: 2, paid: 3 },     // AI nutrition plan: made when the player asks; rarely more than once a day
 } as const;
 export type Kind = keyof typeof LIMITS;
 
@@ -80,7 +81,7 @@ export async function take(db: Db, uid: string, kind: Kind, noun: string): Promi
     return reply({ error: "Something went wrong. Try again in a minute." }, 500);
   }
   if (typeof left !== "number" || left < 0) {
-    const what = kind === "film" ? "AI film reviews" : "food scans";
+    const what = kind === "film" ? "AI film reviews" : kind === "plan" ? "nutrition plans" : "food scans";
     return reply({ error: `That's all ${limit} ${what} for today. You get ${limit} more tomorrow.`, remaining: 0, limit }, 429);
   }
   return left;

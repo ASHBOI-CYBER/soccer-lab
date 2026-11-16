@@ -93,6 +93,8 @@ struct SoccerMaxApp: App {
         PostHogSDK.shared.setup(config)
     }
 
+    @State private var showSplash = DebugRoute.parts.first.map { $0.isEmpty || $0 == "splash" } ?? true
+
     var body: some Scene {
         WindowGroup {
             Group {
@@ -111,6 +113,19 @@ struct SoccerMaxApp: App {
             }
             .animation(.easeInOut(duration: 0.35), value: store.onboarded)
             .animation(.easeInOut(duration: 0.35), value: purchases.hasAccess)
+            // the opening animation, once per launch, over whatever screen opens (2026-11-17); skipped for test routes
+            .overlay {
+                if showSplash {
+                    SplashView {
+                        showSplash = false
+                        // test builds: `-route splash:loop` plays it again and again (for recordings)
+                        if DebugRoute.parts.contains("loop") {
+                            Task { try? await Task.sleep(nanoseconds: 700_000_000); showSplash = true }
+                        }
+                    }
+                    .transition(.opacity)
+                }
+            }
             // paid (or on a team trial) ? the long-press 40% OFF item goes away (Screens/StayOffer.swift)
             .onChange(of: purchases.hasAccess) { _, _ in quick.refresh() }
             .environment(store)

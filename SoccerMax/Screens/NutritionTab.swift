@@ -37,8 +37,10 @@ struct NutritionTab: View {
                     Text("Eat enough to train hard and recover well.")
                         .font(F.round(14, .medium)).foregroundStyle(C.muted).padding(.top, -14).padding(.horizontal, 4)
                     week
+                    if !lab.body.isSet { personalise }
                     calories(d, goal)
                     macros(d, goal)
+                    NutritionPlanCard()
                     if isToday { tip(d, goal) }
                     water(d, goal)
                     if isToday { FoodScanCard { scanning = true } }
@@ -60,6 +62,26 @@ struct NutritionTab: View {
         .sheet(isPresented: $adding) { FoodSheet() }
         .sheet(isPresented: $scanning) { FoodScanSheet() }
         .sheet(isPresented: $editingBody) { FuelBodySheet() }
+    }
+
+    /// Players from before onboarding asked for height and weight (2026-11-17) still see the general 2,400 kcal.
+    private var personalise: some View {
+        Button { editingBody = true } label: {
+            HStack(spacing: 12) {
+                Image(systemName: "person.crop.circle.badge.checkmark").font(.system(size: 22, weight: .bold)).foregroundStyle(C.gold)
+                VStack(alignment: .leading, spacing: 2) {
+                    Text("Make these targets yours").font(F.round(16, .bold)).foregroundStyle(C.creme)
+                    Text("Add your age, height, weight and goal. Right now you see a general day for an active player.")
+                        .font(F.round(13, .semibold)).foregroundStyle(C.muted).fixedSize(horizontal: false, vertical: true)
+                }
+                Spacer(minLength: 0)
+                Image(systemName: "chevron.right").font(.system(size: 13, weight: .heavy)).foregroundStyle(C.muted)
+            }
+            .padding(14)
+            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.gold.opacity(0.10))
+                .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(C.gold.opacity(0.4), lineWidth: 1)))
+        }
+        .buttonStyle(.plain)
     }
 
     // MARK: week
@@ -663,7 +685,9 @@ struct FoodSheet: View {
 
 struct FuelBodySheet: View {
     @Environment(\.dismiss) private var dismiss
+    @Environment(AppStore.self) private var store
     @State private var lab = Lab.shared
+    @State private var goal: String? = nil
     @State private var weight = 60.0
     @State private var height = 170.0
     @State private var age = 16
@@ -678,9 +702,20 @@ struct FuelBodySheet: View {
             row("Height", "\(Int(height)) cm") { Stepper("Height", value: $height, in: 120...220, step: 1).labelsHidden() }
             row("Age", "\(age)") { Stepper("Age", value: $age, in: 13...60).labelsHidden() }
             row("Training days a week", "\(days)") { Stepper("Training days", value: $days, in: 0...7).labelsHidden() }
+            VStack(alignment: .leading, spacing: 8) {
+                Text("Food goal").font(F.round(14, .bold)).foregroundStyle(C.creme2)
+                Picker("Food goal", selection: $goal) {
+                    ForEach(["Build muscle", "Stay lean and fast", "More energy for games", "Just eat better"], id: \.self) { Text($0).tag(Optional($0)) }
+                }
+                .pickerStyle(.menu).tint(C.brandHi)
+            }
+            .padding(12)
+            .frame(maxWidth: .infinity, alignment: .leading)
+            .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(C.char800))
             Spacer()
             Button("SAVE") {
-                lab.body = FuelBody(weightKg: weight, heightCm: height, age: age, trainingDays: days)
+                lab.body = FuelBody(weightKg: weight, heightCm: height, age: age, trainingDays: days,
+                                    goal: goal, position: lab.body.position ?? store.answers.position)
                 Haptics.play(.goal)
                 dismiss()
             }
@@ -694,6 +729,7 @@ struct FuelBodySheet: View {
             let b = lab.body
             if b.isSet { weight = b.weightKg; height = b.heightCm; age = b.age }
             days = b.trainingDays
+            goal = b.goal ?? store.answers.fuelGoal ?? "Just eat better"
         }
     }
 

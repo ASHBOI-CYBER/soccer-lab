@@ -13,12 +13,17 @@ import SwiftUI
 import UserNotifications
 
 enum OBStep: String, CaseIterable {
-    case welcome, name, position, gender, foot, wants, source, team, account
+    case welcome, name, position, gender, foot, body, level, routine, goal, fuel, wants, source, team, account
 
     /// Name shown in Settings ? Test onboarding.
     var label: String {
         switch self {
         case .foot: return "Strong foot"
+        case .body: return "Age, height, weight"
+        case .level: return "Experience"
+        case .routine: return "Training routine"
+        case .goal: return "Main goal"
+        case .fuel: return "Food goal"
         case .wants: return "What you want most"
         case .source: return "Where did you find us"
         case .team: return "Join a team"
@@ -96,6 +101,7 @@ struct OnboardingFlow: View {
             if !Wants.social(store.answers.wants ?? []), !(store.answers.wants ?? []).isEmpty, Team.shared.pendingCode == nil {
                 Nav.shared.tab = .home
             }
+            Lab.shared.setBody(from: store.answers)
             store.onboarded = true
         }
     }
@@ -109,6 +115,15 @@ struct OnboardingFlow: View {
         case .position: PositionStep(ctx: ctx)
         case .gender: PickStep(ctx: ctx, title: "Tell us about you, \(n)", options: ["Male", "Female", "Prefer not to say"], key: \.gender)
         case .foot: PickStep(ctx: ctx, title: "Which is your strong foot?", options: ["Right", "Left", "Both"], key: \.foot)
+        case .body: BodyStep(ctx: ctx)
+        case .level: PickStep(ctx: ctx, title: "What level do you play at?", sub: "So your drills start at the right level.",
+                              options: ["Just for fun", "School team", "Club", "Academy", "College", "Semi-pro +"], key: \.level)
+        case .routine: PickStep(ctx: ctx, title: "How often do you train?", sub: "Team practice and training on your own both count.",
+                                options: ["1-2 days", "3-4 days", "5-6 days", "Every day"], key: \.trainDays)
+        case .goal: PickStep(ctx: ctx, title: "What's your main goal, \(n)?",
+                             options: ["Make my team", "Become a starter", "Get scouted", "Improve my skills", "Get fitter and faster", "Play for fun"], key: \.goal)
+        case .fuel: PickStep(ctx: ctx, title: "What do you want from your food?", sub: "We'll set your calories and protein around it.",
+                             options: ["Build muscle", "Stay lean and fast", "More energy for games", "Just eat better"], key: \.fuelGoal)
         case .wants: WantsStep(ctx: ctx)
         case .source: PickStep(ctx: ctx, title: "Where did you find us?", options: ["TikTok", "Instagram", "YouTube", "A friend", "App Store", "Other"], key: \.source,
                                icon: { AnyView(SourceLogo(source: $0)) })

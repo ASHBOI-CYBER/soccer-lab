@@ -61,6 +61,9 @@
 		9A3C9C849F063C4E08F0480E /* Matchday.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25C20692BD219DE50953FB6 /* Matchday.swift */; };
 		9A6DD11E33BA2F2210B53C87 /* ProfileViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321081A7E10807BC492CE684 /* ProfileViews.swift */; };
 		9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B54515A513BD184531E29 /* MapTab.swift */; };
+		B42DDB5B6F7A0C448433F064 /* NutritionPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA2DC592ACE28D0CB42DDB5B /* NutritionPlan.swift */; };
+		4A5D7D3EE1F9B7A0313AA089 /* BodyStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5D09C1D1E866E4A5D7D3E /* BodyStep.swift */; };
+		0667581C61A12A3E60E78104 /* Splash.swift in Sources */ = {isa = PBXBuildFile; fileRef = 0C60F99ED90F14280667581C /* Splash.swift */; };
 		89830AABCF184F9B4BE5C6C0 /* TrainingHub.swift in Sources */ = {isa = PBXBuildFile; fileRef = A921FA85435094AB89830AAB /* TrainingHub.swift */; };
 		AE3CEFBBDF3C81B2CC5C0962 /* Ranks.swift in Sources */ = {isa = PBXBuildFile; fileRef = 4BA38A0E4E7FE80FAE3CEFBB /* Ranks.swift */; };
 		AF474E30C2F3DC1D027771B7 /* FoodList.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9626D713BF730237AF474E30 /* FoodList.swift */; };
@@ -132,6 +135,9 @@
 
 /* Begin PBXFileReference section */
 		008B54515A513BD184531E29 /* MapTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTab.swift; sourceTree = "<group>"; };
+		BA2DC592ACE28D0CB42DDB5B /* NutritionPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionPlan.swift; sourceTree = "<group>"; };
+		9BB5D09C1D1E866E4A5D7D3E /* BodyStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyStep.swift; sourceTree = "<group>"; };
+		0C60F99ED90F14280667581C /* Splash.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Splash.swift; sourceTree = "<group>"; };
 		A921FA85435094AB89830AAB /* TrainingHub.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrainingHub.swift; sourceTree = "<group>"; };
 		4BA38A0E4E7FE80FAE3CEFBB /* Ranks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Ranks.swift; sourceTree = "<group>"; };
 		9626D713BF730237AF474E30 /* FoodList.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FoodList.swift; sourceTree = "<group>"; };
@@ -331,6 +337,9 @@
 				84384AF82E40D2BD83DFB35E /* LocalTeamViews.swift */,
 				457EAABAD4522119C8D6381B /* LoggedViews.swift */,
 				008B54515A513BD184531E29 /* MapTab.swift */,
+				BA2DC592ACE28D0CB42DDB5B /* NutritionPlan.swift */,
+				9BB5D09C1D1E866E4A5D7D3E /* BodyStep.swift */,
+				0C60F99ED90F14280667581C /* Splash.swift */,
 				A921FA85435094AB89830AAB /* TrainingHub.swift */,
 				4BA38A0E4E7FE80FAE3CEFBB /* Ranks.swift */,
 				9626D713BF730237AF474E30 /* FoodList.swift */,
@@ -582,6 +591,9 @@
 				410B5D77DB3B7434D4C9F886 /* LocalTeams.swift in Sources */,
 				2A313F5883861E364088C2C7 /* LoggedViews.swift in Sources */,
 				9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */,
+				B42DDB5B6F7A0C448433F064 /* NutritionPlan.swift in Sources */,
+				4A5D7D3EE1F9B7A0313AA089 /* BodyStep.swift in Sources */,
+				0667581C61A12A3E60E78104 /* Splash.swift in Sources */,
 				89830AABCF184F9B4BE5C6C0 /* TrainingHub.swift in Sources */,
 				AE3CEFBBDF3C81B2CC5C0962 /* Ranks.swift in Sources */,
 				AF474E30C2F3DC1D027771B7 /* FoodList.swift in Sources */,

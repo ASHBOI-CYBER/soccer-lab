@@ -65,10 +65,12 @@ final class Ranks {
 
 struct HomeRankCard: View {
     @Environment(AppStore.self) private var store
+    // test builds: `-route tab:home:levels` opens the tier list
+    @State private var open = DebugRoute.parts.contains("levels")
     var body: some View {
         let l = store.level
         let next = LevelBadge.of(l.lv + 1)
-        HStack(spacing: 14) {
+        Button { open = true } label: { HStack(spacing: 14) {
             BadgePatch(badge: l.badge, earned: true, size: 58, fresh: false)
             VStack(alignment: .leading, spacing: 6) {
                 HStack(alignment: .firstTextBaseline) {
@@ -82,11 +84,16 @@ struct HomeRankCard: View {
                 Text(next.lv == l.badge.lv ? "\(l.need - l.into) XP to level \(l.lv + 1)" : "\(l.need - l.into) XP to \(next.name)")
                     .font(F.round(12, .semibold)).foregroundStyle(C.muted).monospacedDigit()
             }
+            Image(systemName: "chevron.right").font(.system(size: 13, weight: .heavy)).foregroundStyle(C.muted)
         }
         .padding(14)
         .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.char800)
             .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(C.line, lineWidth: 1)))
+        }
+        .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
+        .accessibilityHint("Shows every rank")
+        .sheet(isPresented: $open) { LevelsSheet() }
     }
 }
 

@@ -133,6 +133,7 @@ final class Purchases {
             offering = current
             for p in current?.availablePackages ?? [] {
                 let id: String = switch p.packageType {
+                case .weekly: PayID.weekly
                 case .monthly: PayID.monthly
                 case .annual: PayID.yearly
                 case .lifetime: PayID.lifetime
