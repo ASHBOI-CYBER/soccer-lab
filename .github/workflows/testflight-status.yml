@@ -61,6 +61,12 @@ jobs:
               print(f"build {b['attributes']['version']}: {b['attributes']['processingState']}, outside-tester review: {state}")
           s, t = call("GET", f"/v1/betaGroups/{EXTERNAL}/betaTesters?limit=20")
           print("outside testers:", [(x["attributes"]["firstName"], x["attributes"].get("state")) for x in t["data"]])
+          # every processed build goes to the internal testers (you, Ali, Fasih) straight away, no review needed
+          s, g = call("GET", f"/v1/betaGroups/{INTERNAL}/builds?limit=50")
+          have = {x["id"] for x in g.get("data", [])} if isinstance(g, dict) else set()
+          for b in builds:
+              if b["attributes"]["processingState"] == "VALID" and b["id"] not in have:
+                  print(f"build {b['attributes']['version']} -> internal testers:", call("POST", f"/v1/betaGroups/{INTERNAL}/relationships/builds", {"data": [{"type": "builds", "id": b["id"]}]})[0])
           newest = builds[0]
           s, r = call("GET", f"/v1/betaAppReviewSubmissions?filter[build]={newest['id']}")
           if not in_review and not r.get("data"):
