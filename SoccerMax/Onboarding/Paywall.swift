@@ -5,6 +5,7 @@
 import PostHog
 import RevenueCat
 import RevenueCatUI
+import StoreKit
 import SwiftUI
 
 /// The reel (v3, 2026-10-30, user: the old ones "are pretty bad"): the path-traced drills that read best at a glance ?
@@ -64,6 +65,8 @@ struct SoccerMaxPaywall: View {
     @State private var pick = PayID.yearly
     /// HAVE A CODE? ? team / gift = 7 days free, free-pass = lifetime (notes/26, notes/40).
     @State private var joining = false
+    /// Apple's own code sheet (App Store offer codes, e.g. the creators' free month; 2026-11-17)
+    @State private var redeeming = false
     @State private var team = Team.shared
     @State private var pay = Purchases.shared
     /// The features, kept off the one-screen page ? the big shiny SEE ALL FEATURES opens them full screen (2026-10-30).
@@ -82,12 +85,19 @@ struct SoccerMaxPaywall: View {
                 features
                 plans
                 haveCode
+                Button { redeeming = true } label: {
+                    Label("Redeem an App Store code", systemImage: "apple.logo").font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                }
+                .buttonStyle(.plain)
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
             .padding(.bottom, 12)
         }
         .scrollIndicators(.hidden)
+        .offerCodeRedemption(isPresented: $redeeming) { _ in
+            Task { await pay.restore(); if pay.hasAccess { finish() } }
+        }
         .background(AppBackground())
         .dock {
             VStack(spacing: 8) {

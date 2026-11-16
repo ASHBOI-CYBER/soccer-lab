@@ -281,6 +281,8 @@ struct SettingsView: View {
     @State private var deleting = false
     @State private var deleteResult: Bool?
     @State private var restoring = false
+    /// Apple's own code sheet (App Store offer codes; 2026-11-17)
+    @State private var redeeming = false
     /// RevenueCat Customer Center: manage / cancel / refund / plan change, all in-app (notes/39).
     @State private var billing = false
     @State private var editName = false
@@ -373,6 +375,11 @@ struct SettingsView: View {
                             if restoring { ProgressView() }
                         }
                     }
+                    line
+                    Button { redeeming = true } label: {
+                        SettingRow(icon: "ticket.fill", title: "Redeem an App Store code") { Chevron() }
+                    }
+                    .offerCodeRedemption(isPresented: $redeeming) { _ in Task { await pay.restore() } }
                     line
                     Link(destination: Legal.privacy) { SettingRow(icon: "hand.raised.fill", title: "Privacy") { Chevron(out: true) } }
                     line
