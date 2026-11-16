@@ -308,7 +308,7 @@ struct SoccerMaxPaywall: View {
 
     private var cta: String {
         if !trial, pick == PayID.yearly || pick == PayID.weekly { return "Unlock my plan" }
-        switch pick {
+        return switch pick {
         case PayID.yearly: trial ? "Start my free week" : "Continue with yearly"
         case PayID.weekly: "Continue with weekly"
         case PayID.monthly: "Continue with monthly"
