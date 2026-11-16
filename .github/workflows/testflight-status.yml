@@ -1,0 +1,49 @@
+# Shows the TestFlight state (builds, outside-tester review, testers) and sends the newest build to outside
+# testers for review when nothing else is in review. Started by hand: `gh workflow run testflight-status.yml`.
+name: TestFlight status
+
+on:
+  workflow_dispatch:
+
+jobs:
+  status:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Ask Apple
+        env:
+          ID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+          P8: ${{ secrets.ASC_KEY_P8 }}
+        run: |
+          python3 -m pip install --quiet pyjwt cryptography
+          python3 - <<'PY'
+          import os, time, json, jwt, urllib.request, urllib.error
+          key = "\n".join(l.strip() for l in os.environ["P8"].replace("\r", "").split("\n") if l.strip())
+          def call(m, p, b=None):
+              now = int(time.time())
+              tok = jwt.encode({"iss": os.environ["ISS"].strip(), "iat": now, "exp": now + 600, "aud": "appstoreconnect-v1"}, key,
+                               algorithm="ES256", headers={"kid": os.environ["ID"].strip(), "typ": "JWT"})
+              r = urllib.request.Request("https://api.appstoreconnect.apple.com" + p, method=m, data=json.dumps(b).encode() if b else None,
+                                         headers={"Authorization": "Bearer " + tok, "Content-Type": "application/json"})
+              try:
+                  x = urllib.request.urlopen(r, timeout=30); t = x.read(); return x.status, json.loads(t) if t else {}
+              except urllib.error.HTTPError as e:
+                  return e.code, e.read().decode()[:400]
+          EXTERNAL = "4ed7110f-9b35-4abd-94c7-05edfff88eaf"
+          s, d = call("GET", "/v1/builds?filter[app]=6814847450&sort=-uploadedDate&limit=5&fields[builds]=version,processingState")
+          builds = d["data"]
+          in_review = False
+          for b in builds:
+              s, r = call("GET", f"/v1/betaAppReviewSubmissions?filter[build]={b['id']}")
+              state = r["data"][0]["attributes"]["betaReviewState"] if r.get("data") else "not submitted"
+              if state in ("WAITING_FOR_REVIEW", "IN_REVIEW"): in_review = True
+              print(f"build {b['attributes']['version']}: {b['attributes']['processingState']}, outside-tester review: {state}")
+          s, t = call("GET", f"/v1/betaGroups/{EXTERNAL}/betaTesters?limit=20")
+          print("outside testers:", [(x["attributes"]["firstName"], x["attributes"].get("state")) for x in t["data"]])
+          newest = builds[0]
+          s, r = call("GET", f"/v1/betaAppReviewSubmissions?filter[build]={newest['id']}")
+          if not in_review and not r.get("data"):
+              s, r = call("POST", "/v1/betaAppReviewSubmissions", {"data": {"type": "betaAppReviewSubmissions", "relationships": {"build": {"data": {"type": "builds", "id": newest["id"]}}}}})
+              print(f"sent build {newest['attributes']['version']} for outside-tester review:", s, r if isinstance(r, str) else r["data"]["attributes"]["betaReviewState"])
+          PY
