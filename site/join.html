@@ -61,6 +61,16 @@
   if (m) {
     document.getElementById("digits").textContent = m[1];
     document.getElementById("has").hidden = false;
+    // count one visit per browser per code per day for the creator's portal (codes that aren't creators are ignored)
+    try {
+      const k = "v." + m[1] + "." + new Date().toISOString().slice(0, 10);
+      if (!localStorage.getItem(k)) {
+        localStorage.setItem(k, "1");
+        fetch("https://pojdwcgicconsiiinyyi.supabase.co/rest/v1/rpc/creator_visit", { method: "POST", keepalive: true,
+          headers: { "Content-Type": "application/json", apikey: "sb_publishable_HPvVa5jQ9raq6fAHbNAGgA_yUOJRv4A" },
+          body: JSON.stringify({ p_code: m[1] }) }).catch(() => {});
+      }
+    } catch {}
     document.getElementById("copy").addEventListener("click", async (e) => {
       try { await navigator.clipboard.writeText(m[1]); e.target.textContent = "Copied"; }
       catch { e.target.textContent = m[1]; }

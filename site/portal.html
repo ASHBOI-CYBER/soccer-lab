@@ -1,0 +1,383 @@
+<!doctype html>
+<!-- CREATOR PORTAL (2026-11-17). Creators sign up with their TikTok @username and a password, wait for approval, then
+     see their link, link visits, sign-ups with their code, subscribers, pending / available earnings, and ask to
+     withdraw. Admins (private.portal_admins) also get an Admin tab: approve creators, pay or reject withdrawals,
+     reset a creator's password. Accounts: supabase/functions/creator-auth; data: supabase/2026-11-17-creator-portal.sql. -->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<meta name="referrer" content="no-referrer">
+<title>Creator Portal</title>
+<style>
+  :root { --bg: #050608; --card: #12141A; --card2: #0C0E13; --line: #23262F; --text: #FFFFFF; --text2: #C5CAD6; --muted: #808797;
+          --brand: #1E78FF; --hi: #7DB8FF; --gold: #FFC531; --green: #2BB673; --red: #E5484D; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--text); font: 16px/1.45 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+         background-image: radial-gradient(700px 360px at 50% -120px, #0E2A66, transparent); background-repeat: no-repeat; min-height: 100vh; }
+  main { max-width: 620px; margin: 0 auto; padding: 24px 16px 56px; }
+  header { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 22px; }
+  .logo { font-weight: 900; letter-spacing: .08em; font-size: 18px; }
+  .logo b { color: var(--brand); }
+  h1 { font-size: 28px; margin: 0 0 4px; line-height: 1.15; }
+  h2 { font-size: 18px; margin: 24px 0 10px; }
+  .sub { color: var(--muted); margin: 0 0 18px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 18px; padding: 16px; margin-bottom: 12px; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .grid .card { margin: 0; }
+  .label { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
+  .num { font-size: 30px; font-weight: 800; margin-top: 2px; font-variant-numeric: tabular-nums; }
+  .num.gold { color: var(--gold); } .num.green { color: var(--green); }
+  .hint { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  label { display: block; font-size: 14px; font-weight: 700; color: var(--text2); margin: 12px 0 6px; }
+  input, select, textarea { width: 100%; background: var(--card2); color: var(--text); border: 1px solid var(--line); border-radius: 12px;
+         padding: 12px 14px; font: inherit; }
+  input:focus, select:focus, textarea:focus { outline: 2px solid var(--brand); border-color: transparent; }
+  button { background: var(--brand); color: #fff; border: 0; border-radius: 999px; padding: 12px 20px; font-weight: 800; font-size: 15px; cursor: pointer; }
+  button.full { width: 100%; margin-top: 16px; padding: 14px; font-size: 16px; }
+  button.ghost { background: transparent; border: 1px solid var(--line); color: var(--text2); }
+  button.small { padding: 8px 14px; font-size: 13px; }
+  button.red { background: var(--red); } button.green { background: var(--green); }
+  button:disabled { opacity: .45; cursor: default; }
+  button:focus-visible { outline: 3px solid var(--hi); outline-offset: 2px; }
+  .tabs { display: flex; gap: 4px; background: var(--card); border: 1px solid var(--line); border-radius: 999px; padding: 4px; margin-bottom: 16px; }
+  .tabs button { flex: 1; background: transparent; color: var(--text2); padding: 10px; }
+  .tabs button.on { background: var(--brand); color: #fff; }
+  .msg { border-radius: 12px; padding: 12px 14px; margin-top: 12px; font-size: 14px; font-weight: 600; }
+  .msg.err { background: rgba(229,72,77,.14); color: #FF9B9E; } .msg.ok { background: rgba(43,182,115,.14); color: #7BE4AE; }
+  .link { display: flex; gap: 8px; align-items: center; margin-top: 8px; }
+  .link code { flex: 1; min-width: 0; overflow-wrap: anywhere; background: var(--card2); border: 1px solid var(--line); border-radius: 10px; padding: 10px 12px; font-size: 14px; }
+  .bars { display: flex; align-items: flex-end; gap: 8px; height: 110px; margin-top: 12px; }
+  .bar { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: flex-end; height: 100%; gap: 6px; }
+  .bar i { display: block; width: 100%; background: linear-gradient(var(--hi), var(--brand)); border-radius: 6px 6px 2px 2px; min-height: 2px; }
+  .bar span { color: var(--muted); font-size: 12px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 12px 0; border-top: 1px solid var(--line); }
+  .row:first-child { border-top: 0; }
+  .pill { display: inline-block; font-size: 12px; font-weight: 800; padding: 3px 10px; border-radius: 999px; background: var(--line); color: var(--text2); }
+  .pill.requested, .pill.pending { background: rgba(255,197,49,.16); color: var(--gold); }
+  .pill.paid, .pill.approved { background: rgba(43,182,115,.16); color: #7BE4AE; }
+  .pill.rejected { background: rgba(229,72,77,.16); color: #FF9B9E; }
+  .rules li { margin: 4px 0; color: var(--text2); }
+  .muted { color: var(--muted); }
+  .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  [hidden] { display: none !important; }
+  @media (max-width: 420px) { .num { font-size: 26px; } h1 { font-size: 24px; } }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="logo">SOCCER <b>LAB</b> <span class="muted" style="font-weight:700;letter-spacing:0">· Creators</span></div>
+    <button id="logout" class="ghost small" hidden>Log out</button>
+  </header>
+
+  <!-- signed out -->
+  <section id="auth" hidden>
+    <h1>Creator Portal</h1>
+    <p class="sub">Earn 20% of every subscription that comes from your link. Sign up with your TikTok username.</p>
+    <div class="tabs"><button id="tLogin" class="on" type="button">Log in</button><button id="tSignup" type="button">Sign up</button></div>
+    <form id="fAuth" class="card" novalidate>
+      <label for="user">TikTok username</label>
+      <input id="user" autocomplete="username" placeholder="@samfootball" autocapitalize="none" spellcheck="false">
+      <div id="nameRow" hidden>
+        <label for="name">Your name (shown to viewers in the app)</label>
+        <input id="name" autocomplete="name" placeholder="Sam">
+      </div>
+      <label for="pw">Password</label>
+      <input id="pw" type="password" autocomplete="current-password" placeholder="At least 8 characters">
+      <div id="pw2Row" hidden>
+        <label for="pw2">Confirm password</label>
+        <input id="pw2" type="password" autocomplete="new-password">
+      </div>
+      <button id="go" class="full" type="submit">Log in</button>
+      <div id="authMsg" class="msg err" hidden></div>
+      <p class="hint" style="margin-top:12px">Forgot your password? DM us on TikTok or email <a style="color:var(--hi)" href="mailto:asherk348@gmail.com">asherk348@gmail.com</a> and we'll reset it.</p>
+    </form>
+  </section>
+
+  <!-- waiting for approval -->
+  <section id="pending" hidden>
+    <h1>You're on the list, <span class="uname"></span></h1>
+    <p class="sub">We check every creator before their link goes live. You'll be able to log in here and see your link once you're approved, usually within a day.</p>
+    <div class="card"><div class="label">Status</div><div style="margin-top:6px"><span class="pill pending">Waiting for approval</span></div></div>
+  </section>
+
+  <section id="rejected" hidden>
+    <h1>Not approved</h1>
+    <p class="sub">Your creator account wasn't approved. If you think that's a mistake, message us at asherk348@gmail.com.</p>
+  </section>
+
+  <!-- the dashboard -->
+  <section id="dash" hidden>
+    <div id="adminTabs" class="tabs" hidden><button id="tMine" class="on" type="button">My numbers</button><button id="tAdmin" type="button">Admin</button></div>
+    <div id="mine">
+      <h1>Hi <span class="uname"></span></h1>
+      <p class="sub" id="deal"></p>
+
+      <div class="card">
+        <div class="label">Your link · put it in your bio</div>
+        <div class="link"><code id="link"></code><button id="copy" class="small" type="button">Copy</button></div>
+        <p class="hint" style="margin-top:10px">Viewers can also type your code <b id="code"></b> in the app under “Have a code?” before they subscribe.</p>
+      </div>
+
+      <div class="grid">
+        <div class="card"><div class="label">Link visits</div><div class="num" id="visits">0</div><div class="hint" id="visits30"></div></div>
+        <div class="card"><div class="label">Sign-ups with your code</div><div class="num" id="signups">0</div></div>
+        <div class="card"><div class="label">Subscribers</div><div class="num" id="subs">0</div></div>
+        <div class="card"><div class="label">Earned so far</div><div class="num gold" id="earned">$0</div></div>
+      </div>
+
+      <div class="grid">
+        <div class="card"><div class="label">Pending</div><div class="num" id="pendingUsd">$0</div><div class="hint">Last 30 days. Apple can still refund these.</div></div>
+        <div class="card"><div class="label">Available</div><div class="num green" id="avail">$0</div><div class="hint" id="availHint"></div></div>
+      </div>
+
+      <div class="card">
+        <div class="label">Withdraw</div>
+        <p class="hint" id="wHint" style="margin:6px 0 0"></p>
+        <button id="withdraw" class="full" type="button" disabled>Withdraw</button>
+        <div id="wMsg" class="msg" hidden></div>
+      </div>
+
+      <div class="card">
+        <div class="label">Earnings by month</div>
+        <div class="bars" id="bars"></div>
+      </div>
+
+      <h2>Where to send your money</h2>
+      <form id="fPay" class="card" novalidate>
+        <label for="method">Method</label>
+        <select id="method"><option value="paypal">PayPal</option><option value="bank">Bank transfer</option><option value="other">Other</option></select>
+        <label for="details" id="detailsLabel">PayPal email</label>
+        <textarea id="details" rows="2" placeholder="you@example.com"></textarea>
+        <button class="full" type="submit">Save</button>
+        <div id="payMsg" class="msg" hidden></div>
+      </form>
+
+      <h2>Withdrawals</h2>
+      <div class="card" id="wList"><p class="muted" style="margin:0">None yet.</p></div>
+
+      <h2>How it works</h2>
+      <div class="card"><ul class="rules" id="rules" style="margin:0;padding-left:18px"></ul></div>
+
+      <h2>Change password</h2>
+      <form id="fPw" class="card" novalidate>
+        <label for="newPw">New password</label>
+        <input id="newPw" type="password" autocomplete="new-password" placeholder="At least 8 characters">
+        <button class="full" type="submit">Change password</button>
+        <div id="pwMsg" class="msg" hidden></div>
+      </form>
+    </div>
+
+    <!-- admin -->
+    <div id="admin" hidden>
+      <h1>Admin</h1>
+      <p class="sub">Approve creators, pay withdrawals, reset passwords.</p>
+      <h2>Withdrawal requests</h2>
+      <div class="card" id="aW"><p class="muted" style="margin:0">Loading…</p></div>
+      <h2>Creators</h2>
+      <div class="card" id="aC"><p class="muted" style="margin:0">Loading…</p></div>
+      <h2>Reset a creator's password</h2>
+      <form id="fReset" class="card" novalidate>
+        <label for="rUser">TikTok username</label>
+        <input id="rUser" placeholder="@samfootball" autocapitalize="none" spellcheck="false">
+        <button class="full" type="submit">Make a new password</button>
+        <div id="rMsg" class="msg" hidden></div>
+      </form>
+    </div>
+  </section>
+
+  <div id="loading" class="card">Loading…</div>
+</main>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
+<script>
+  const URL_ = "https://pojdwcgicconsiiinyyi.supabase.co";
+  const KEY = "sb_publishable_HPvVa5jQ9raq6fAHbNAGgA_yUOJRv4A";      // the public key the app ships with
+  const DOMAIN = "creators.soccerlab.invalid";
+  const sb = supabase.createClient(URL_, KEY);
+  const $ = (id) => document.getElementById(id);
+  const money = (n) => "$" + Number(n || 0).toFixed(2);
+  const handle = (s) => s.trim().replace(/^@/, "").toLowerCase();
+  const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const show = (id) => { for (const s of ["auth", "pending", "rejected", "dash", "loading"]) $(s).hidden = s !== id; };
+  const say = (el, text, ok) => { el.hidden = !text; el.textContent = text || ""; el.className = "msg " + (ok ? "ok" : "err"); };
+  let signup = false, me = null;
+
+  // ---- log in / sign up
+  function mode(isSignup) {
+    signup = isSignup;
+    $("tLogin").classList.toggle("on", !isSignup); $("tSignup").classList.toggle("on", isSignup);
+    $("nameRow").hidden = !isSignup; $("pw2Row").hidden = !isSignup;
+    $("go").textContent = isSignup ? "Create my account" : "Log in";
+    $("pw").autocomplete = isSignup ? "new-password" : "current-password";
+    say($("authMsg"), "");
+  }
+  $("tLogin").onclick = () => mode(false);
+  $("tSignup").onclick = () => mode(true);
+
+  $("fAuth").onsubmit = async (e) => {
+    e.preventDefault();
+    const u = handle($("user").value), pw = $("pw").value;
+    if (!/^[a-z0-9._]{2,24}$/.test(u)) return say($("authMsg"), "Enter your TikTok username, like @samfootball.");
+    if (pw.length < 8) return say($("authMsg"), "Use a password of at least 8 characters.");
+    $("go").disabled = true;
+    try {
+      if (signup) {
+        if (pw !== $("pw2").value) throw new Error("The two passwords don't match.");
+        const r = await fetch(URL_ + "/functions/v1/creator-auth", { method: "POST", headers: { "Content-Type": "application/json", apikey: KEY },
+          body: JSON.stringify({ action: "signup", username: u, password: pw, name: $("name").value }) });
+        const j = await r.json().catch(() => ({}));
+        if (!r.ok) throw new Error(j.error || "Couldn't make the account. Try again.");
+      }
+      const { error } = await sb.auth.signInWithPassword({ email: u + "@" + DOMAIN, password: pw });
+      if (error) throw new Error(signup ? "Account made, but logging in failed. Try Log in." : "Wrong username or password.");
+      await load();
+    } catch (err) { say($("authMsg"), err.message); }
+    $("go").disabled = false;
+  };
+
+  $("logout").onclick = async () => { await sb.auth.signOut(); me = null; $("logout").hidden = true; mode(false); show("auth"); };
+
+  // ---- the dashboard
+  async function load() {
+    const { data: s } = await sb.auth.getSession();
+    if (!s.session) { show("auth"); return; }
+    $("logout").hidden = false;
+    const { data, error } = await sb.rpc("creator_me");
+    if (error || !data) { await sb.auth.signOut(); say($("authMsg"), "This isn't a creator account."); show("auth"); return; }
+    me = data;
+    for (const el of document.querySelectorAll(".uname")) el.textContent = data.tiktok || data.name;
+    if (data.status === "pending") { show("pending"); return; }
+    if (data.status === "rejected") { show("rejected"); return; }
+    $("deal").textContent = `You earn ${Math.round(data.rate * 100)}% of what we receive from every subscriber you bring` +
+      (data.months ? `, for ${data.months} months from when they joined.` : `, for as long as they stay subscribed.`);
+    $("link").textContent = data.link; $("code").textContent = data.code;
+    $("visits").textContent = data.visits; $("visits30").textContent = data.visits_30 + " in the last 30 days";
+    $("signups").textContent = data.signups; $("subs").textContent = data.subscribers;
+    $("earned").textContent = money(data.earned_usd); $("pendingUsd").textContent = money(data.pending_usd); $("avail").textContent = money(data.available_usd);
+    $("availHint").textContent = Number(data.requested_usd) > 0 ? money(data.requested_usd) + " on its way to you" : "Ready to withdraw";
+    const canW = Number(data.available_usd) >= data.min_withdraw_usd && !data.withdrawals.some((w) => w.status === "requested");
+    $("withdraw").disabled = !canW;
+    $("withdraw").textContent = canW ? "Withdraw " + money(data.available_usd) : "Withdraw";
+    $("wHint").textContent = !data.payout_method ? "Add your PayPal or bank details below first."
+      : data.withdrawals.some((w) => w.status === "requested") ? "Your last withdrawal is on its way. You can ask again once it's paid."
+      : Number(data.available_usd) < data.min_withdraw_usd ? `You can withdraw once you have ${money(data.min_withdraw_usd)} available.`
+      : "We'll send it to your " + (data.payout_method === "paypal" ? "PayPal" : data.payout_method === "bank" ? "bank account" : "payout details") + " within a few days.";
+    if (data.payout_method) { $("method").value = data.payout_method; $("details").value = data.payout_details || ""; }
+    methodLabel();
+    // chart: last 6 months
+    const months = []; const now = new Date();
+    for (let i = 5; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); months.push(d.toISOString().slice(0, 7)); }
+    const by = Object.fromEntries((data.months_chart || []).map((m) => [m.month, Number(m.usd)]));
+    const max = Math.max(1, ...months.map((m) => by[m] || 0));
+    $("bars").innerHTML = months.map((m) => {
+      const v = by[m] || 0, name = new Date(m + "-01T00:00:00").toLocaleString("en", { month: "short" });
+      return `<div class="bar" title="${name}: ${money(v)}"><i style="height:${Math.max(2, (v / max) * 100)}%"></i><span>${name}</span></div>`;
+    }).join("");
+    $("wList").innerHTML = data.withdrawals.length ? data.withdrawals.map((w) =>
+      `<div class="row"><div><b>${money(w.amount_usd)}</b><div class="hint">${new Date(w.requested_at).toLocaleDateString()}</div></div><span class="pill ${w.status}">${w.status}</span></div>`).join("")
+      : `<p class="muted" style="margin:0">None yet.</p>`;
+    $("rules").innerHTML = [
+      `You earn ${Math.round(data.rate * 100)}% of what we receive (after Apple's fee and tax) on each subscription from your link or code, including renewals${data.months ? ` for ${data.months} months` : ""}.`,
+      "Viewers need to use your link or code before they subscribe. The first code someone uses is the one that counts.",
+      `New earnings show as pending for ${data.hold_days} days, because Apple can refund a purchase. After that they're available.`,
+      "If a subscriber gets a refund, that earning is taken back.",
+      `Withdraw once you have ${money(data.min_withdraw_usd)} available. We pay by PayPal or bank transfer within a few days.`,
+      "Link visits count people who opened your link. Apple doesn't tell apps who downloaded from which link, so sign-ups and subscribers are counted when they use your code.",
+    ].map((t) => `<li>${t}</li>`).join("");
+    $("adminTabs").hidden = !data.admin;
+    show("dash");
+    if (data.admin && !$("admin").hidden) loadAdmin();
+  }
+
+  $("copy").onclick = async () => { try { await navigator.clipboard.writeText($("link").textContent); $("copy").textContent = "Copied"; setTimeout(() => ($("copy").textContent = "Copy"), 1500); } catch {} };
+
+  $("withdraw").onclick = async () => {
+    if (!confirm("Withdraw " + money(me.available_usd) + "?")) return;
+    $("withdraw").disabled = true;
+    const { data, error } = await sb.rpc("creator_withdraw");
+    if (error) { say($("wMsg"), error.message); $("withdraw").disabled = false; return; }
+    say($("wMsg"), "Asked for " + money(data.amount_usd) + ". We'll send it within a few days.", true);
+    load();
+  };
+
+  function methodLabel() {
+    const m = $("method").value;
+    $("detailsLabel").textContent = m === "paypal" ? "PayPal email" : m === "bank" ? "Bank details (name on account, bank, account number / IBAN, country)" : "How should we pay you?";
+    $("details").placeholder = m === "paypal" ? "you@example.com" : "";
+  }
+  $("method").onchange = methodLabel;
+  $("fPay").onsubmit = async (e) => {
+    e.preventDefault();
+    const { error } = await sb.rpc("creator_set_payout", { p_method: $("method").value, p_details: $("details").value });
+    say($("payMsg"), error ? error.message : "Saved.", !error);
+    if (!error) load();
+  };
+
+  $("fPw").onsubmit = async (e) => {
+    e.preventDefault();
+    const pw = $("newPw").value;
+    if (pw.length < 8) return say($("pwMsg"), "Use at least 8 characters.");
+    const { error } = await sb.auth.updateUser({ password: pw });
+    say($("pwMsg"), error ? "Couldn't change it. Try again." : "Password changed.", !error);
+    if (!error) $("newPw").value = "";
+  };
+
+  // ---- admin
+  $("tMine").onclick = () => { $("tMine").classList.add("on"); $("tAdmin").classList.remove("on"); $("mine").hidden = false; $("admin").hidden = true; };
+  $("tAdmin").onclick = () => { $("tAdmin").classList.add("on"); $("tMine").classList.remove("on"); $("mine").hidden = true; $("admin").hidden = false; loadAdmin(); };
+
+  async function loadAdmin() {
+    const { data, error } = await sb.rpc("portal_admin_overview");
+    if (error) { $("aC").innerHTML = `<p class="muted">${esc(error.message)}</p>`; return; }
+    const ws = data.withdrawals || [];
+    $("aW").innerHTML = ws.length ? ws.map((w) => `
+      <div class="row" style="align-items:flex-start"><div style="min-width:0">
+        <b>${money(w.amount_usd)}</b> · ${esc(w.tiktok || w.creator)} <span class="pill ${w.status}">${w.status}</span>
+        <div class="hint" style="overflow-wrap:anywhere">${esc(w.method)}: ${esc(w.details)}</div>
+        <div class="hint">Asked ${new Date(w.requested_at).toLocaleDateString()}</div>
+        ${w.status === "requested" ? `<div class="actions"><button class="small green" data-pay="${w.id}">Mark as paid</button><button class="small ghost" data-rej="${w.id}">Reject</button></div>` : ""}
+      </div></div>`).join("") : `<p class="muted" style="margin:0">No requests.</p>`;
+    const cs = data.creators || [];
+    $("aC").innerHTML = cs.length ? cs.map((c) => `
+      <div class="row" style="align-items:flex-start"><div style="min-width:0">
+        <b>${esc(c.tiktok || c.name)}</b> <span class="pill ${c.status}">${c.status}</span>
+        <div class="hint">${esc(c.name)} · code ${esc(c.code)} · ${Math.round(c.rate * 100)}%${c.months ? " for " + c.months + " months" : " forever"}</div>
+        <div class="hint">${c.visits} visits · ${c.signups} sign-ups · ${c.subscribers} subscribers · earned ${money(c.earned_usd)} · available ${money(c.available_usd)} · paid ${money(c.paid_usd)}</div>
+        <div class="actions">
+          ${c.status !== "approved" ? `<button class="small green" data-st="approved" data-id="${c.id}">Approve</button>` : ""}
+          ${c.status !== "rejected" ? `<button class="small ghost" data-st="rejected" data-id="${c.id}">${c.status === "approved" ? "Turn off" : "Reject"}</button>` : ""}
+        </div>
+      </div></div>`).join("") : `<p class="muted" style="margin:0">No creators yet.</p>`;
+  }
+
+  document.addEventListener("click", async (e) => {
+    const b = e.target.closest("button"); if (!b) return;
+    if (b.dataset.st) {
+      const { error } = await sb.rpc("portal_admin_set_status", { p_creator: b.dataset.id, p_status: b.dataset.st });
+      if (error) alert(error.message); loadAdmin();
+    } else if (b.dataset.pay || b.dataset.rej) {
+      const paid = !!b.dataset.pay;
+      const note = prompt(paid ? "Sent! Add a note (e.g. PayPal transaction id), or leave empty:" : "Why is it rejected? (the creator doesn't see this)") ;
+      if (note === null) return;
+      const { error } = await sb.rpc("portal_admin_withdrawal", { p_id: Number(b.dataset.pay || b.dataset.rej), p_paid: paid, p_note: note });
+      if (error) alert(error.message); loadAdmin();
+    }
+  });
+
+  $("fReset").onsubmit = async (e) => {
+    e.preventDefault();
+    const { data: s } = await sb.auth.getSession();
+    const r = await fetch(URL_ + "/functions/v1/creator-auth", { method: "POST",
+      headers: { "Content-Type": "application/json", apikey: KEY, Authorization: "Bearer " + s.session.access_token },
+      body: JSON.stringify({ action: "reset", username: $("rUser").value }) });
+    const j = await r.json().catch(() => ({}));
+    say($("rMsg"), r.ok ? `New password: ${j.password}  (send it to them privately; they can change it after logging in)` : (j.error || "Couldn't reset it."), r.ok);
+  };
+
+  load();
+</script>
+</body>
+</html>
