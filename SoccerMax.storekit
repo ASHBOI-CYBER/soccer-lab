@@ -181,6 +181,27 @@
           "subscriptionGroupID": "21800001",
           "type": "RecurringSubscription",
           "winbackOffers": []
+        },
+        {
+          "adHocOffers": [],
+          "codeOffers": [],
+          "displayPrice": "7.99",
+          "familyShareable": false,
+          "groupNumber": 2,
+          "internalID": "6754000009",
+          "localizations": [
+            {
+              "description": "AI Coach, film review, food scans and every drill.",
+              "displayName": "Soccer Lab Pro – Weekly",
+              "locale": "en_US"
+            }
+          ],
+          "productID": "com.skillerai.ios.weekly",
+          "recurringSubscriptionPeriod": "P1W",
+          "referenceName": "Weekly",
+          "subscriptionGroupID": "21800001",
+          "type": "RecurringSubscription",
+          "winbackOffers": []
         }
       ]
     }

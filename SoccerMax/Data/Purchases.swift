@@ -16,6 +16,8 @@ private typealias RC = RevenueCat.Purchases
 
 enum PayID {
     static let monthly = "com.skillerai.ios.monthly"
+    /// Soccer Lab sells WEEKLY + yearly (2026-11-17); monthly stays only for anyone who already has it.
+    static let weekly = "com.skillerai.ios.weekly"
     static let yearly = "com.skillerai.ios.annual"   // Skiller AI's existing yearly plan
     static let lifetime = "com.skillerai.ios.lifetime"
     /// The same $29.99 yearly with NO free week ? sold to anyone who already had their one free week (2026-10-29).
@@ -29,17 +31,17 @@ enum PayID {
     static let monthlyOff = "com.skillerai.ios.monthly.off40"
     static let yearlyOff = "com.skillerai.ios.yearly.off40"
     static let lifetimeOff = "com.skillerai.ios.lifetime.off40"
-    static let all = [yearly, monthly, lifetime, yearlyNoTrial, stay, monthlyOff, yearlyOff, lifetimeOff]
+    static let all = [yearly, weekly, monthly, lifetime, yearlyNoTrial, stay, monthlyOff, yearlyOff, lifetimeOff]
     /// The RevenueCat entitlement every product above unlocks (attach ALL of them to it in the dashboard).
-    static let entitlement = "soccer_max_pro"
+    static let entitlement = "soccer_lab_pro"   // RevenueCat project SOCCER LAB (2026-11-17; was soccer_max_pro)
     /// Any store product id ? our id. The Test Store's products are just "monthly" / "yearly" / "lifetime".
     static func normalize(_ id: String) -> String {
         if all.contains(id) { return id }
-        return ["monthly": monthly, "yearly": yearly, "annual": yearly, "lifetime": lifetime][id] ?? id
+        return ["weekly": weekly, "monthly": monthly, "yearly": yearly, "annual": yearly, "lifetime": lifetime][id] ?? id
     }
     /// Short plan name for analytics.
     static func plan(_ id: String) -> String {
-        [monthly: "monthly", yearly: "yearly", yearlyNoTrial: "yearly", lifetime: "lifetime", stay: "yearly_stay",
+        [weekly: "weekly", monthly: "monthly", yearly: "yearly", yearlyNoTrial: "yearly", lifetime: "lifetime", stay: "yearly_stay",
          monthlyOff: "monthly_40off", yearlyOff: "yearly_40off", lifetimeOff: "lifetime_40off"][id] ?? id
     }
 }
@@ -253,7 +255,7 @@ final class Purchases {
     /// "$29.99" from the store, falling back to the set price before products load.
     func price(_ id: String) -> String {
         if let p = products[id] { return p.localizedPriceString }
-        return [PayID.monthly: "$9.99", PayID.yearly: "$29.99", PayID.lifetime: "$39.99", PayID.stay: "$14.99",
+        return [PayID.weekly: "$7.99", PayID.monthly: "$9.99", PayID.yearly: "$29.99", PayID.lifetime: "$39.99", PayID.stay: "$14.99",
                 PayID.monthlyOff: "$5.99", PayID.yearlyOff: "$17.99", PayID.lifetimeOff: "$23.99"][id] ?? ""
     }
 

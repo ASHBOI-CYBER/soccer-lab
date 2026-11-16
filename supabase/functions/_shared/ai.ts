@@ -4,7 +4,7 @@
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
 export const MODEL = "claude-haiku-5-5";
-const ENTITLEMENT = "soccer_max_pro";
+const ENTITLEMENT = "soccer_lab_pro";
 const FIRST_WEEK_MS = 7 * 24 * 3600 * 1000;
 
 /** Daily allowances. Trial = a free trial, an intro offer, or the first 7 days after the first purchase.

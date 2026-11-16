@@ -195,8 +195,8 @@ struct SoccerMaxPaywall: View {
         HStack(alignment: .bottom, spacing: 8) {
             PlanTile(on: pick == PayID.yearly, badge: pay.trialOffered ? "7 DAYS FREE" : "BEST VALUE", name: "Yearly",
                      price: pay.price(PayID.yearly), unit: "/yr", sub: "\(pay.yearlyPerMonth)/mo") { pick = PayID.yearly }
-            PlanTile(on: pick == PayID.monthly, badge: nil, name: "Monthly",
-                     price: pay.price(PayID.monthly), unit: "/mo", sub: "Cancel anytime") { pick = PayID.monthly }
+            PlanTile(on: pick == PayID.weekly, badge: nil, name: "Weekly",
+                     price: pay.price(PayID.weekly), unit: "/wk", sub: "Cancel anytime") { pick = PayID.weekly }
             // no LIFETIME tile (2026-11-14): Skiller AI's listing sells yearly and monthly only. Lifetime code passes
             // (free-pass links) still work; they never went through this tile.
         }
@@ -221,6 +221,7 @@ struct SoccerMaxPaywall: View {
     private var cta: String {
         switch pick {
         case PayID.yearly: trial ? "Start my free week" : "Continue with yearly"
+        case PayID.weekly: "Continue with weekly"
         case PayID.monthly: "Continue with monthly"
         default: "Buy lifetime"
         }
@@ -231,6 +232,7 @@ struct SoccerMaxPaywall: View {
         switch pick {
         case PayID.yearly: trial ? "7 days free, then \(pay.price(PayID.yearly))/year. Renews yearly. Cancel anytime."
                                  : "\(pay.price(PayID.yearly))/year. Renews yearly. Cancel anytime."
+        case PayID.weekly: "\(pay.price(PayID.weekly))/week. Renews weekly. Cancel anytime."
         case PayID.monthly: "\(pay.price(PayID.monthly))/month. Renews monthly. Cancel anytime."
         default: "\(pay.price(PayID.lifetime)) once. No subscription."
         }
