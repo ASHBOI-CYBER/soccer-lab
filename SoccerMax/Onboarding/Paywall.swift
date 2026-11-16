@@ -815,7 +815,10 @@ enum PayGlyph {
 
 /// A small coloured dot in front of a chart legend line.
 private struct LegendDot: LabelStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        HStack(spacing: 6) { configuration.icon.font(.system(size: 7)); configuration.title }
+    func makeBody(configuration: LabelStyleConfiguration) -> some View {
+        HStack(spacing: 6) {
+            configuration.icon.font(.system(size: 7))
+            configuration.title
+        }
     }
 }
