@@ -264,6 +264,15 @@ final class Purchases {
     var yearlyOffPerMonth: String { products[PayID.yearlyOff]?.localizedPricePerMonth ?? "$1.50" }
     /// Yearly price per month, for the "$2.50/mo" line.
     var yearlyPerMonth: String { products[PayID.yearly]?.localizedPricePerMonth ?? "$2.50" }
+    /// What a plan costs per day ("$0.10/day"), from the App Store's real local price when it has loaded.
+    func perDay(_ id: String) -> String {
+        let days: Decimal = id == PayID.weekly ? 7 : id == PayID.monthly ? 30 : 365
+        if let p = products[id] {
+            return (p.price / days).formatted(.currency(code: p.currencyCode ?? "USD").precision(.fractionLength(2))) + "/day"
+        }
+        let n = Decimal(string: price(id).filter { $0.isNumber || $0 == "." }) ?? 0
+        return (n / days).formatted(.currency(code: "USD").precision(.fractionLength(2))) + "/day"
+    }
 
     /// ONE free week per account (user 2026-10-29: "maximum 1 free or card 7 day trial per account"): a team invite,
     /// a friend's gift link, or Apple's card trial ? whichever comes first uses it up. Server flag `profiles.trial_used`
@@ -276,8 +285,11 @@ final class Purchases {
     }
 
     /// True when this person can still get the yearly free trial (Apple says first-time subscriber AND no free week yet).
-    var trialOffered: Bool = true
+    /// NO free trial in Soccer Lab (user, 2026-11-17: "it is not free"). Turn back on here if a trial is ever added.
+    static let freeTrial = false
+    var trialOffered: Bool = Purchases.freeTrial
     func checkTrial() async {
+        guard Self.freeTrial else { trialOffered = false; return }
         await Team.shared.refreshTrial()
         guard RC.isConfigured, let p = products[PayID.yearly] else { trialOffered = !freeWeekUsed; return }
         let status = await RC.shared.checkTrialOrIntroDiscountEligibility(product: p)

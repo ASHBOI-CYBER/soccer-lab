@@ -194,9 +194,9 @@ struct SoccerMaxPaywall: View {
     private var plans: some View {
         HStack(alignment: .bottom, spacing: 8) {
             PlanTile(on: pick == PayID.yearly, badge: pay.trialOffered ? "7 DAYS FREE" : "BEST VALUE", name: "Yearly",
-                     price: pay.price(PayID.yearly), unit: "/yr", sub: "\(pay.yearlyPerMonth)/mo") { pick = PayID.yearly }
+                     price: pay.price(PayID.yearly), unit: "/yr", sub: "Only \(pay.perDay(PayID.yearly))") { pick = PayID.yearly }
             PlanTile(on: pick == PayID.weekly, badge: nil, name: "Weekly",
-                     price: pay.price(PayID.weekly), unit: "/wk", sub: "Cancel anytime") { pick = PayID.weekly }
+                     price: pay.price(PayID.weekly), unit: "/wk", sub: pay.perDay(PayID.weekly)) { pick = PayID.weekly }
             // no LIFETIME tile (2026-11-14): Skiller AI's listing sells yearly and monthly only. Lifetime code passes
             // (free-pass links) still work; they never went through this tile.
         }
