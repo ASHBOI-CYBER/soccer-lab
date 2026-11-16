@@ -265,6 +265,25 @@ final class Purchases {
     var yearlyOffPerMonth: String { products[PayID.yearlyOff]?.localizedPricePerMonth ?? "$1.50" }
     /// Yearly price per month, for the "$2.50/mo" line.
     var yearlyPerMonth: String { products[PayID.yearly]?.localizedPricePerMonth ?? "$2.50" }
+    /// What yearly saves against paying weekly for a year (e.g. 89), or nil when either price is unknown.
+    var yearlySavesPercent: Int? {
+        func n(_ id: String) -> Decimal? {
+            if let p = products[id] { return p.price }
+            return Decimal(string: price(id).filter { $0.isNumber || $0 == "." })
+        }
+        guard let y = n(PayID.yearly), let w = n(PayID.weekly), w > 0 else { return nil }
+        let pct = (1 - NSDecimalNumber(decimal: y).doubleValue / (NSDecimalNumber(decimal: w).doubleValue * 52)) * 100
+        return pct >= 5 ? Int(pct.rounded(.down)) : nil
+    }
+    /// Price per week of a plan ("$0.67/week").
+    func perWeek(_ id: String) -> String {
+        let weeks: Decimal = id == PayID.weekly ? 1 : id == PayID.monthly ? Decimal(30) / 7 : 52
+        if let p = products[id] {
+            return (p.price / weeks).formatted(.currency(code: p.currencyCode ?? "USD").precision(.fractionLength(2))) + "/week"
+        }
+        let n = Decimal(string: price(id).filter { $0.isNumber || $0 == "." }) ?? 0
+        return (n / weeks).formatted(.currency(code: "USD").precision(.fractionLength(2))) + "/week"
+    }
     /// What a plan costs per day ("$0.10/day"), from the App Store's real local price when it has loaded.
     func perDay(_ id: String) -> String {
         let days: Decimal = id == PayID.weekly ? 7 : id == PayID.monthly ? 30 : 365

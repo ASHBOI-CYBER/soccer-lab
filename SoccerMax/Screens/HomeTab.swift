@@ -7,6 +7,8 @@ struct HomeTab: View {
     @Environment(AppStore.self) private var store
     @State private var lab = Lab.shared
     @State private var running = false
+    // test builds: `-route tab:home:streak` opens the streak screen
+    @State private var streak = DebugRoute.parts.contains("streak")
 
     private var plan: [Drill] { LabPlan.today(position: store.answers.position) }
 
@@ -32,6 +34,7 @@ struct HomeTab: View {
             .page()
         }
         .fullScreenCover(isPresented: $running) { RunView().duoColumn() }
+        .sheet(isPresented: $streak) { StreakSheet() }
     }
 
     // MARK: header
@@ -55,15 +58,18 @@ struct HomeTab: View {
                     .font(F.round(15, .semibold)).foregroundStyle(C.muted)
             }
             Spacer(minLength: 0)
-            HStack(spacing: 5) {
-                Image(systemName: "flame.fill").foregroundStyle(store.air.days > 0 ? C.gold : C.muted)
-                Text("\(store.air.days)").foregroundStyle(C.creme)
+            Button { streak = true } label: {
+                HStack(spacing: 5) {
+                    Image(systemName: "flame.fill").foregroundStyle(store.air.days > 0 ? Color(hex: 0xFF9F43) : C.muted)
+                    Text("\(store.air.days)").foregroundStyle(C.creme)
+                }
+                .font(F.round(15, .bold))
+                .padding(.horizontal, 12).frame(height: 40)
+                .background(Capsule().fill(C.char800).overlay(Capsule().stroke(C.line, lineWidth: 1)))
             }
-            .font(F.round(15, .bold))
-            .padding(.horizontal, 12).frame(height: 40)
-            .background(Capsule().fill(C.char800).overlay(Capsule().stroke(C.line, lineWidth: 1)))
+            .buttonStyle(.plain)
             .accessibilityElement(children: .ignore)
-            .accessibilityLabel("\(store.air.days) day streak")
+            .accessibilityLabel("\(store.air.days) day streak. Show streak")
             Button { Nav.shared.tab = .profile } label: {
                 Text(String(store.answers.firstName.prefix(1)).uppercased())
                     .font(F.round(16, .bold)).foregroundStyle(.white)

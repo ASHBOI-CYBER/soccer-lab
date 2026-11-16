@@ -82,8 +82,10 @@ struct SoccerMaxPaywall: View {
         ScrollView {
             VStack(spacing: 18) {
                 headline(a)
-                features
+                outcomes(a)
+                growth(a)
                 plans
+                trust
                 haveCode
                 Button { redeeming = true } label: {
                     Label("Redeem an App Store code", systemImage: "apple.logo").font(F.round(13, .semibold)).foregroundStyle(C.muted)
@@ -148,18 +150,103 @@ struct SoccerMaxPaywall: View {
 
     // MARK: - pieces
 
+    // v3 (2026-11-17): personal headline, outcomes for their position, a 5-week progress picture, savings, trust row.
+
+    /// "STRIKER · CLUB" from onboarding.
+    private func eyebrow(_ a: Answers) -> String {
+        ([a.positionName] + (a.level.map { [$0] } ?? [])).joined(separator: " · ").uppercased()
+    }
+
     private func headline(_ a: Answers) -> some View {
         let name = a.firstName.trimmingCharacters(in: .whitespaces)
+        let title: Text = (name.isEmpty || name == "Player")
+            ? Text("Your best football starts now.").foregroundStyle(C.creme)
+            : Text("\(name), ").foregroundStyle(C.brand) + Text("your best football starts now.").foregroundStyle(C.creme)
         return VStack(spacing: 10) {
-            Image("AppBall").resizable().scaledToFit().frame(width: 96, height: 96)
-                .shadow(color: C.brand.opacity(0.6), radius: 24)
-                .accessibilityHidden(true)
-            Text(name.isEmpty ? "Unlock Soccer Lab" : "\(name), unlock Soccer Lab")
-                .font(.system(size: 28, weight: .bold)).foregroundStyle(C.creme)
+            Label(eyebrow(a), systemImage: "bolt.fill")
+                .font(F.round(13, .heavy)).kerning(2).foregroundStyle(C.brandHi)
+                .lineLimit(1).minimumScaleFactor(0.7)
+            title
+                .font(.system(size: 30, weight: .heavy))
                 .multilineTextAlignment(.center)
-            Text("Everything you need to train on your own and get better every week.")
-                .font(F.round(15, .medium)).foregroundStyle(C.muted)
+                .fixedSize(horizontal: false, vertical: true)
+            Text("The player you want to be is trainable.")
+                .font(F.round(16, .medium)).foregroundStyle(C.muted)
                 .multilineTextAlignment(.center)
+        }
+        .frame(maxWidth: .infinity)
+        .padding(.top, 8)
+    }
+
+    /// Four outcomes, worded for their position.
+    private func outcomes(_ a: Answers) -> some View {
+        let role: String
+        switch LabPlan.group(a.position) {
+        case "Goalkeeper": role = "keeper"
+        case "Defender": role = "defender"
+        case "Midfielder": role = "midfielder"
+        default: role = (a.position == "LW" || a.position == "RW") ? "winger" : "attacker"
+        }
+        let rows: [(String, Color, String)] = [
+            ("flame.fill", Color(hex: 0xFF9F43), "Step onto the pitch feeling ready"),
+            ("shield.lefthalf.filled", C.brandHi, "Be the \(role) your coach counts on"),
+            ("bolt.fill", Color(hex: 0xF5C542), "Turn training into real match minutes"),
+            ("trophy.fill", C.gold, "Get noticed for how you play"),
+        ]
+        return VStack(alignment: .leading, spacing: 14) {
+            ForEach(rows.indices, id: \.self) { i in
+                HStack(spacing: 14) {
+                    Image(systemName: rows[i].0).font(.system(size: 18, weight: .bold)).foregroundStyle(rows[i].1)
+                        .frame(width: 30)
+                    Text(rows[i].2).font(F.round(17, .semibold)).foregroundStyle(C.creme)
+                        .fixedSize(horizontal: false, vertical: true)
+                    Spacer(minLength: 0)
+                }
+            }
+        }
+        .padding(.horizontal, 6)
+    }
+
+    /// A picture of training steadily with a plan vs on your own. An illustration, and it says so.
+    private func growth(_ a: Answers) -> some View {
+        VStack(alignment: .leading, spacing: 12) {
+            (Text("YOUR PROGRESS · ").foregroundStyle(C.muted) + Text("NEXT 5 WEEKS").foregroundStyle(C.brandHi))
+                .font(F.round(12, .heavy)).kerning(2)
+            Canvas { ctx, size in
+                var with = Path(), without = Path()
+                for i in 0...40 {
+                    let x = Double(i) / 40
+                    let up = 0.88 - 0.72 * (x + 0.06 * sin(x * 9) * x)
+                    let flat = 0.88 - 0.22 * x
+                    let a = CGPoint(x: x * size.width, y: up * size.height), b = CGPoint(x: x * size.width, y: flat * size.height)
+                    if i == 0 { with.move(to: a); without.move(to: b) } else { with.addLine(to: a); without.addLine(to: b) }
+                }
+                ctx.stroke(without, with: .color(C.muted.opacity(0.7)), style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [6, 6]))
+                ctx.stroke(with, with: .color(C.brand), style: StrokeStyle(lineWidth: 3.5, lineCap: .round))
+            }
+            .frame(height: 96)
+            HStack(spacing: 14) {
+                Label("With Soccer Lab", systemImage: "circle.fill").foregroundStyle(C.creme2)
+                Label("On your own", systemImage: "circle.fill").foregroundStyle(C.muted)
+                Spacer(minLength: 0)
+                Text("\(a.trainingDaysPerWeek) days/week").foregroundStyle(C.muted)
+            }
+            .font(F.round(12, .semibold))
+            .labelStyle(LegendDot())
+            Text("An illustration of steady training with a plan, not a promise.")
+                .font(F.round(11, .medium)).foregroundStyle(C.char600)
+        }
+        .padding(16)
+        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(C.char800)
+            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.line, lineWidth: 1)))
+    }
+
+    private var trust: some View {
+        HStack(spacing: 10) {
+            ForEach(["Cancel anytime", "No hidden fees", "Instant access"], id: \.self) { t in
+                Label(t, systemImage: "checkmark").font(F.round(12, .semibold)).foregroundStyle(C.creme2)
+                    .lineLimit(1).minimumScaleFactor(0.75)
+            }
         }
         .frame(maxWidth: .infinity)
     }
@@ -193,8 +280,9 @@ struct SoccerMaxPaywall: View {
 
     private var plans: some View {
         HStack(alignment: .bottom, spacing: 8) {
-            PlanTile(on: pick == PayID.yearly, badge: pay.trialOffered ? "7 DAYS FREE" : "BEST VALUE", name: "Yearly",
-                     price: pay.price(PayID.yearly), unit: "/yr", sub: "Only \(pay.perDay(PayID.yearly))") { pick = PayID.yearly }
+            PlanTile(on: pick == PayID.yearly, badge: pay.trialOffered ? "7 DAYS FREE" : pay.yearlySavesPercent.map { "SAVE \($0)%" } ?? "BEST VALUE",
+                     name: "Yearly", price: pay.price(PayID.yearly), unit: "/yr",
+                     sub: "\(pay.perDay(PayID.yearly)) · \(pay.perWeek(PayID.yearly))") { pick = PayID.yearly }
             PlanTile(on: pick == PayID.weekly, badge: nil, name: "Weekly",
                      price: pay.price(PayID.weekly), unit: "/wk", sub: pay.perDay(PayID.weekly)) { pick = PayID.weekly }
             // no LIFETIME tile (2026-11-14): Skiller AI's listing sells yearly and monthly only. Lifetime code passes
@@ -219,6 +307,7 @@ struct SoccerMaxPaywall: View {
     }
 
     private var cta: String {
+        if !trial, pick == PayID.yearly || pick == PayID.weekly { return "Unlock my plan" }
         switch pick {
         case PayID.yearly: trial ? "Start my free week" : "Continue with yearly"
         case PayID.weekly: "Continue with weekly"
@@ -721,5 +810,12 @@ enum PayGlyph {
             ctx.fill(flame(0.5, 0.86, 0.44, 0.19), with: .color(C.gold))
             ctx.stroke(flame(0.5, 0.86, 0.44, 0.19), with: ink, style: StrokeStyle(lineWidth: w * 0.04, lineJoin: .round))
         }
+    }
+}
+
+/// A small coloured dot in front of a chart legend line.
+private struct LegendDot: LabelStyle {
+    func makeBody(configuration: Configuration) -> some View {
+        HStack(spacing: 6) { configuration.icon.font(.system(size: 7)); configuration.title }
     }
 }
