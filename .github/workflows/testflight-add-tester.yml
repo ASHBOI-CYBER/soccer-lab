@@ -1,0 +1,55 @@
+# Adds an App Store Connect team member to the internal TestFlight group (they get every build at once, no Apple
+# review). They must have accepted their App Store Connect invite first. `gh workflow run testflight-add-tester.yml -f email=...`
+name: TestFlight add tester
+
+on:
+  workflow_dispatch:
+    inputs:
+      email:
+        description: "The team member's App Store Connect email"
+        required: true
+
+jobs:
+  add:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Add to internal testers
+        env:
+          ID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+          P8: ${{ secrets.ASC_KEY_P8 }}
+          EMAIL: ${{ inputs.email }}
+        run: |
+          python3 -m pip install --quiet pyjwt cryptography
+          python3 - <<'PY'
+          import os, time, json, jwt, urllib.request, urllib.error, urllib.parse
+          key = "\n".join(l.strip() for l in os.environ["P8"].replace("\r", "").split("\n") if l.strip())
+          def call(m, p, b=None):
+              now = int(time.time())
+              tok = jwt.encode({"iss": os.environ["ISS"].strip(), "iat": now, "exp": now + 600, "aud": "appstoreconnect-v1"}, key,
+                               algorithm="ES256", headers={"kid": os.environ["ID"].strip(), "typ": "JWT"})
+              r = urllib.request.Request("https://api.appstoreconnect.apple.com" + p, method=m, data=json.dumps(b).encode() if b else None,
+                                         headers={"Authorization": "Bearer " + tok, "Content-Type": "application/json"})
+              try:
+                  x = urllib.request.urlopen(r, timeout=30); t = x.read(); return x.status, json.loads(t) if t else {}
+              except urllib.error.HTTPError as e:
+                  return e.code, e.read().decode()[:500]
+          INTERNAL = "84a062a7-5fa6-453a-8a3f-4e1f8e79cf97"
+          email = os.environ["EMAIL"].strip().lower()
+          s, users = call("GET", "/v1/users?limit=50")
+          user = next((u for u in users["data"] if u["attributes"]["username"].lower() == email), None)
+          if not user:
+              s, inv = call("GET", "/v1/userInvitations?limit=50")
+              pending = [i for i in inv.get("data", []) if i["attributes"]["email"].lower() == email]
+              print("RESULT: invite not accepted yet" if pending else "RESULT: no team member or invite with that email")
+              if pending: print("invited as:", pending[0]["attributes"].get("roles"), "expires:", pending[0]["attributes"].get("expirationDate"))
+              raise SystemExit(0)
+          a = user["attributes"]
+          print("team member:", a.get("firstName"), a.get("roles"))
+          s, r = call("POST", "/v1/betaTesters", {"data": {"type": "betaTesters", "attributes": {"email": a["username"], "firstName": a.get("firstName") or "", "lastName": a.get("lastName") or ""},
+                       "relationships": {"betaGroups": {"data": [{"type": "betaGroups", "id": INTERNAL}]}}}})
+          print("RESULT: added to internal testers" if s in (200, 201) else f"RESULT: {s} {r}")
+          s, t = call("GET", f"/v1/betaGroups/{INTERNAL}/betaTesters?limit=20")
+          print("internal testers now:", [(x["attributes"]["firstName"], x["attributes"].get("state")) for x in t["data"]])
+          PY
