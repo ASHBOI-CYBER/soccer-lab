@@ -1,0 +1,5 @@
+# The website (Netlify, linked to this repo 2026-11-17): every push to main publishes the site/ folder as it is.
+# No build step. Redirects live in site/_redirects.
+[build]
+  publish = "site"
+  command = ""
