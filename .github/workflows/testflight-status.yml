@@ -4,6 +4,11 @@ name: TestFlight status
 
 on:
   workflow_dispatch:
+    inputs:
+      add_tester:
+        description: "Optional: a team member's email to add to the internal testers"
+        required: false
+        default: ""
 
 jobs:
   status:
@@ -15,6 +20,7 @@ jobs:
           ID: ${{ secrets.ASC_KEY_ID }}
           ISS: ${{ secrets.ASC_ISSUER_ID }}
           P8: ${{ secrets.ASC_KEY_P8 }}
+          ADD: ${{ inputs.add_tester }}
         run: |
           python3 -m pip install --quiet pyjwt cryptography
           python3 - <<'PY'
@@ -31,6 +37,20 @@ jobs:
               except urllib.error.HTTPError as e:
                   return e.code, e.read().decode()[:400]
           EXTERNAL = "4ed7110f-9b35-4abd-94c7-05edfff88eaf"
+          INTERNAL = "84a062a7-5fa6-453a-8a3f-4e1f8e79cf97"
+          add = os.environ.get("ADD", "").strip().lower()
+          if add:
+              s, users = call("GET", "/v1/users?limit=50")
+              user = next((u for u in users["data"] if u["attributes"]["username"].lower() == add), None)
+              if not user:
+                  print("ADD RESULT: not a team member yet (invite not accepted?)")
+              else:
+                  a = user["attributes"]
+                  s, r = call("POST", "/v1/betaTesters", {"data": {"type": "betaTesters", "attributes": {"email": a["username"], "firstName": a.get("firstName") or "", "lastName": a.get("lastName") or ""},
+                               "relationships": {"betaGroups": {"data": [{"type": "betaGroups", "id": INTERNAL}]}}}})
+                  print("ADD RESULT:", "added to internal testers" if s in (200, 201) else f"{s} {r}")
+              s, t = call("GET", f"/v1/betaGroups/{INTERNAL}/betaTesters?limit=20")
+              print("internal testers:", [(x["attributes"]["firstName"], x["attributes"].get("state")) for x in t["data"]])
           s, d = call("GET", "/v1/builds?filter[app]=6814847450&sort=-uploadedDate&limit=5&fields[builds]=version,processingState")
           builds = d["data"]
           in_review = False
