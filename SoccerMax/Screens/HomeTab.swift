@@ -212,7 +212,11 @@ struct HomeTab: View {
             }
             HStack(spacing: 10) {
                 shortcut("Log food", "Stay on your fuel target", "fork.knife", labSkillColor("Stretching")) { Nav.shared.tab = .nutrition }
-                shortcut("My team", "Chat and leaderboard", "person.3.fill", labSkillColor("Defending")) { Nav.shared.team = true }
+                if Nav.teamsOn {
+                    shortcut("My team", "Chat and leaderboard", "person.3.fill", labSkillColor("Defending")) { Nav.shared.team = true }
+                } else {
+                    shortcut("Ask Coach", "Your AI training coach", "sparkles", Color(hex: 0xA78BFA)) { Nav.shared.coach = true }
+                }
             }
         }
     }

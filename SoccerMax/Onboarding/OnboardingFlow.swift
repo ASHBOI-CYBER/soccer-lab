@@ -15,6 +15,12 @@ import UserNotifications
 enum OBStep: String, CaseIterable {
     case welcome, name, position, gender, foot, body, level, routine, goal, fuel, wants, source, team, account
 
+    /// The steps in order; "Join a team" only while teams are on (Nav.teamsOn).
+    static var allCases: [OBStep] {
+        [.welcome, .name, .position, .gender, .foot, .body, .level, .routine, .goal, .fuel, .wants, .source, .team, .account]
+            .filter { $0 != .team || TEAMS_ON }
+    }
+
     /// Name shown in Settings ? Test onboarding.
     var label: String {
         switch self {

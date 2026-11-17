@@ -275,6 +275,24 @@ final class Purchases {
         let pct = (1 - NSDecimalNumber(decimal: y).doubleValue / (NSDecimalNumber(decimal: w).doubleValue * 52)) * 100
         return pct >= 5 ? Int(pct.rounded(.down)) : nil
     }
+    /// Just the money part of the per-day price ("$0.12").
+    func perDayValue(_ id: String) -> String { perDay(id).replacingOccurrences(of: "/day", with: "") }
+    /// The weekly plan for a whole year ("$415.48"), for the yearly box's "vs" line.
+    var weeklyForAYear: String {
+        if let p = products[PayID.weekly] {
+            return (p.price * 52).formatted(.currency(code: p.currencyCode ?? "USD").precision(.fractionLength(2)))
+        }
+        let n = Decimal(string: price(PayID.weekly).filter { $0.isNumber || $0 == "." }) ?? 0
+        return (n * 52).formatted(.currency(code: "USD").precision(.fractionLength(2)))
+    }
+    /// Yearly per month ("$3.75"), for the small print.
+    var yearlyMonthly: String {
+        if let p = products[PayID.yearly] {
+            return (p.price / 12).formatted(.currency(code: p.currencyCode ?? "USD").precision(.fractionLength(2)))
+        }
+        let n = Decimal(string: price(PayID.yearly).filter { $0.isNumber || $0 == "." }) ?? 0
+        return (n / 12).formatted(.currency(code: "USD").precision(.fractionLength(2)))
+    }
     /// Price per week of a plan ("$0.67/week").
     func perWeek(_ id: String) -> String {
         let weeks: Decimal = id == PayID.weekly ? 1 : id == PayID.monthly ? Decimal(30) / 7 : 52

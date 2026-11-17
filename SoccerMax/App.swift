@@ -216,8 +216,8 @@ struct MainTabs: View {
         .fullScreenCover(isPresented: $demoPaywall) { PaywallGate() }
         .onChange(of: tab) { _, _ in Haptics.play(.stud) }
         // a code from a link (team invite, gift, creator) opens the Team page, which has the code box
-        .onChange(of: Team.shared.pendingCode) { _, c in if c != nil { Nav.shared.team = true } }
-        .onAppear { if Team.shared.pendingCode != nil { Nav.shared.team = true } }
+        .onChange(of: Team.shared.pendingCode) { _, c in if c != nil, Nav.teamsOn { Nav.shared.team = true } }
+        .onAppear { if Team.shared.pendingCode != nil, Nav.teamsOn { Nav.shared.team = true } }
         .onAppear { if DebugRoute.parts.first == "team" { Nav.shared.team = true } }   // test builds: `-route team` / `team:demo`
         // TEAM lives behind Profile now: chat, leaderboard, invites and the code box, full screen with a Close bar
         .fullScreenCover(isPresented: Binding(get: { Nav.shared.team }, set: { Nav.shared.team = $0 })) {
@@ -260,10 +260,15 @@ private struct DemoDone: View {
     }
 }
 
+/// Teams are hidden for now (2026-11-17): no My team buttons, no Join a team step, links don't open the team page.
+/// The code and server stay; set true to bring them back.
+let TEAMS_ON = false
+
 /// Where a home-screen widget tap lands (notes/34): streak + consistency ? Stats, match of the day ? that film.
 @Observable
 final class Nav {
     static let shared = Nav()
+    static var teamsOn: Bool { TEAMS_ON }
     var tab: AppTab?
     /// The Team page is showing (opened from Profile, or by a code from a link).
     var team = false

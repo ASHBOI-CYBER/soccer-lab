@@ -84,13 +84,9 @@ struct SoccerMaxPaywall: View {
                 headline(a)
                 outcomes(a)
                 growth(a)
+                rating
                 plans
                 trust
-                haveCode
-                Button { redeeming = true } label: {
-                    Label("Redeem an App Store code", systemImage: "apple.logo").font(F.round(13, .semibold)).foregroundStyle(C.muted)
-                }
-                .buttonStyle(.plain)
             }
             .padding(.horizontal, 20)
             .padding(.top, 12)
@@ -110,13 +106,21 @@ struct SoccerMaxPaywall: View {
                 }
                 .buttonStyle(.gameLarge(.brand, feel: .kick))
                 .disabled(pay.busy)
-                Text(fine).font(F.round(12)).foregroundStyle(C.muted).multilineTextAlignment(.center)
-                HStack(spacing: 14) {
+                HStack(spacing: 8) {
+                    Link("Privacy Policy", destination: Legal.privacy)
+                    Text("·").foregroundStyle(C.muted)
+                    Link("Terms of Service", destination: Legal.terms)
+                    Text("·").foregroundStyle(C.muted)
                     Button("Restore") { Task { await pay.restore(); if pay.hasAccess { finish() } } }
-                    Link("Terms", destination: Legal.terms)
-                    Link("Privacy", destination: Legal.privacy)
                 }
-                .font(F.round(12, .semibold)).foregroundStyle(C.creme2)
+                .font(F.round(14, .semibold)).foregroundStyle(C.creme2)
+                .lineLimit(1).minimumScaleFactor(0.8)
+                HStack(spacing: 16) {
+                    Button(team.pendingCode != nil ? "Your code is ready. Use it" : "Have a code?") { joining = true }
+                    Button("Redeem App Store code") { redeeming = true }
+                }
+                .font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                Text(fine).font(F.round(12)).foregroundStyle(C.muted).multilineTextAlignment(.center)
             }
         }
         .onAppear {
@@ -210,7 +214,7 @@ struct SoccerMaxPaywall: View {
     /// A picture of training steadily with a plan vs on your own. An illustration, and it says so.
     private func growth(_ a: Answers) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            (Text("YOUR PROGRESS · ").foregroundStyle(C.muted) + Text("NEXT 5 WEEKS").foregroundStyle(C.brandHi))
+            (Text("PREDICTED GROWTH · ").foregroundStyle(C.muted) + Text("NEXT 5 WEEKS").foregroundStyle(C.brandHi))
                 .font(F.round(12, .heavy)).kerning(2)
             Canvas { ctx, size in
                 var with = Path(), without = Path()
@@ -227,7 +231,7 @@ struct SoccerMaxPaywall: View {
             .frame(height: 96)
             HStack(spacing: 14) {
                 Label("With Soccer Lab", systemImage: "circle.fill").foregroundStyle(C.creme2)
-                Label("On your own", systemImage: "circle.fill").foregroundStyle(C.muted)
+                Label("Without", systemImage: "circle.fill").foregroundStyle(C.muted)
                 Spacer(minLength: 0)
                 Text("\(a.trainingDaysPerWeek) days/week").foregroundStyle(C.muted)
             }
@@ -239,6 +243,18 @@ struct SoccerMaxPaywall: View {
         .padding(16)
         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(C.char800)
             .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.line, lineWidth: 1)))
+    }
+
+    private var rating: some View {
+        HStack(spacing: 10) {
+            HStack(spacing: 3) {
+                ForEach(0..<5, id: \.self) { _ in Image(systemName: "star.fill").font(.system(size: 17)).foregroundStyle(Color(hex: 0xF5B83D)) }
+            }
+            Text("Made for players who train to win").font(F.round(15, .semibold)).foregroundStyle(C.creme2)
+                .lineLimit(1).minimumScaleFactor(0.8)
+        }
+        .frame(maxWidth: .infinity)
+        .accessibilityElement(children: .combine)
     }
 
     private var trust: some View {
@@ -280,11 +296,12 @@ struct SoccerMaxPaywall: View {
 
     private var plans: some View {
         HStack(alignment: .bottom, spacing: 8) {
-            PlanTile(on: pick == PayID.yearly, badge: pay.trialOffered ? "7 DAYS FREE" : pay.yearlySavesPercent.map { "SAVE \($0)%" } ?? "BEST VALUE",
-                     name: "Yearly", price: pay.price(PayID.yearly), unit: "/yr",
-                     sub: "\(pay.perDay(PayID.yearly)) · \(pay.perWeek(PayID.yearly))") { pick = PayID.yearly }
-            PlanTile(on: pick == PayID.weekly, badge: nil, name: "Weekly",
-                     price: pay.price(PayID.weekly), unit: "/wk", sub: pay.perDay(PayID.weekly)) { pick = PayID.weekly }
+            DayTile(on: pick == PayID.yearly, badge: pay.yearlySavesPercent.map { "\($0)% OFF" }, name: "Yearly",
+                    perDay: pay.perDayValue(PayID.yearly), line: pay.perWeek(PayID.yearly),
+                    billed: "\(pay.price(PayID.yearly))/year", was: "vs \(pay.weeklyForAYear)/year") { pick = PayID.yearly }
+            DayTile(on: pick == PayID.weekly, badge: nil, name: "Weekly",
+                    perDay: pay.perDayValue(PayID.weekly), line: "\(pay.price(PayID.weekly))/week",
+                    billed: nil, was: nil) { pick = PayID.weekly }
             // no LIFETIME tile (2026-11-14): Skiller AI's listing sells yearly and monthly only. Lifetime code passes
             // (free-pass links) still work; they never went through this tile.
         }
@@ -320,8 +337,8 @@ struct SoccerMaxPaywall: View {
     private var fine: String {
         switch pick {
         case PayID.yearly: trial ? "7 days free, then \(pay.price(PayID.yearly))/year. Renews yearly. Cancel anytime."
-                                 : "\(pay.price(PayID.yearly))/year. Renews yearly. Cancel anytime."
-        case PayID.weekly: "\(pay.price(PayID.weekly))/week. Renews weekly. Cancel anytime."
+                                 : "Just \(pay.price(PayID.yearly)) per year (\(pay.yearlyMonthly)/mo) · Auto-renews · Cancel anytime."
+        case PayID.weekly: "Just \(pay.price(PayID.weekly)) per week · Auto-renews · Cancel anytime."
         case PayID.monthly: "\(pay.price(PayID.monthly))/month. Renews monthly. Cancel anytime."
         default: "\(pay.price(PayID.lifetime)) once. No subscription."
         }
@@ -820,5 +837,60 @@ private struct LegendDot: LabelStyle {
             configuration.icon.font(.system(size: 7))
             configuration.title
         }
+    }
+}
+
+/// A plan box, per day first (2026-11-17, the layout the user asked for): name and tick, the per-day price big,
+/// the per-week line, and for yearly the billed price with what weekly would cost for a year.
+private struct DayTile: View {
+    let on: Bool
+    let badge: String?
+    let name: String
+    let perDay: String
+    let line: String
+    let billed: String?
+    let was: String?
+    let pick: () -> Void
+
+    var body: some View {
+        Button(action: pick) {
+            VStack(alignment: .leading, spacing: 6) {
+                HStack {
+                    Text(name).font(.system(size: 20, weight: .heavy)).foregroundStyle(C.creme)
+                    Spacer(minLength: 4)
+                    Image(systemName: on ? "checkmark.circle.fill" : "circle")
+                        .font(.system(size: 24, weight: .semibold)).foregroundStyle(on ? C.brand : C.muted)
+                }
+                (Text(perDay).font(.system(size: 30, weight: .heavy)).foregroundStyle(on ? C.brandHi : C.creme)
+                 + Text(" /day").font(F.round(15, .semibold)).foregroundStyle(C.muted))
+                    .lineLimit(1).minimumScaleFactor(0.6)
+                Text(line).font(F.round(15, .semibold)).foregroundStyle(on ? C.creme2 : C.creme)
+                    .lineLimit(1).minimumScaleFactor(0.7)
+                if let billed {
+                    (Text(billed).font(F.round(13, .bold)).foregroundStyle(C.creme)
+                     + Text(was.map { "  " + $0 } ?? "").font(F.round(11, .semibold)).foregroundStyle(C.muted))
+                        .lineLimit(1).minimumScaleFactor(0.6)
+                }
+            }
+            .frame(maxWidth: .infinity, minHeight: 140, alignment: .topLeading)
+            .padding(14)
+            .background(
+                RoundedRectangle(cornerRadius: 22, style: .continuous)
+                    .fill(on ? AnyShapeStyle(LinearGradient(colors: [C.brand.opacity(0.22), C.char800], startPoint: .top, endPoint: .bottom)) : AnyShapeStyle(C.char800))
+                    .overlay(RoundedRectangle(cornerRadius: 22, style: .continuous).stroke(on ? C.brand : C.line, lineWidth: on ? 2.5 : 1))
+                    .shadow(color: on ? C.brand.opacity(0.45) : .clear, radius: 14)
+            )
+            .overlay(alignment: .topTrailing) {
+                if let badge {
+                    Text(badge).font(F.round(14, .heavy)).foregroundStyle(.white)
+                        .padding(.horizontal, 12).padding(.vertical, 5)
+                        .background(Capsule().fill(C.brand))
+                        .offset(x: -16, y: -14)
+                }
+            }
+        }
+        .buttonStyle(.plain)
+        .accessibilityElement(children: .combine)
+        .accessibilityAddTraits(on ? .isSelected : [])
     }
 }

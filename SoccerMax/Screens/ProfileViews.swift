@@ -174,12 +174,14 @@ struct ProfileTab: View {
             .accessibilityLabel("\(fullName). Edit name")
             Text("\(store.answers.positionName) · \(store.answers.foot ?? "Right") foot")
                 .font(F.round(15, .semibold)).foregroundStyle(C.muted)
-            TeamChip { showTeams = true }
-                .padding(.top, 4)
-            // TEAM used to be a tab; it opens from here now (chat, leaderboard, invites, the code box)
-            Button { Nav.shared.team = true } label: { Label("My team", systemImage: "person.3.fill") }
-                .buttonStyle(.game(.charcoal, height: 46, font: 19))
-                .padding(.top, 8)
+            if Nav.teamsOn {
+                TeamChip { showTeams = true }
+                    .padding(.top, 4)
+                // TEAM used to be a tab; it opens from here now (chat, leaderboard, invites, the code box)
+                Button { Nav.shared.team = true } label: { Label("My team", systemImage: "person.3.fill") }
+                    .buttonStyle(.game(.charcoal, height: 46, font: 19))
+                    .padding(.top, 8)
+            }
         }
         .frame(maxWidth: .infinity)
         .padding(.top, 2)
