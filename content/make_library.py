@@ -456,7 +456,7 @@ D("minute-combo", "Minute Combo", "Ball mastery", 5, 5, f"4 {X} 60 s",
   progression="Start each chain with your weaker foot.", tags=["quick feet"])
 
 # ---- Dribbling
-D("coach-calls", "Coach Calls", "Dribbling", 2, 4, f"3 {X} 60 s",
+D("coach-calls", "Live Callouts", "Dribbling", 2, 4, f"3 {X} 60 s",
   "Mark a 6 m square with four cones. Prop your phone up nearby with the sound on.",
   ["Dribble around inside the square with small touches.",
    "Every few seconds the phone calls a move: Cruyff, step-over, drag back, scissors, inside cut or sole roll.",
@@ -980,7 +980,7 @@ D("eyes-up-dribble", "Eyes Up Dribble", "Awareness", 1, 4, f"3 {X} 45 s",
   ["DRI", "BC"], ["Vision", "Dribbling", "Composure"],
   board([cone(-5, -5), cone(5, -5), cone(-5, 5), cone(5, 5)], [you(-1, 1)], [[-0.7, 0.6]], [run((-1, 1), (2, -1), (0, -3), (-3, -1), (-2, 2))]),
   gear=["Ball", "4 cones"], space="10 m square", progression="Look up every two touches, then every touch.", tags=["warm-up"])
-D("colour-cones", "Colour Corners", "Awareness", 2, 4, f"3 {X} 60 s",
+D("colour-cones", "Cone Reaction", "Awareness", 2, 4, f"3 {X} 60 s",
   "Put four cones of different colours (red, blue, yellow and green) in a square about 6 big steps across. "
   "Stand in the middle with the ball. Prop your phone up nearby with the sound on.",
   ["Wait in the middle with the ball at your feet, on your toes.", "The phone calls a colour.",

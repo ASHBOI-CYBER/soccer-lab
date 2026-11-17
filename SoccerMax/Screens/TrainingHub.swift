@@ -66,13 +66,13 @@ struct TrainingDrillsPart: View {
             VStack(alignment: .leading, spacing: 12) {
                 LabKicker("TRAINING TOOLS")
                 LazyVGrid(columns: [GridItem(.flexible(), spacing: 10), GridItem(.flexible(), spacing: 10)], spacing: 10) {
-                    tool("Coach calls", "A voice calls moves, you react", "speaker.wave.2.fill", Color(hex: 0xFF9F43)) { voice = .moves }
-                    tool("Colour cones", "Hear a colour, go to that cone", "triangle.fill", Color(hex: 0x2BB673)) { voice = .cones }
+                    tool("Live Callouts", "Voice-called moves, you react", "speaker.wave.2.fill", Color(hex: 0xFF9F43)) { voice = .moves }
+                    tool("Cone Reaction", "Hands-free colour calls", "triangle.fill", Color(hex: 0x2BB673)) { voice = .cones }
                     NavigationLink(value: LabRoute.drills) {
-                        toolFace("Drill library", "\(lib.drills.count) drills, all skills", "square.grid.2x2.fill", C.brand)
+                        toolFace("Drill Library", "Every drill, \(lib.drills.count) of them", "square.grid.2x2.fill", C.brand)
                     }
                     .buttonStyle(.plain)
-                    tool("Ask Coach", "Your AI coach, any question", "sparkles", Color(hex: 0xA78BFA)) { Nav.shared.coach = true }
+                    tool("AI Coach", "Ask anything", "sparkles", Color(hex: 0xA78BFA)) { Nav.shared.coach = true }
                 }
             }
 
@@ -237,7 +237,7 @@ struct VoiceDrill: View {
     enum Mode: String, Identifiable {
         case moves, cones
         var id: String { rawValue }
-        var title: String { self == .moves ? "Coach calls" : "Colour cones" }
+        var title: String { self == .moves ? "Live Callouts" : "Cone Reaction" }
         /// The library drill this ticks off when finished (content/make_library.py).
         var drillID: String { self == .moves ? "coach-calls" : "colour-cones" }
         var steps: [String] {

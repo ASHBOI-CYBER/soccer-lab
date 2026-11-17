@@ -4893,7 +4893,7 @@
   },
   {
    "id": "coach-calls",
-   "name": "Coach Calls",
+   "name": "Live Callouts",
    "skill": "Dribbling",
    "level": 2,
    "who": "Solo",
@@ -11908,7 +11908,7 @@
   },
   {
    "id": "colour-cones",
-   "name": "Colour Corners",
+   "name": "Cone Reaction",
    "skill": "Awareness",
    "level": 2,
    "who": "Solo",

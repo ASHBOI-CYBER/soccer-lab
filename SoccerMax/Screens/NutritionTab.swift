@@ -14,6 +14,8 @@ struct NutritionTab: View {
     @State private var day = todayKey()
     // test builds: `-route tab:nutrition:snacks:bottom` opens on that category
     @State private var planCategory = MealPlan.categories.first { DebugRoute.parts.contains($0.lowercased()) } ?? MealPlan.categories[0]
+    /// The meal-plan moment opened under the cards (nil = closed). Test builds: `-route tab:nutrition:recovery` opens one.
+    @State private var openPlans: String? = MealPlan.categories.first { DebugRoute.parts.contains($0.lowercased()) }
 
     private var key: String { dateKey(dateOf(day)) }
     private var isToday: Bool { day == todayKey() }
@@ -25,7 +27,7 @@ struct NutritionTab: View {
         NavigationStack {
             ScrollView {
                 VStack(alignment: .leading, spacing: 20) {
-                    TabHeader(title: "Fuel") {
+                    TabHeader(title: "Nutrition") {
                         Button { editingBody = true } label: {
                             Label(lab.body.isSet ? "Edit goals" : "Set goals", systemImage: "slider.horizontal.3")
                                 .font(F.round(14, .bold)).foregroundStyle(C.brandHi)
@@ -40,20 +42,32 @@ struct NutritionTab: View {
                     if !lab.body.isSet { personalise }
                     calories(d, goal)
                     macros(d, goal)
-                    NutritionPlanCard()
-                    if isToday { tip(d, goal) }
-                    water(d, goal)
-                    if isToday { FoodScanCard { scanning = true } }
                     meals(d)
                     mealPlans
+                    water(d, goal)
+                    NutritionPlanCard()
                     Text("A general guide for active players, not medical advice. If you have a health condition, follow your doctor.")
                         .font(F.round(12, .medium)).foregroundStyle(C.muted)
                         .fixedSize(horizontal: false, vertical: true)
                 }
                 .padding(.horizontal, 20)
-                .padding(.bottom, 40)
+                .padding(.bottom, 110)
             }
             .scrollIndicators(.hidden)
+            // the add-food button floats bottom right (2026-11-17, simple layout)
+            .overlay(alignment: .bottomTrailing) {
+                if isToday {
+                    Button { adding = true } label: {
+                        Image(systemName: "plus").font(.system(size: 26, weight: .bold)).foregroundStyle(.white)
+                            .frame(width: 62, height: 62)
+                            .background(Circle().fill(LinearGradient(colors: [C.brandHi, C.brand], startPoint: .top, endPoint: .bottom)))
+                            .shadow(color: C.brand.opacity(0.55), radius: 14, y: 4)
+                    }
+                    .buttonStyle(.press(.pop))
+                    .padding(.trailing, 20).padding(.bottom, 96)
+                    .accessibilityLabel("Add food")
+                }
+            }
             // test builds: `-route tab:nutrition:bottom` opens scrolled to the end, for screenshots of the lower half
             .defaultScrollAnchor(DebugRoute.parts.contains("bottom") ? .bottom : .top)
             .tabRoot("Nutrition")
@@ -185,44 +199,42 @@ struct NutritionTab: View {
 
     // MARK: water
 
+    /// Hydration: one row, in ml (a glass = 250 ml), +250 ml to add.
     private func water(_ d: FuelDay, _ goal: FuelTargets) -> some View {
-        LabPanel {
-            VStack(alignment: .leading, spacing: 12) {
-                HStack(spacing: 10) {
-                    VStack(alignment: .leading, spacing: 2) {
-                        Label("Water", systemImage: "drop.fill").font(F.round(16, .bold)).foregroundStyle(C.creme)
-                        Text("\(d.water) of \(goal.water) glasses").font(F.round(13, .semibold)).foregroundStyle(C.muted)
-                    }
-                    Spacer(minLength: 0)
-                    if isToday {
-                        Button { lab.water(-1); Haptics.play(.stud) } label: {
-                            Image(systemName: "minus").font(.system(size: 15, weight: .heavy)).foregroundStyle(d.water == 0 ? C.muted : C.creme)
-                                .frame(width: 44, height: 44)
-                                .background(Circle().fill(C.char700).overlay(Circle().stroke(C.line, lineWidth: 1)))
-                        }
-                        .buttonStyle(.plain)
-                        .disabled(d.water == 0)
-                        .accessibilityLabel("One glass less")
-                        Button { lab.water(1); Haptics.play(.pop) } label: {
-                            Image(systemName: "plus").font(.system(size: 15, weight: .heavy)).foregroundStyle(.white)
-                                .frame(width: 44, height: 44)
-                                .background(Circle().fill(LinearGradient(colors: [C.brandHi, C.brand], startPoint: .top, endPoint: .bottom)))
-                                .shadow(color: C.brand.opacity(0.6), radius: 8)
-                        }
-                        .buttonStyle(.plain)
-                        .accessibilityLabel("Add a glass of water")
+        let ml = d.water * 250, target = max(1, goal.water * 250)
+        let pct = min(100, Int(Double(ml) / Double(target) * 100))
+        return HStack(spacing: 12) {
+            Image(systemName: "drop.fill").font(.system(size: 18, weight: .bold)).foregroundStyle(C.brandHi)
+                .frame(width: 44, height: 44).background(Circle().fill(C.brand.opacity(0.16)))
+            VStack(alignment: .leading, spacing: 8) {
+                HStack {
+                    Text("Hydration").font(F.round(16, .bold)).foregroundStyle(C.creme)
+                    Text("\(pct)%").font(F.round(15, .bold)).foregroundStyle(C.brandHi)
+                    Spacer(minLength: 4)
+                    Text("\(ml)ml of \(String(format: "%.1f", Double(target) / 1000))L").font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                }
+                GeometryReader { g in
+                    ZStack(alignment: .leading) {
+                        Capsule().fill(C.char700)
+                        Capsule().fill(C.brandHi).frame(width: g.size.width * CGFloat(pct) / 100)
                     }
                 }
-                HStack(spacing: 5) {
-                    ForEach(0..<goal.water, id: \.self) { i in
-                        Capsule().fill(i < d.water ? C.brandHi : C.char700)
-                            .frame(height: 22)
-                            .shadow(color: i < d.water ? C.brand.opacity(0.6) : .clear, radius: 5)
-                    }
+                .frame(height: 6)
+            }
+            if isToday {
+                Button { lab.water(1); Haptics.play(.pop) } label: {
+                    Text("+ 250ml").font(F.round(14, .bold)).foregroundStyle(C.brandHi)
+                        .padding(.horizontal, 14).frame(height: 44)
+                        .background(Capsule().fill(C.brand.opacity(0.16)).overlay(Capsule().stroke(C.brand.opacity(0.5), lineWidth: 1)))
                 }
-                .accessibilityHidden(true)
+                .buttonStyle(.plain)
+                .accessibilityLabel("Add 250 millilitres of water")
             }
         }
+        .padding(14)
+        .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(C.char800)
+            .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.line, lineWidth: 1)))
+        .contextMenu { if isToday && d.water > 0 { Button("Remove 250ml", systemImage: "minus") { lab.water(-1) } } }
     }
 
     // MARK: meals
@@ -230,19 +242,14 @@ struct NutritionTab: View {
     private func meals(_ d: FuelDay) -> some View {
         VStack(alignment: .leading, spacing: 12) {
             HStack {
-                Text(isToday ? "Today's meals" : "\(FULL_DAY[day]?.capitalized ?? day)'s meals")
-                    .font(.system(size: 18, weight: .bold)).foregroundStyle(C.creme)
+                Text(isToday ? "Today's Meals" : "\(FULL_DAY[day]?.capitalized ?? day)'s Meals")
+                    .font(.system(size: 20, weight: .bold)).foregroundStyle(C.creme)
                 Spacer()
-                // the add button lives here (2026-11-13): a floating one kept landing on top of other buttons
-                if isToday {
-                    Button { adding = true } label: {
-                        Label("Add food", systemImage: "plus")
-                            .font(F.round(14, .semibold)).foregroundStyle(.white)
-                            .padding(.horizontal, 14).frame(height: 38)
-                            .background(Capsule().fill(LinearGradient(colors: [C.brand, C.brandMid], startPoint: .top, endPoint: .bottom)))
-                            .shadow(color: C.brand.opacity(0.4), radius: 8, y: 2)
+                if isToday, !d.entries.isEmpty {
+                    Button { scanning = true } label: {
+                        Label("Scan Food", systemImage: "camera.viewfinder").font(F.round(13, .bold)).foregroundStyle(C.brandHi)
                     }
-                    .buttonStyle(.press(.pop))
+                    .buttonStyle(.plain)
                 }
             }
             if d.entries.isEmpty {
@@ -253,8 +260,24 @@ struct NutritionTab: View {
                             .background(Circle().fill(C.brand.opacity(0.16)))
                             .shadow(color: C.brand.opacity(0.5), radius: 14)
                         Text(isToday ? "No meals logged yet" : "Nothing was logged").font(F.round(17, .bold)).foregroundStyle(C.creme)
-                        Text(isToday ? "Add what you eat, or log a meal plan below in one tap." : "Pick today to log food.")
+                        Text(isToday ? "Scan your plate or log a meal plan in one tap." : "Pick today to log food.")
                             .font(F.round(14, .medium)).foregroundStyle(C.muted).multilineTextAlignment(.center)
+                        if isToday {
+                            HStack(spacing: 10) {
+                                Button { scanning = true } label: {
+                                    Label("Scan Food", systemImage: "camera.viewfinder").font(F.round(15, .bold)).foregroundStyle(.white)
+                                        .padding(.horizontal, 18).frame(height: 46)
+                                        .background(Capsule().fill(C.brand))
+                                }
+                                Button { openPlans = MealPlan.categories[0] } label: {
+                                    Label("Meal Plans", systemImage: "list.clipboard.fill").font(F.round(15, .bold)).foregroundStyle(C.creme)
+                                        .padding(.horizontal, 18).frame(height: 46)
+                                        .background(Capsule().fill(C.char700).overlay(Capsule().stroke(C.line, lineWidth: 1)))
+                                }
+                            }
+                            .buttonStyle(.plain)
+                            .padding(.top, 6)
+                        }
                     }
                     .frame(maxWidth: .infinity)
                 }
@@ -338,23 +361,34 @@ struct NutritionTab: View {
 
     // MARK: meal plans
 
+    /// Meal plans: one card per moment (Pre-match, Recovery...), swiped sideways; a tap opens its plans below.
     private var mealPlans: some View {
         VStack(alignment: .leading, spacing: 12) {
             VStack(alignment: .leading, spacing: 3) {
-                Text("Meal plans").font(.system(size: 18, weight: .bold)).foregroundStyle(C.creme)
-                Text(isToday ? "Pick the moment. One tap logs the whole plan." : "Pick today to log a plan.")
-                    .font(F.round(13, .medium)).foregroundStyle(C.muted)
+                Text("Meal Plans").font(.system(size: 20, weight: .bold)).foregroundStyle(C.creme)
+                Text("Soccer fuel for every moment. Log any meal in one tap.").font(F.round(13, .medium)).foregroundStyle(C.muted)
             }
             ScrollView(.horizontal) {
-                HStack(spacing: 8) {
+                HStack(spacing: 10) {
                     ForEach(MealPlan.categories, id: \.self) { c in
-                        let on = c == planCategory
-                        Button { planCategory = c; Haptics.play(.stud) } label: {
-                            Label(c, systemImage: MealPlan.icon(c))
-                                .font(F.round(13, .semibold))
-                                .foregroundStyle(on ? Color.white : C.creme2)
-                                .padding(.horizontal, 14).frame(height: 38)
-                                .background(Capsule().fill(on ? C.brand : C.char800).overlay(Capsule().stroke(on ? Color.clear : C.line, lineWidth: 1)))
+                        let tint = MealPlan.tint(c), n = MealPlan.all.filter { $0.category == c }.count, on = openPlans == c
+                        Button { withAnimation(.snappy) { openPlans = on ? nil : c }; Haptics.play(.stud) } label: {
+                            VStack(alignment: .leading, spacing: 12) {
+                                HStack {
+                                    Image(systemName: MealPlan.icon(c)).font(.system(size: 18, weight: .bold)).foregroundStyle(tint)
+                                        .frame(width: 44, height: 44).background(RoundedRectangle(cornerRadius: 12, style: .continuous).fill(tint.opacity(0.16)))
+                                    Spacer()
+                                    Image(systemName: on ? "chevron.down" : "arrow.up.right").font(.system(size: 13, weight: .heavy)).foregroundStyle(C.muted)
+                                }
+                                VStack(alignment: .leading, spacing: 2) {
+                                    Text(c).font(F.round(17, .bold)).foregroundStyle(C.creme)
+                                    Text("\(n) meals · one-tap log").font(F.round(12, .semibold)).foregroundStyle(C.muted)
+                                }
+                            }
+                            .padding(14)
+                            .frame(width: 168, alignment: .leading)
+                            .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(C.char800)
+                                .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(on ? tint : tint.opacity(0.3), lineWidth: on ? 2 : 1)))
                         }
                         .buttonStyle(.plain)
                         .accessibilityAddTraits(on ? .isSelected : [])
@@ -362,8 +396,11 @@ struct NutritionTab: View {
                 }
             }
             .scrollIndicators(.hidden)
-            VStack(spacing: 10) {
-                ForEach(MealPlan.all.filter { $0.category == planCategory }) { m in planRow(m) }
+            if let c = openPlans {
+                VStack(spacing: 10) {
+                    ForEach(MealPlan.all.filter { $0.category == c }) { m in planRow(m) }
+                }
+                .transition(.opacity.combined(with: .move(edge: .top)))
             }
         }
     }
