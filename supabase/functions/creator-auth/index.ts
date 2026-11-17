@@ -1,13 +1,12 @@
 // CREATOR PORTAL ACCOUNTS (2026-11-17; supabase/2026-11-17-creator-portal.sql, site/portal.html).
-// Creators sign up with their TikTok @username and a password, no email: Supabase's built-in mailer only reaches the
-// project's own team, so the account gets an internal address (<username>@creators.soccerlab.invalid), already
-// confirmed, and no email is ever sent. The portal then logs in with that address and the password.
-//   {action: "signup", username, password, name?}   -> makes the account + a pending creator (an admin approves)
+// Creators sign up with email, TikTok @ and a password (2026-11-17, Ali's plan) and log in with email + password.
+// The account is made already confirmed, so no email is ever sent (Supabase's built-in mailer only reaches the
+// project's own team). Accounts made before this used <username>@creators.soccerlab.invalid.
+//   {action: "signup", email, username, password}   -> makes the account + a pending creator (an admin approves)
 //   {action: "reset", username}  + an admin's token   -> sets a new temporary password and returns it to the admin
 // Deploy: supabase functions deploy creator-auth --no-verify-jwt
 import { createClient } from "jsr:@supabase/supabase-js@2";
 
-const DOMAIN = "creators.soccerlab.invalid";
 const cors = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Headers": "authorization, apikey, content-type",
@@ -35,7 +34,7 @@ Deno.serve(async (req) => {
   const url = Deno.env.get("SUPABASE_URL")!;
   const admin = createClient(url, Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!, { auth: { persistSession: false } });
 
-  let body: { action?: string; username?: unknown; password?: unknown; name?: unknown };
+  let body: { action?: string; email?: unknown; username?: unknown; password?: unknown };
   try {
     body = await req.json();
   } catch {
@@ -43,11 +42,13 @@ Deno.serve(async (req) => {
   }
 
   if (body.action === "signup") {
+    const email = typeof body.email === "string" ? body.email.trim().toLowerCase() : "";
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email) || email.length > 200) return reply({ error: "Enter a real email." }, 400);
     const u = handle(body.username);
-    if (!u) return reply({ error: "Enter your TikTok username, like @samfootball (letters, numbers, dots, underscores)." }, 400);
+    if (!u) return reply({ error: "Enter your TikTok @, like @samfootball (letters, numbers, dots, underscores)." }, 400);
     const pw = typeof body.password === "string" ? body.password : "";
     if (pw.length < 8 || pw.length > 72) return reply({ error: "Use a password of at least 8 characters." }, 400);
-    const name = (typeof body.name === "string" && body.name.trim() ? body.name.trim() : "@" + u).slice(0, 60);
+    const name = "@" + u;
 
     // a little brake on sign-up floods: at most 30 new creators waiting from the last hour
     const { count } = await admin.from("creators").select("id", { count: "exact", head: true })
@@ -58,12 +59,12 @@ Deno.serve(async (req) => {
     if (taken) return reply({ error: "That username already has an account. Log in instead." }, 409);
 
     const { data: made, error } = await admin.auth.admin.createUser({
-      email: `${u}@${DOMAIN}`, password: pw, email_confirm: true, user_metadata: { tiktok: "@" + u, creator: true },
+      email, password: pw, email_confirm: true, user_metadata: { tiktok: "@" + u, creator: true },
     });
     if (error || !made?.user) {
       const dup = /already|exists|registered/i.test(error?.message ?? "");
       if (!dup) console.error("creator-auth: createUser", error?.message);
-      return reply({ error: dup ? "That username already has an account. Log in instead." : "Couldn't make the account. Try again." }, dup ? 409 : 500);
+      return reply({ error: dup ? "That email already has an account. Log in instead." : "Couldn't make the account. Try again." }, dup ? 409 : 500);
     }
     const { error: regErr } = await admin.rpc("creator_register", { p_user: made.user.id, p_tiktok: "@" + u, p_name: name });
     if (regErr) {
@@ -71,7 +72,7 @@ Deno.serve(async (req) => {
       await admin.auth.admin.deleteUser(made.user.id);
       return reply({ error: "Couldn't make the account. Try again." }, 500);
     }
-    return reply({ ok: true, email: `${u}@${DOMAIN}` });
+    return reply({ ok: true, email });
   }
 
   if (body.action === "reset") {

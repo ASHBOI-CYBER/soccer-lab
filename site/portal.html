@@ -29,6 +29,7 @@
   .label { color: var(--muted); font-size: 12px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; }
   .num { font-size: 30px; font-weight: 800; margin-top: 2px; font-variant-numeric: tabular-nums; }
   .num.gold { color: var(--gold); } .num.green { color: var(--green); }
+  .card.main { border-color: var(--hi); } .num.big { font-size: 40px; color: var(--hi); }
   .hint { color: var(--muted); font-size: 13px; margin-top: 2px; }
   label { display: block; font-size: 14px; font-weight: 700; color: var(--text2); margin: 12px 0 6px; }
   input, select, textarea { width: 100%; background: var(--card2); color: var(--text); border: 1px solid var(--line); border-radius: 12px;
@@ -75,14 +76,14 @@
   <!-- signed out -->
   <section id="auth" hidden>
     <h1>Creator Portal</h1>
-    <p class="sub">Earn 20% of every subscription that comes from your link. Sign up with your TikTok username.</p>
+    <p class="sub">Earn 20% of every subscription that comes from your link (after Apple's fee).</p>
     <div class="tabs"><button id="tLogin" class="on" type="button">Log in</button><button id="tSignup" type="button">Sign up</button></div>
     <form id="fAuth" class="card" novalidate>
-      <label for="user">TikTok username</label>
-      <input id="user" autocomplete="username" placeholder="@samfootball" autocapitalize="none" spellcheck="false">
-      <div id="nameRow" hidden>
-        <label for="name">Your name (shown to viewers in the app)</label>
-        <input id="name" autocomplete="name" placeholder="Sam">
+      <label for="email">Email</label>
+      <input id="email" type="email" autocomplete="email" placeholder="you@example.com" autocapitalize="none" spellcheck="false">
+      <div id="tiktokRow" hidden>
+        <label for="user">TikTok @</label>
+        <input id="user" autocomplete="off" placeholder="@samfootball" autocapitalize="none" spellcheck="false">
       </div>
       <label for="pw">Password</label>
       <input id="pw" type="password" autocomplete="current-password" placeholder="At least 8 characters">
@@ -116,15 +117,18 @@
       <p class="sub" id="deal"></p>
 
       <div class="card">
-        <div class="label">Your link · put it in your bio</div>
+        <div class="label">Your personal link</div>
         <div class="link"><code id="link"></code><button id="copy" class="small" type="button">Copy</button></div>
+        <p style="margin:10px 0 0;font-weight:700">Please copy this link and add it to your bio for all the tracking.</p>
         <p class="hint" style="margin-top:10px">Viewers can also type your code <b id="code"></b> in the app under “Have a code?” before they subscribe.</p>
       </div>
 
       <div class="grid">
-        <div class="card"><div class="label">Link visits</div><div class="num" id="visits">0</div><div class="hint" id="visits30"></div></div>
+        <div class="card main"><div class="label">Clicks</div><div class="num big" id="visits">0</div><div class="hint" id="visits30"></div></div>
+        <div class="card main"><div class="label">Subscriptions</div><div class="num big" id="subs">0</div></div>
+      </div>
+      <div class="grid">
         <div class="card"><div class="label">Sign-ups with your code</div><div class="num" id="signups">0</div></div>
-        <div class="card"><div class="label">Subscribers</div><div class="num" id="subs">0</div></div>
         <div class="card"><div class="label">Earned so far</div><div class="num gold" id="earned">$0</div></div>
       </div>
 
@@ -195,7 +199,6 @@
 <script>
   const URL_ = "https://pojdwcgicconsiiinyyi.supabase.co";
   const KEY = "sb_publishable_HPvVa5jQ9raq6fAHbNAGgA_yUOJRv4A";      // the public key the app ships with
-  const DOMAIN = "creators.soccerlab.invalid";
   const sb = supabase.createClient(URL_, KEY);
   const $ = (id) => document.getElementById(id);
   const money = (n) => "$" + Number(n || 0).toFixed(2);
@@ -209,7 +212,7 @@
   function mode(isSignup) {
     signup = isSignup;
     $("tLogin").classList.toggle("on", !isSignup); $("tSignup").classList.toggle("on", isSignup);
-    $("nameRow").hidden = !isSignup; $("pw2Row").hidden = !isSignup;
+    $("tiktokRow").hidden = !isSignup; $("pw2Row").hidden = !isSignup;
     $("go").textContent = isSignup ? "Create my account" : "Log in";
     $("pw").autocomplete = isSignup ? "new-password" : "current-password";
     say($("authMsg"), "");
@@ -219,20 +222,21 @@
 
   $("fAuth").onsubmit = async (e) => {
     e.preventDefault();
-    const u = handle($("user").value), pw = $("pw").value;
-    if (!/^[a-z0-9._]{2,24}$/.test(u)) return say($("authMsg"), "Enter your TikTok username, like @samfootball.");
+    const em = $("email").value.trim().toLowerCase(), u = handle($("user").value), pw = $("pw").value;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em)) return say($("authMsg"), "Enter your email.");
+    if (signup && !/^[a-z0-9._]{2,24}$/.test(u)) return say($("authMsg"), "Enter your TikTok @, like @samfootball.");
     if (pw.length < 8) return say($("authMsg"), "Use a password of at least 8 characters.");
     $("go").disabled = true;
     try {
       if (signup) {
         if (pw !== $("pw2").value) throw new Error("The two passwords don't match.");
         const r = await fetch(URL_ + "/functions/v1/creator-auth", { method: "POST", headers: { "Content-Type": "application/json", apikey: KEY },
-          body: JSON.stringify({ action: "signup", username: u, password: pw, name: $("name").value }) });
+          body: JSON.stringify({ action: "signup", email: em, username: u, password: pw }) });
         const j = await r.json().catch(() => ({}));
         if (!r.ok) throw new Error(j.error || "Couldn't make the account. Try again.");
       }
-      const { error } = await sb.auth.signInWithPassword({ email: u + "@" + DOMAIN, password: pw });
-      if (error) throw new Error(signup ? "Account made, but logging in failed. Try Log in." : "Wrong username or password.");
+      const { error } = await sb.auth.signInWithPassword({ email: em, password: pw });
+      if (error) throw new Error(signup ? "Account made, but logging in failed. Try Log in." : "Wrong email or password.");
       await load();
     } catch (err) { say($("authMsg"), err.message); }
     $("go").disabled = false;
@@ -285,7 +289,7 @@
       `New earnings show as pending for ${data.hold_days} days, because Apple can refund a purchase. After that they're available.`,
       "If a subscriber gets a refund, that earning is taken back.",
       `Withdraw once you have ${money(data.min_withdraw_usd)} available. We pay by PayPal or bank transfer within a few days.`,
-      "Link visits count people who opened your link. Apple doesn't tell apps who downloaded from which link, so sign-ups and subscribers are counted when they use your code.",
+      "Clicks count people who opened your link. Apple doesn't tell apps who downloaded from which link, so sign-ups and subscribers are counted when they use your code.",
     ].map((t) => `<li>${t}</li>`).join("");
     $("adminTabs").hidden = !data.admin;
     show("dash");
@@ -344,8 +348,8 @@
     $("aC").innerHTML = cs.length ? cs.map((c) => `
       <div class="row" style="align-items:flex-start"><div style="min-width:0">
         <b>${esc(c.tiktok || c.name)}</b> <span class="pill ${c.status}">${c.status}</span>
-        <div class="hint">${esc(c.name)} · code ${esc(c.code)} · ${Math.round(c.rate * 100)}%${c.months ? " for " + c.months + " months" : " forever"}</div>
-        <div class="hint">${c.visits} visits · ${c.signups} sign-ups · ${c.subscribers} subscribers · earned ${money(c.earned_usd)} · available ${money(c.available_usd)} · paid ${money(c.paid_usd)}</div>
+        <div class="hint" style="overflow-wrap:anywhere">${esc(c.email || "")} · code ${esc(c.code)} · ${Math.round(c.rate * 100)}%${c.months ? " for " + c.months + " months" : " forever"}</div>
+        <div class="hint">${c.visits} clicks · ${c.signups} sign-ups · ${c.subscribers} subscriptions · earned ${money(c.earned_usd)} · available ${money(c.available_usd)} · paid ${money(c.paid_usd)}</div>
         <div class="actions">
           ${c.status !== "approved" ? `<button class="small green" data-st="approved" data-id="${c.id}">Approve</button>` : ""}
           ${c.status !== "rejected" ? `<button class="small ghost" data-st="rejected" data-id="${c.id}">${c.status === "approved" ? "Turn off" : "Reject"}</button>` : ""}
