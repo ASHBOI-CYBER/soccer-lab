@@ -296,8 +296,8 @@ struct SoccerMaxPaywall: View {
     private var plans: some View {
         HStack(alignment: .bottom, spacing: 8) {
             DayTile(on: pick == PayID.yearly, badge: pay.yearlySavesPercent.map { "\($0)% OFF" }, name: "Yearly",
-                    perDay: pay.perDayValue(PayID.yearly), line: pay.perWeek(PayID.yearly),
-                    billed: "\(pay.price(PayID.yearly))/year", was: "vs \(pay.weeklyForAYear)/year") { pick = PayID.yearly }
+                    perDay: pay.perDayValue(PayID.yearly), line: "\(pay.price(PayID.yearly))/year",
+                    billed: pay.perWeek(PayID.yearly), was: "vs \(pay.weeklyForAYear)/yr") { pick = PayID.yearly }
             DayTile(on: pick == PayID.weekly, badge: nil, name: "Weekly",
                     perDay: pay.perDayValue(PayID.weekly), line: "\(pay.price(PayID.weekly))/week",
                     billed: nil, was: nil) { pick = PayID.weekly }
@@ -863,10 +863,10 @@ private struct DayTile: View {
                 (Text(perDay).font(.system(size: 30, weight: .heavy)).foregroundStyle(on ? C.brandHi : C.creme)
                  + Text(" /day").font(F.round(15, .semibold)).foregroundStyle(C.muted))
                     .lineLimit(1).minimumScaleFactor(0.6)
-                Text(line).font(F.round(15, .semibold)).foregroundStyle(on ? C.creme2 : C.creme)
+                Text(line).font(F.round(18, .heavy)).foregroundStyle(C.creme)
                     .lineLimit(1).minimumScaleFactor(0.7)
                 if let billed {
-                    (Text(billed).font(F.round(13, .bold)).foregroundStyle(C.creme)
+                    (Text(billed).font(F.round(13, .semibold)).foregroundStyle(C.muted)
                      + Text(was.map { "  " + $0 } ?? "").font(F.round(11, .semibold)).foregroundStyle(C.muted))
                         .lineLimit(1).minimumScaleFactor(0.6)
                 }
