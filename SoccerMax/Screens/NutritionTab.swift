@@ -208,10 +208,11 @@ struct NutritionTab: View {
                 .frame(width: 44, height: 44).background(Circle().fill(C.brand.opacity(0.16)))
             VStack(alignment: .leading, spacing: 8) {
                 HStack {
-                    Text("Hydration").font(F.round(16, .bold)).foregroundStyle(C.creme)
-                    Text("\(pct)%").font(F.round(15, .bold)).foregroundStyle(C.brandHi)
+                    Text("Hydration").font(F.round(16, .bold)).foregroundStyle(C.creme).lineLimit(1).fixedSize()
+                    Text("\(pct)%").font(F.round(15, .bold)).foregroundStyle(C.brandHi).lineLimit(1).fixedSize()
                     Spacer(minLength: 4)
-                    Text("\(ml)ml of \(String(format: "%.1f", Double(target) / 1000))L").font(F.round(13, .semibold)).foregroundStyle(C.muted)
+                    Text("\(ml)ml of \(String(format: "%.1f", Double(target) / 1000))L").font(F.round(12, .semibold)).foregroundStyle(C.muted)
+                        .lineLimit(1).minimumScaleFactor(0.7)
                 }
                 GeometryReader { g in
                     ZStack(alignment: .leading) {

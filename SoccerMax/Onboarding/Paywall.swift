@@ -80,7 +80,7 @@ struct SoccerMaxPaywall: View {
         let a = store.answers
         // v2 (SOCCER LAB, 2026-11-14): black and blue like the rest of the app, and only what the app really has
         ScrollView {
-            VStack(spacing: 18) {
+            VStack(spacing: 14) {
                 headline(a)
                 outcomes(a)
                 growth(a)
@@ -171,15 +171,14 @@ struct SoccerMaxPaywall: View {
                 .font(F.round(13, .heavy)).kerning(2).foregroundStyle(C.brandHi)
                 .lineLimit(1).minimumScaleFactor(0.7)
             title
-                .font(.system(size: 30, weight: .heavy))
+                .font(.system(size: 27, weight: .heavy))
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
             Text("The player you want to be is trainable.")
-                .font(F.round(16, .medium)).foregroundStyle(C.muted)
+                .font(F.round(15, .medium)).foregroundStyle(C.muted)
                 .multilineTextAlignment(.center)
         }
         .frame(maxWidth: .infinity)
-        .padding(.top, 8)
     }
 
     /// Four outcomes, worded for their position.
@@ -197,12 +196,12 @@ struct SoccerMaxPaywall: View {
             ("bolt.fill", Color(hex: 0xF5C542), "Turn training into real match minutes"),
             ("trophy.fill", C.gold, "Get noticed for how you play"),
         ]
-        return VStack(alignment: .leading, spacing: 14) {
+        return VStack(alignment: .leading, spacing: 10) {
             ForEach(rows.indices, id: \.self) { i in
                 HStack(spacing: 14) {
                     Image(systemName: rows[i].0).font(.system(size: 18, weight: .bold)).foregroundStyle(rows[i].1)
                         .frame(width: 30)
-                    Text(rows[i].2).font(F.round(17, .semibold)).foregroundStyle(C.creme)
+                    Text(rows[i].2).font(F.round(16, .semibold)).foregroundStyle(C.creme)
                         .fixedSize(horizontal: false, vertical: true)
                     Spacer(minLength: 0)
                 }
@@ -228,7 +227,7 @@ struct SoccerMaxPaywall: View {
                 ctx.stroke(without, with: .color(C.muted.opacity(0.7)), style: StrokeStyle(lineWidth: 2, lineCap: .round, dash: [6, 6]))
                 ctx.stroke(with, with: .color(C.brand), style: StrokeStyle(lineWidth: 3.5, lineCap: .round))
             }
-            .frame(height: 96)
+            .frame(height: 62)
             HStack(spacing: 14) {
                 Label("With Soccer Lab", systemImage: "circle.fill").foregroundStyle(C.creme2)
                 Label("Without", systemImage: "circle.fill").foregroundStyle(C.muted)
@@ -238,9 +237,9 @@ struct SoccerMaxPaywall: View {
             .font(F.round(12, .semibold))
             .labelStyle(LegendDot())
             Text("An illustration of steady training with a plan, not a promise.")
-                .font(F.round(11, .medium)).foregroundStyle(C.char600)
+                .font(F.round(10, .medium)).foregroundStyle(C.char600)
         }
-        .padding(16)
+        .padding(.horizontal, 16).padding(.vertical, 12)
         .background(RoundedRectangle(cornerRadius: 20, style: .continuous).fill(C.char800)
             .overlay(RoundedRectangle(cornerRadius: 20, style: .continuous).stroke(C.line, lineWidth: 1)))
     }
