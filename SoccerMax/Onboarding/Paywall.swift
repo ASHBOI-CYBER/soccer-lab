@@ -164,8 +164,8 @@ struct SoccerMaxPaywall: View {
     private func headline(_ a: Answers) -> some View {
         let name = a.firstName.trimmingCharacters(in: .whitespaces)
         let title: Text = (name.isEmpty || name == "Player")
-            ? Text("Your best football starts now.").foregroundStyle(C.creme)
-            : Text("\(name), ").foregroundStyle(C.brand) + Text("your best football starts now.").foregroundStyle(C.creme)
+            ? Text("Let's build your game.").foregroundStyle(C.creme)
+            : Text("\(name), ").foregroundStyle(C.brand) + Text("let's build your game.").foregroundStyle(C.creme)
         return VStack(spacing: 10) {
             Label(eyebrow(a), systemImage: "bolt.fill")
                 .font(F.round(13, .heavy)).kerning(2).foregroundStyle(C.brandHi)
@@ -174,7 +174,7 @@ struct SoccerMaxPaywall: View {
                 .font(.system(size: 27, weight: .heavy))
                 .multilineTextAlignment(.center)
                 .fixedSize(horizontal: false, vertical: true)
-            Text("The player you want to be is trainable.")
+            Text("Every skill you want can be trained.")
                 .font(F.round(15, .medium)).foregroundStyle(C.muted)
                 .multilineTextAlignment(.center)
         }
@@ -191,10 +191,10 @@ struct SoccerMaxPaywall: View {
         default: role = (a.position == "LW" || a.position == "RW") ? "winger" : "attacker"
         }
         let rows: [(String, Color, String)] = [
-            ("flame.fill", Color(hex: 0xFF9F43), "Step onto the pitch feeling ready"),
-            ("shield.lefthalf.filled", C.brandHi, "Be the \(role) your coach counts on"),
-            ("bolt.fill", Color(hex: 0xF5C542), "Turn training into real match minutes"),
-            ("trophy.fill", C.gold, "Get noticed for how you play"),
+            ("flame.fill", Color(hex: 0xFF9F43), "Walk into every match ready"),
+            ("shield.lefthalf.filled", C.brandHi, "Become the \(role) your team relies on"),
+            ("bolt.fill", Color(hex: 0xF5C542), "Turn practice into more game time"),
+            ("trophy.fill", C.gold, "Stand out every time you play"),
         ]
         return VStack(alignment: .leading, spacing: 10) {
             ForEach(rows.indices, id: \.self) { i in
@@ -213,7 +213,7 @@ struct SoccerMaxPaywall: View {
     /// A picture of training steadily with a plan vs on your own. An illustration, and it says so.
     private func growth(_ a: Answers) -> some View {
         VStack(alignment: .leading, spacing: 12) {
-            (Text("PREDICTED GROWTH · ").foregroundStyle(C.muted) + Text("NEXT 5 WEEKS").foregroundStyle(C.brandHi))
+            (Text("YOUR PATH · ").foregroundStyle(C.muted) + Text("NEXT 5 WEEKS").foregroundStyle(C.brandHi))
                 .font(F.round(12, .heavy)).kerning(2)
             Canvas { ctx, size in
                 var with = Path(), without = Path()
@@ -230,7 +230,7 @@ struct SoccerMaxPaywall: View {
             .frame(height: 62)
             HStack(spacing: 14) {
                 Label("With Soccer Lab", systemImage: "circle.fill").foregroundStyle(C.creme2)
-                Label("Without", systemImage: "circle.fill").foregroundStyle(C.muted)
+                Label("Training alone", systemImage: "circle.fill").foregroundStyle(C.muted)
                 Spacer(minLength: 0)
                 Text("\(a.trainingDaysPerWeek) days/week").foregroundStyle(C.muted)
             }
@@ -249,7 +249,7 @@ struct SoccerMaxPaywall: View {
             HStack(spacing: 3) {
                 ForEach(0..<5, id: \.self) { _ in Image(systemName: "star.fill").font(.system(size: 17)).foregroundStyle(Color(hex: 0xF5B83D)) }
             }
-            Text("Made for players who train to win").font(F.round(15, .semibold)).foregroundStyle(C.creme2)
+            Text("Built for players who want more").font(F.round(15, .semibold)).foregroundStyle(C.creme2)
                 .lineLimit(1).minimumScaleFactor(0.8)
         }
         .frame(maxWidth: .infinity)
@@ -323,7 +323,7 @@ struct SoccerMaxPaywall: View {
     }
 
     private var cta: String {
-        if !trial, pick == PayID.yearly || pick == PayID.weekly { return "Unlock my plan" }
+        if !trial, pick == PayID.yearly || pick == PayID.weekly { return "Start my plan" }
         return switch pick {
         case PayID.yearly: trial ? "Start my free week" : "Continue with yearly"
         case PayID.weekly: "Continue with weekly"
