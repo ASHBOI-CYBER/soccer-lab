@@ -72,7 +72,7 @@ function clean(raw: unknown): Turn[] | null {
 async function dailyLimit(uid: string): Promise<number> {
   // no free version: without a subscription there is no Coach. Until RevenueCat is connected (testing, before
   // payments are on) nobody can be checked, so everyone gets the allowance.
-  const key = Deno.env.get("RC_SECRET_KEY");
+  const key = Deno.env.get("RC_SECRET_KEY")?.trim();
   if (!key) return PAID_LIMIT;
   const free = 0;
   try {

@@ -40,7 +40,7 @@ export async function player(req: Request) {
 export async function dailyLimit(uid: string, kind: Kind): Promise<number> {
   const l = LIMITS[kind];
   // Until RevenueCat is connected (testing, before payments are on) nobody can be checked: everyone gets it.
-  const key = Deno.env.get("RC_SECRET_KEY");
+  const key = Deno.env.get("RC_SECRET_KEY")?.trim();
   if (!key) return l;
   try {
     const r = await fetch(`https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(uid)}`, {
