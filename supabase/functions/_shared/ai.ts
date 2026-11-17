@@ -5,14 +5,13 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 
 export const MODEL = "claude-haiku-5-5";
 const ENTITLEMENT = "soccer_lab_pro";
-const FIRST_WEEK_MS = 7 * 24 * 3600 * 1000;
 
-/** Daily allowances. Trial = a free trial, an intro offer, or the first 7 days after the first purchase.
- *  2026-11-15: 2 a day each for everyone (keeps the worst-case AI bill well under what a yearly plan pays). */
+/** Daily allowance per subscriber, the same for weekly and yearly from day 1 (2026-11-17: no first-week limits).
+ *  2 film reviews and 2 food scans a day keep the worst-case AI bill well under what a yearly plan pays. */
 export const LIMITS = {
-  film: { trial: 2, paid: 2 },
-  food: { trial: 2, paid: 2 },
-  plan: { trial: 2, paid: 3 },     // AI nutrition plan: made when the player asks; rarely more than once a day
+  film: 2,
+  food: 2,
+  plan: 3,     // AI nutrition plan: made when the player asks; rarely more than once a day
 } as const;
 export type Kind = keyof typeof LIMITS;
 
@@ -40,9 +39,9 @@ export async function player(req: Request) {
 /** Today's allowance of `kind` for this player, from their RevenueCat subscription (0 = no subscription). */
 export async function dailyLimit(uid: string, kind: Kind): Promise<number> {
   const l = LIMITS[kind];
-  // Until RevenueCat is connected (testing, before payments are on) nobody can be checked: the trial allowance.
+  // Until RevenueCat is connected (testing, before payments are on) nobody can be checked: everyone gets it.
   const key = Deno.env.get("RC_SECRET_KEY");
-  if (!key) return l.trial;
+  if (!key) return l;
   try {
     const r = await fetch(`https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(uid)}`, {
       headers: { Authorization: `Bearer ${key}` },
@@ -50,19 +49,16 @@ export async function dailyLimit(uid: string, kind: Kind): Promise<number> {
     });
     if (!r.ok) {
       console.error(`${kind}: RevenueCat answered`, r.status);
-      return l.trial;   // can't tell: the smaller allowance, never nothing
+      return l;   // can't tell (RevenueCat down): don't punish a paying player
     }
     const sub = (await r.json())?.subscriber ?? {};
     const ent = sub.entitlements?.[ENTITLEMENT];
     const now = Date.now();
     if (!ent || (ent.expires_date && Date.parse(ent.expires_date) <= now)) return 0;
-    const s = sub.subscriptions?.[ent.product_identifier] ?? {};
-    const first = Date.parse(s.original_purchase_date ?? ent.purchase_date ?? "");
-    const trial = s.period_type === "trial" || s.period_type === "intro" || (Number.isFinite(first) && now - first < FIRST_WEEK_MS);
-    return trial ? l.trial : l.paid;
+    return l;
   } catch (e) {
     console.error(`${kind}: RevenueCat check failed`, e);
-    return l.trial;
+    return l;
   }
 }
 

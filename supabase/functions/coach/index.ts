@@ -4,10 +4,9 @@
 //
 // Who may call it: signed-in players only (their Supabase token is checked below), with a daily allowance counted in
 // the database by public.coach_take, so the bill has a ceiling:
-//   - paying subscribers: PAID_LIMIT a day;
-//   - on a free trial or intro offer, or in the first 7 days after their first purchase: TRIAL_LIMIT a day;
+//   - every subscriber (weekly or yearly, from day 1): PAID_LIMIT a day (2026-11-17: one limit for everyone);
 //   - no subscription: no Coach (there is no free version);
-//   - while RevenueCat isn't connected yet (testing): TRIAL_LIMIT for everyone.
+//   - while RevenueCat isn't connected yet (testing): PAID_LIMIT for everyone.
 // Who has paid is read from RevenueCat (the app logs in to RevenueCat with the Supabase user id).
 //
 // Deploy (JWT is checked in the code, so the gateway check is off):
@@ -19,9 +18,7 @@ import { createClient } from "jsr:@supabase/supabase-js@2";
 
 const MODEL = "claude-haiku-5-5";
 const PAID_LIMIT = 40;   // was 80; 40 keeps a yearly subscriber who maxes it out profitable (2026-11-15)
-const TRIAL_LIMIT = 20;
 const ENTITLEMENT = "soccer_lab_pro";
-const FIRST_WEEK_MS = 7 * 24 * 3600 * 1000;
 const MAX_TURNS = 16;          // earlier messages are dropped; the app keeps its own full copy
 const MAX_TEXT = 1500;         // characters per message
 const MAX_CONTEXT = 8000;      // characters of player summary (it includes the app's drill list)
@@ -74,9 +71,9 @@ function clean(raw: unknown): Turn[] | null {
 /** Today's allowance for this player, from their RevenueCat subscription. */
 async function dailyLimit(uid: string): Promise<number> {
   // no free version: without a subscription there is no Coach. Until RevenueCat is connected (testing, before
-  // payments are on) nobody can be checked, so everyone gets the trial allowance.
+  // payments are on) nobody can be checked, so everyone gets the allowance.
   const key = Deno.env.get("RC_SECRET_KEY");
-  if (!key) return TRIAL_LIMIT;
+  if (!key) return PAID_LIMIT;
   const free = 0;
   try {
     const r = await fetch(`https://api.revenuecat.com/v1/subscribers/${encodeURIComponent(uid)}`, {
@@ -85,19 +82,16 @@ async function dailyLimit(uid: string): Promise<number> {
     });
     if (!r.ok) {
       console.error("coach: RevenueCat answered", r.status);
-      return TRIAL_LIMIT;   // can't tell: the smaller paid allowance, never nothing
+      return PAID_LIMIT;   // can't tell (RevenueCat down): don't punish a paying player
     }
     const sub = (await r.json())?.subscriber ?? {};
     const ent = sub.entitlements?.[ENTITLEMENT];
     const now = Date.now();
     if (!ent || (ent.expires_date && Date.parse(ent.expires_date) <= now)) return free;
-    const s = sub.subscriptions?.[ent.product_identifier] ?? {};
-    const first = Date.parse(s.original_purchase_date ?? ent.purchase_date ?? "");
-    const trial = s.period_type === "trial" || s.period_type === "intro" || (Number.isFinite(first) && now - first < FIRST_WEEK_MS);
-    return trial ? TRIAL_LIMIT : PAID_LIMIT;
+    return PAID_LIMIT;
   } catch (e) {
     console.error("coach: RevenueCat check failed", e);
-    return TRIAL_LIMIT;
+    return PAID_LIMIT;
   }
 }
 
