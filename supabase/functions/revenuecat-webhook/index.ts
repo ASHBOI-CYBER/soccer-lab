@@ -48,8 +48,9 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return new Response("no", { status: 405 });
   const auth = Deno.env.get("RC_WEBHOOK_AUTH");
   const signing = Deno.env.get("RC_WEBHOOK_SIGNING_SECRET");
-  // closed until both secrets are set: a webhook nobody can verify must never write money rows
-  if (!auth || !signing) return new Response("not configured", { status: 500 });
+  // closed until the password is set: a webhook nobody can verify must never write money rows. The HMAC signature is
+  // checked too when RC_WEBHOOK_SIGNING_SECRET is set (not every RevenueCat plan offers signing; 2026-11-17).
+  if (!auth) return new Response("not configured", { status: 500 });
 
   const got = req.headers.get("authorization") ?? "";
   if (!same(enc.encode(got), enc.encode(auth)) && !same(enc.encode(got), enc.encode(`Bearer ${auth}`))) {
@@ -57,7 +58,7 @@ Deno.serve(async (req) => {
   }
   const raw = new Uint8Array(await req.arrayBuffer());
   if (raw.length > MAX_BODY) return new Response("too big", { status: 413 });
-  if (!(await signed(req.headers.get("x-revenuecat-webhook-signature"), raw, signing))) {
+  if (signing && !(await signed(req.headers.get("x-revenuecat-webhook-signature"), raw, signing))) {
     return new Response("bad signature", { status: 401 });
   }
 

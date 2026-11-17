@@ -76,7 +76,8 @@ final class Purchases {
     /// Paid, or on a friend's team trial. Before RevenueCat answers, the last known answer ? the paywall never flashes.
     /// The whole app is FREE FOR NOW (user, 2026-11-08: "remove the paywall" ? "app fully free for now"): no paywall in
     /// onboarding, no paywall gate after it, no 40% OFF stay offer. Set false to bring the hard paywall back.
-    static let freeForNow = true
+    /// 2026-11-17: OFF. The paywall is on (payment test in TestFlight's sandbox, then launch).
+    static let freeForNow = false
 
     var hasAccess: Bool {
         if Self.freeForNow { return true }
