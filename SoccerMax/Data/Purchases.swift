@@ -324,8 +324,11 @@ final class Purchases {
     }
 
     /// True when this person can still get the yearly free trial (Apple says first-time subscriber AND no free week yet).
-    /// NO free trial in Soccer Lab (user, 2026-11-17: "it is not free"). Turn back on here if a trial is ever added.
-    static let freeTrial = false
+    /// The free trial is switched on and off in APP STORE CONNECT only (2026-11-17): add a free Introductory Offer to
+    /// the Yearly plan and the plans screen shows "7 DAYS FREE" to people Apple says can get it; remove it and the
+    /// screen goes back to paid-only, with no new build. (Apple applies an intro offer at purchase either way, so the
+    /// screen must follow App Store Connect.) false = never show a trial, even if one is set up.
+    static let freeTrial = true
     var trialOffered: Bool = Purchases.freeTrial
     func checkTrial() async {
         guard Self.freeTrial else { trialOffered = false; return }

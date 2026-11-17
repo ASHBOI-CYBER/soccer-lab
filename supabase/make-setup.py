@@ -27,7 +27,11 @@ ORDER = [
     "2026-11-14-coach.sql",
     "2026-11-14-creator-links.sql",
     "2026-11-15-ai-and-ranks.sql",
+    "2026-11-17-nutrition-plan.sql",
     "2026-11-17-creator-portal.sql",
+    "2026-11-17-sandbox-switch.sql",
+    "2026-11-17-creator-email.sql",
+    "2026-11-17-creator-offer-codes.sql",
     "2026-11-13-new-project-finish.sql",
 ]
 

@@ -1522,6 +1522,39 @@ grant execute on function public.xp_sync(integer, text, text, boolean) to authen
 grant execute on function public.leaderboard(integer) to authenticated;
 
 -- ====================================================================================================
+-- FILE: 2026-11-17-nutrition-plan.sql
+-- ====================================================================================================
+
+-- AI NUTRITION PLAN allowance (2026-11-17; functions/nutrition-plan). A third AI kind, 'plan', next to 'film' and
+-- 'food' in private.ai_usage (2026-11-15-ai-and-ranks.sql). Safe to re-run.
+alter table private.ai_usage drop constraint if exists ai_usage_kind_check;
+alter table private.ai_usage add constraint ai_usage_kind_check check (kind in ('film', 'food', 'plan'));
+
+create or replace function public.ai_take(p_kind text, p_limit integer)
+returns integer
+language plpgsql
+security definer
+set search_path = ''
+as $$
+declare
+  v_uid uuid := auth.uid();
+  v_used integer;
+begin
+  if v_uid is null then raise exception 'sign in first'; end if;
+  if p_kind not in ('film', 'food', 'plan') then raise exception 'bad kind'; end if;
+  if p_limit is null or p_limit < 1 or p_limit > 100 then raise exception 'bad limit'; end if;
+
+  insert into private.ai_usage as u (user_id, day, kind, used)
+  values (v_uid, (now() at time zone 'utc')::date, p_kind, 1)
+  on conflict (user_id, day, kind) do update set used = u.used + 1
+    where u.used < p_limit
+  returning u.used into v_used;
+
+  if v_used is null then return -1; end if;
+  return p_limit - v_used;
+end $$;
+
+-- ====================================================================================================
 -- FILE: 2026-11-17-creator-portal.sql
 -- ====================================================================================================
 
@@ -1754,6 +1787,250 @@ create or replace function public.portal_is_admin() returns boolean language sql
 $$;
 revoke all on function public.portal_is_admin() from public, anon;
 grant execute on function public.portal_is_admin() to authenticated;
+
+-- ====================================================================================================
+-- FILE: 2026-11-17-sandbox-switch.sql
+-- ====================================================================================================
+
+-- SANDBOX TEST SWITCH (2026-11-17). Real commission only ever comes from real-money (PRODUCTION) purchases. To test the
+-- whole creator flow with TestFlight's free sandbox purchases, an admin can turn this switch on for a while:
+--   update private.settings set value = 'on'  where key = 'count_sandbox';   -- sandbox purchases count
+--   update private.settings set value = 'off' where key = 'count_sandbox';   -- back to real money only
+-- and afterwards remove the test rows: delete from public.purchase_events where environment = 'SANDBOX';
+-- record_purchase_event below is 2026-11-12-creators.sql's, with its 2 PRODUCTION checks also accepting the switch.
+create table if not exists private.settings (key text primary key, value text not null);
+insert into private.settings values ('count_sandbox', 'off') on conflict do nothing;
+create or replace function private.sandbox_counts() returns boolean language sql stable security definer set search_path = '' as $$
+  select coalesce((select value = 'on' from private.settings where key = 'count_sandbox'), false)
+$$;
+
+create or replace function public.record_purchase_event(p jsonb) returns text
+  language plpgsql security definer set search_path = '' as $$
+declare
+  eid text := p->>'id';
+  typ text := coalesce(p->>'type', '');
+  env text := p->>'environment';
+  v_ids text[];
+  at_ timestamptz := to_timestamp(coalesce((p->>'event_timestamp_ms')::numeric, extract(epoch from now()) * 1000) / 1000.0);
+  price numeric := coalesce((p->>'price')::numeric, 0);
+  tax numeric := (p->>'tax_percentage')::numeric;
+  cut numeric := (p->>'commission_percentage')::numeric;
+  keep numeric;
+  net numeric;
+  ref public.creator_referrals;
+  c public.creators;
+  tag text := p #>> '{subscriber_attributes,creator_code,value}';
+  prior public.purchase_events;
+  r numeric;
+  com numeric := 0;
+  who uuid;
+begin
+  if eid is null or eid = '' then return 'no id'; end if;
+  if exists (select 1 from public.purchase_events where event_id = eid) then return 'duplicate'; end if;
+
+  -- every id for this customer (the current one, the first one, and any RevenueCat merged into it)
+  select coalesce(array_agg(distinct x), '{}') into v_ids from (
+    select p->>'app_user_id' as x
+    union select p->>'original_app_user_id'
+    union select jsonb_array_elements_text(case when jsonb_typeof(p->'aliases') = 'array' then p->'aliases' else '[]'::jsonb end)
+  ) s where x is not null and x <> '';
+
+  -- what we keep: price minus the store's cut and tax. Unknown cut = 30% (the worst case), so we never overpay.
+  if tax is not null or cut is not null then keep := 1 - coalesce(tax, 0) - coalesce(cut, 0.30);
+  elsif (p->>'takehome_percentage') is not null then keep := (p->>'takehome_percentage')::numeric;
+  else keep := 0.70;
+  end if;
+  keep := greatest(0, least(1, keep));
+  net := round(price * keep, 4);
+
+  select * into ref from public.creator_referrals where app_user_id = any(v_ids) order by attributed_at limit 1;
+
+  -- bought before signing in: the app tagged the RevenueCat customer with the code from the link. Tie them now,
+  -- (a free-trial start counts), but never once they have already paid (same rule as claim_creator).
+  if ref.creator_id is null and tag is not null and (env = 'PRODUCTION' or private.sandbox_counts())
+     and typ in ('INITIAL_PURCHASE', 'NON_RENEWING_PURCHASE', 'RENEWAL')
+     and not exists (select 1 from public.purchase_events e where e.ids && v_ids and e.environment = 'PRODUCTION' and e.price_usd > 0) then
+    select * into c from public.creators where code = trim(tag) and active;
+    if c.id is not null and (c.user_id is null or not (c.user_id::text = any(v_ids))) then
+      insert into public.creator_referrals (app_user_id, user_id, creator_id, source, attributed_at)
+        values (coalesce(p->>'original_app_user_id', p->>'app_user_id'), null, c.id, 'purchase', at_)
+        on conflict do nothing;
+      select * into ref from public.creator_referrals where app_user_id = any(v_ids) order by attributed_at limit 1;
+    end if;
+  end if;
+
+  if ref.creator_id is not null then select * into c from public.creators where id = ref.creator_id; end if;
+
+  -- commission: real money only (never sandbox), on purchases and renewals inside the creator's window
+  if c.id is not null and (env = 'PRODUCTION' or private.sandbox_counts()) then
+    if price > 0 and typ in ('INITIAL_PURCHASE', 'RENEWAL', 'NON_RENEWING_PURCHASE', 'REFUND_REVERSED')
+       and (c.months is null or at_ <= ref.attributed_at + make_interval(months => c.months)) then
+      r := c.rate;
+      com := round(net * r, 4);
+    elsif price < 0 then
+      -- a refund takes back exactly what that payment earned (same rate), and nothing if it earned nothing
+      select * into prior from public.purchase_events e
+        where e.creator_id = c.id and e.commission_usd > 0
+          and e.transaction_id is not null and e.transaction_id = p->>'transaction_id'
+        order by e.event_at desc limit 1;
+      if prior.event_id is not null then
+        r := prior.rate;
+        com := greatest(round(net * r, 4), -prior.commission_usd);
+      end if;
+    end if;
+  end if;
+
+  select x::uuid into who from unnest(v_ids) x
+    where x ~ '^[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}$' limit 1;
+  if who is not null and ref.app_user_id is not null and ref.user_id is null then
+    -- the anonymous buyer signed in later: remember the account, so claim_creator sees them as already tied
+    update public.creator_referrals set user_id = who where app_user_id = ref.app_user_id
+      and not exists (select 1 from public.creator_referrals o where o.user_id = who);
+  end if;
+
+  insert into public.purchase_events (event_id, type, environment, app_user_id, ids, product_id, store, period_type,
+      transaction_id, original_transaction_id, currency, price_usd, net_usd, creator_id, rate, commission_usd, event_at)
+    values (eid, typ, env, p->>'app_user_id', v_ids, p->>'product_id', p->>'store', p->>'period_type',
+      p->>'transaction_id', p->>'original_transaction_id', p->>'currency', price, net, c.id, r, com, at_)
+    on conflict (event_id) do nothing;
+  return case when com <> 0 then 'commission' else 'recorded' end;
+end $$;
+revoke all on function public.record_purchase_event(jsonb) from public, anon, authenticated;
+grant execute on function public.record_purchase_event(jsonb) to service_role;
+
+-- ====================================================================================================
+-- FILE: 2026-11-17-creator-email.sql
+-- ====================================================================================================
+
+-- 2026-11-17 (later): creators sign up with email (Ali's plan); the admin list shows each creator's email.
+create or replace function public.portal_admin_overview() returns jsonb
+  language plpgsql stable security definer set search_path = '' as $$
+begin
+  if not private.is_portal_admin() then raise exception 'Admins only.'; end if;
+  return jsonb_build_object(
+    'creators', coalesce((select jsonb_agg(jsonb_build_object(
+        'id', c.id, 'name', c.name, 'tiktok', c.tiktok, 'code', c.code, 'status', c.status, 'active', c.active,
+        'rate', c.rate, 'months', c.months, 'created_at', c.created_at, 'portal', c.portal_user_id is not null,
+        'email', (select u.email from auth.users u where u.id = c.portal_user_id),
+        'payout_method', c.payout_method, 'payout_details', c.payout_details) || private.creator_numbers(c)
+        order by (c.status = 'pending') desc, c.created_at desc) from public.creators c), '[]'::jsonb),
+    'withdrawals', coalesce((select jsonb_agg(jsonb_build_object(
+        'id', w.id, 'creator', c.name, 'tiktok', c.tiktok, 'amount_usd', w.amount_usd, 'method', w.method,
+        'details', w.details, 'status', w.status, 'requested_at', w.requested_at, 'done_at', w.done_at)
+        order by (w.status = 'requested') desc, w.requested_at desc)
+        from public.creator_withdrawals w join public.creators c on c.id = w.creator_id), '[]'::jsonb));
+end $$;
+
+-- the signed-in portal user's TikTok @ (admins are listed by it): from their creator row now that logins are real
+-- emails; accounts from before keep working through the old <username>@creators.soccerlab.invalid address.
+create or replace function private.portal_username() returns text language sql stable security definer set search_path = '' as $$
+  select coalesce(
+    (select c.tiktok from public.creators c where c.portal_user_id = auth.uid() limit 1),
+    case when (auth.jwt() ->> 'email') like '%@creators.soccerlab.invalid'
+         then '@' || split_part(auth.jwt() ->> 'email', '@', 1) end)
+$$;
+revoke all on function private.portal_username() from public, anon;
+
+-- ====================================================================================================
+-- FILE: 2026-11-17-creator-offer-codes.sql
+-- ====================================================================================================
+
+-- 2026-11-17: Apple one-time OFFER CODES for creators (Ali's plan: creators get 1 free month of Soccer Lab Pro).
+-- An admin pastes the codes file from App Store Connect into the portal's Admin tab; every approved creator gets one
+-- unused code automatically (on approval, or as soon as codes are added), shown on their dashboard with Apple's
+-- redeem link. A code is only ever given to one creator. Deleting a creator deletes their code (it may be used).
+create table if not exists public.creator_offer_codes (
+  code text primary key check (code ~ '^[A-Za-z0-9]{6,32}$'),
+  creator_id uuid references public.creators(id) on delete cascade,
+  added_at timestamptz not null default now(),
+  assigned_at timestamptz
+);
+create unique index if not exists creator_offer_codes_one_each on public.creator_offer_codes (creator_id) where creator_id is not null;
+alter table public.creator_offer_codes enable row level security;   -- no policies: only the functions below touch it
+revoke all on public.creator_offer_codes from anon, authenticated;
+
+-- this creator's code, giving them the next unused one if they're approved and don't have one yet (null = none left)
+create or replace function private.assign_offer_code(p_creator uuid) returns text
+  language plpgsql security definer set search_path = '' as $$
+declare got text;
+begin
+  select code into got from public.creator_offer_codes where creator_id = p_creator;
+  if got is not null then return got; end if;
+  if not exists (select 1 from public.creators where id = p_creator and status = 'approved') then return null; end if;
+  update public.creator_offer_codes set creator_id = p_creator, assigned_at = now()
+    where code = (select code from public.creator_offer_codes where creator_id is null
+                  order by added_at, code limit 1 for update skip locked)
+    returning code into got;
+  return got;
+end $$;
+revoke all on function private.assign_offer_code(uuid) from public, anon, authenticated;
+
+-- admin: add codes (the portal reads them out of the pasted file), then hand them to approved creators without one
+create or replace function public.portal_admin_add_codes(p_codes text[]) returns jsonb
+  language plpgsql security definer set search_path = '' as $$
+declare n int; given int := 0; c record;
+begin
+  if not private.is_portal_admin() then raise exception 'Admins only.'; end if;
+  with ins as (
+    insert into public.creator_offer_codes (code)
+      select distinct trim(x) from unnest(coalesce(p_codes, '{}')) x where trim(x) ~ '^[A-Za-z0-9]{6,32}$'
+      on conflict do nothing returning 1)
+  select count(*) into n from ins;
+  for c in select cr.id from public.creators cr
+             where cr.status = 'approved' and not exists (select 1 from public.creator_offer_codes o where o.creator_id = cr.id)
+             order by cr.created_at loop
+    if private.assign_offer_code(c.id) is not null then given := given + 1; end if;
+  end loop;
+  return jsonb_build_object('added', n, 'given', given,
+    'left', (select count(*) from public.creator_offer_codes where creator_id is null));
+end $$;
+revoke all on function public.portal_admin_add_codes(text[]) from public, anon;
+grant execute on function public.portal_admin_add_codes(text[]) to authenticated;
+
+-- a creator's own free-month code and Apple's redeem link (code null = not approved yet, or none left)
+create or replace function public.creator_offer_code() returns jsonb
+  language plpgsql security definer set search_path = '' as $$
+declare cid uuid; got text;
+begin
+  select id into cid from public.creators where portal_user_id = auth.uid() limit 1;
+  if cid is null then raise exception 'Not a creator account.'; end if;
+  got := private.assign_offer_code(cid);
+  return jsonb_build_object('code', got, 'redeem_url',
+    case when got is null then null else 'https://apps.apple.com/redeem?ctx=offercodes&id=6814847450&code=' || got end);
+end $$;
+revoke all on function public.creator_offer_code() from public, anon;
+grant execute on function public.creator_offer_code() to authenticated;
+
+-- approving a creator also gives them a code
+create or replace function public.portal_admin_set_status(p_creator uuid, p_status text) returns void
+  language plpgsql security definer set search_path = '' as $$
+begin
+  if not private.is_portal_admin() then raise exception 'Admins only.'; end if;
+  if p_status not in ('approved', 'rejected', 'pending') then raise exception 'bad status'; end if;
+  update public.creators set status = p_status, active = (p_status = 'approved') where id = p_creator;
+  if p_status = 'approved' then perform private.assign_offer_code(p_creator); end if;
+end $$;
+
+-- the admin list shows each creator's code and how many are left
+create or replace function public.portal_admin_overview() returns jsonb
+  language plpgsql stable security definer set search_path = '' as $$
+begin
+  if not private.is_portal_admin() then raise exception 'Admins only.'; end if;
+  return jsonb_build_object(
+    'codes_left', (select count(*) from public.creator_offer_codes where creator_id is null),
+    'creators', coalesce((select jsonb_agg(jsonb_build_object(
+        'id', c.id, 'name', c.name, 'tiktok', c.tiktok, 'code', c.code, 'status', c.status, 'active', c.active,
+        'rate', c.rate, 'months', c.months, 'created_at', c.created_at, 'portal', c.portal_user_id is not null,
+        'email', (select u.email from auth.users u where u.id = c.portal_user_id),
+        'offer_code', (select o.code from public.creator_offer_codes o where o.creator_id = c.id),
+        'payout_method', c.payout_method, 'payout_details', c.payout_details) || private.creator_numbers(c)
+        order by (c.status = 'pending') desc, c.created_at desc) from public.creators c), '[]'::jsonb),
+    'withdrawals', coalesce((select jsonb_agg(jsonb_build_object(
+        'id', w.id, 'creator', c.name, 'tiktok', c.tiktok, 'amount_usd', w.amount_usd, 'method', w.method,
+        'details', w.details, 'status', w.status, 'requested_at', w.requested_at, 'done_at', w.done_at)
+        order by (w.status = 'requested') desc, w.requested_at desc)
+        from public.creator_withdrawals w join public.creators c on c.id = w.creator_id), '[]'::jsonb));
+end $$;
 
 -- ====================================================================================================
 -- FILE: 2026-11-13-new-project-finish.sql

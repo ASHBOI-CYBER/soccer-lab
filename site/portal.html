@@ -62,6 +62,8 @@
   .rules li { margin: 4px 0; color: var(--text2); }
   .muted { color: var(--muted); }
   .actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 10px; }
+  a.btn { display: inline-block; background: var(--brand); color: #fff; text-decoration: none; border-radius: 999px; padding: 8px 14px; font-weight: 800; font-size: 13px; white-space: nowrap; }
+  a.btn:focus-visible { outline: 3px solid var(--hi); outline-offset: 2px; }
   [hidden] { display: none !important; }
   @media (max-width: 420px) { .num { font-size: 26px; } h1 { font-size: 24px; } }
 </style>
@@ -123,6 +125,12 @@
         <p class="hint" style="margin-top:10px">Viewers can also type your code <b id="code"></b> in the app under “Have a code?” before they subscribe.</p>
       </div>
 
+      <div class="card">
+        <div class="label">Your free month of Soccer Lab Pro</div>
+        <div class="link" id="offerRow" hidden><code id="offerCode"></code><a id="redeem" class="btn" target="_blank" rel="noopener">Redeem</a></div>
+        <p class="hint" id="offerHint" style="margin-top:10px">Loading…</p>
+      </div>
+
       <div class="grid">
         <div class="card main"><div class="label">Clicks</div><div class="num big" id="visits">0</div><div class="hint" id="visits30"></div></div>
         <div class="card main"><div class="label">Subscriptions</div><div class="num big" id="subs">0</div></div>
@@ -177,7 +185,16 @@
     <!-- admin -->
     <div id="admin" hidden>
       <h1>Admin</h1>
-      <p class="sub">Approve creators, pay withdrawals, reset passwords.</p>
+      <p class="sub">Approve creators, add free-month codes, pay withdrawals, reset passwords.</p>
+      <h2>Free-month codes</h2>
+      <form id="fCodes" class="card" novalidate>
+        <div class="hint" id="codesLeft" style="margin:0">Loading…</div>
+        <label for="codesText">Add codes</label>
+        <textarea id="codesText" rows="4" placeholder="Paste the codes file from App Store Connect (or open it and copy everything)"></textarea>
+        <input id="codesFile" type="file" accept=".csv,.txt,text/csv,text/plain" style="margin-top:8px">
+        <button class="full" type="submit">Add codes</button>
+        <div id="codesMsg" class="msg" hidden></div>
+      </form>
       <h2>Withdrawal requests</h2>
       <div class="card" id="aW"><p class="muted" style="margin:0">Loading…</p></div>
       <h2>Creators</h2>
@@ -293,7 +310,22 @@
     ].map((t) => `<li>${t}</li>`).join("");
     $("adminTabs").hidden = !data.admin;
     show("dash");
+    loadOffer();
     if (data.admin && !$("admin").hidden) loadAdmin();
+  }
+
+  // ---- free month (Apple one-time offer code)
+  async function loadOffer() {
+    const { data, error } = await sb.rpc("creator_offer_code");
+    const has = !error && data && data.code;
+    $("offerRow").hidden = !has;
+    if (has) {
+      $("offerCode").textContent = data.code; $("redeem").href = data.redeem_url;
+      $("offerHint").textContent = "Open Redeem on your iPhone (or type the code in App Store → your photo → Redeem Gift Card or Code). " +
+        "It gives you 1 month of Soccer Lab Pro free. If you don't want to keep it after that, turn off auto-renew in Settings → your name → Subscriptions.";
+    } else {
+      $("offerHint").textContent = error ? "Couldn't load your code. Refresh the page." : "Your free-month code will show here soon.";
+    }
   }
 
   $("copy").onclick = async () => { try { await navigator.clipboard.writeText($("link").textContent); $("copy").textContent = "Copied"; setTimeout(() => ($("copy").textContent = "Copy"), 1500); } catch {} };
@@ -333,9 +365,24 @@
   $("tMine").onclick = () => { $("tMine").classList.add("on"); $("tAdmin").classList.remove("on"); $("mine").hidden = false; $("admin").hidden = true; };
   $("tAdmin").onclick = () => { $("tAdmin").classList.add("on"); $("tMine").classList.remove("on"); $("mine").hidden = true; $("admin").hidden = false; loadAdmin(); };
 
+  $("codesFile").onchange = async () => { const f = $("codesFile").files[0]; if (f) $("codesText").value = await f.text(); };
+  $("fCodes").onsubmit = async (e) => {
+    e.preventDefault();
+    // Apple's file: one code per line, CAPITAL letters and numbers. Words in lower case (headers) and plain numbers are skipped.
+    const codes = [...new Set(($("codesText").value.match(/\b[A-Z0-9]{8,32}\b/g) || []).filter((c) => /[A-Z]/.test(c)))];
+    if (!codes.length) return say($("codesMsg"), "No codes found. Paste the codes, one per line.");
+    if (!confirm(`Add ${codes.length} code${codes.length === 1 ? "" : "s"}? First one: ${codes[0]}`)) return;
+    const { data, error } = await sb.rpc("portal_admin_add_codes", { p_codes: codes });
+    if (error) return say($("codesMsg"), error.message);
+    say($("codesMsg"), `Added ${data.added} new code${data.added === 1 ? "" : "s"}. Gave ${data.given} to creators. ${data.left} left.`, true);
+    $("codesText").value = ""; $("codesFile").value = "";
+    loadAdmin();
+  };
+
   async function loadAdmin() {
     const { data, error } = await sb.rpc("portal_admin_overview");
     if (error) { $("aC").innerHTML = `<p class="muted">${esc(error.message)}</p>`; return; }
+    $("codesLeft").textContent = `${data.codes_left} unused code${data.codes_left === 1 ? "" : "s"} left. Every approved creator gets one automatically.`;
     const ws = data.withdrawals || [];
     $("aW").innerHTML = ws.length ? ws.map((w) => `
       <div class="row" style="align-items:flex-start"><div style="min-width:0">
@@ -348,7 +395,7 @@
     $("aC").innerHTML = cs.length ? cs.map((c) => `
       <div class="row" style="align-items:flex-start"><div style="min-width:0">
         <b>${esc(c.tiktok || c.name)}</b> <span class="pill ${c.status}">${c.status}</span>
-        <div class="hint" style="overflow-wrap:anywhere">${esc(c.email || "")} · code ${esc(c.code)} · ${Math.round(c.rate * 100)}%${c.months ? " for " + c.months + " months" : " forever"}</div>
+        <div class="hint" style="overflow-wrap:anywhere">${esc(c.email || "")} · code ${esc(c.code)}${c.offer_code ? " · free month " + esc(c.offer_code) : c.status === "approved" ? " · no free-month code yet" : ""} · ${Math.round(c.rate * 100)}%${c.months ? " for " + c.months + " months" : " forever"}</div>
         <div class="hint">${c.visits} clicks · ${c.signups} sign-ups · ${c.subscribers} subscriptions · earned ${money(c.earned_usd)} · available ${money(c.available_usd)} · paid ${money(c.paid_usd)}</div>
         <div class="actions">
           ${c.status !== "approved" ? `<button class="small green" data-st="approved" data-id="${c.id}">Approve</button>` : ""}
