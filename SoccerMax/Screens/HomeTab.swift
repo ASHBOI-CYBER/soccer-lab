@@ -101,7 +101,7 @@ struct HomeTab: View {
             VStack(alignment: .leading, spacing: 5) {
                 Text("\(LabPlan.group(store.answers.position)) session")
                     .font(.system(size: 22, weight: .bold)).foregroundStyle(.white)
-                Text(finished ? "All \(list.count) drills ticked off. Recover well and come back tomorrow."
+                Text(finished ? "All \(list.count) drills done. Recover well and come back tomorrow."
                      : "\(list.count) drills built for a \(store.answers.positionName.lowercased()), about \(minutes) minutes.")
                     .font(F.round(14, .medium)).foregroundStyle(.white.opacity(0.85))
                     .fixedSize(horizontal: false, vertical: true)

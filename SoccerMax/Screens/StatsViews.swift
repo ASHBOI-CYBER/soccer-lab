@@ -747,7 +747,7 @@ struct LevelsSheet: View {
             ScrollView {
                 VStack(alignment: .leading, spacing: 10) {
                     Disp("ALL RANKS", size: 32).frame(maxWidth: .infinity)
-                    Text("Earn XP by ticking off drills (+20), finishing today's session (+50), film reviews (+40), runs and logging food.")
+                    Text("Earn XP by training drills with the timer (harder drills earn more per minute), finishing today's session (+50), film reviews (+40), runs and logging food.")
                         .font(F.round(15, .semibold)).foregroundStyle(C.creme2).multilineTextAlignment(.center)
                         .frame(maxWidth: .infinity).padding(.bottom, 8)
                     ForEach(1...last, id: \.self) { l in

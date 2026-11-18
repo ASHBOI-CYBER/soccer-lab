@@ -175,7 +175,7 @@ struct LeaderboardView: View {
                     Button("Done") { dismiss() }.font(F.round(16, .bold)).foregroundStyle(C.brandHi)
                 }
                 .padding(.top, 24)
-                Text("Everyone in Soccer Lab, ranked by XP. Earn XP by ticking off drills, finishing sessions, reviewing film, running and logging food.")
+                Text("Everyone in Soccer Lab, ranked by XP. Earn XP by training drills with the timer, finishing sessions, reviewing film, running and logging food.")
                     .font(F.round(14, .semibold)).foregroundStyle(C.muted)
                     .fixedSize(horizontal: false, vertical: true)
 
