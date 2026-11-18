@@ -308,19 +308,16 @@ struct LabDrillRow: View {
             }
             .buttonStyle(.plain)
 
+            // 2026-11-18: no tick button. Drills are done with the Start Drill timer on the drill page.
             if canTick {
-                Button {
-                    lab.complete(drill, store: store)
-                    Haptics.play(.goal)
-                } label: {
-                    Image(systemName: done ? "checkmark.circle.fill" : "circle")
+                NavigationLink(value: drill) {
+                    Image(systemName: done ? "checkmark.circle.fill" : "play.circle.fill")
                         .font(.system(size: 28, weight: .bold))
-                        .foregroundStyle(done ? C.brand : C.char600)
+                        .foregroundStyle(done ? C.brand : C.brandHi)
                         .frame(width: 44, height: 44)
                 }
                 .buttonStyle(.plain)
-                .disabled(done)
-                .accessibilityLabel(done ? "\(drill.name), done" : "Mark \(drill.name) done")
+                .accessibilityLabel(done ? "\(drill.name), done today. Train again" : "Start \(drill.name)")
             }
         }
         .padding(.vertical, 6).padding(.leading, 8).padding(.trailing, 4)

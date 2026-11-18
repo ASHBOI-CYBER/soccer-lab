@@ -431,7 +431,7 @@ struct VoiceDrill: View {
         Haptics.play(.goal)
         UIApplication.shared.isIdleTimerDisabled = false
         if Library.shared.has(mode.drillID) {
-            lab.complete(Library.shared.drill(mode.drillID), store: store)
+            lab.complete(Library.shared.drill(mode.drillID), store: store, seconds: Double(minutes * 60))
         } else {
             store.logDrill(PlanItem(mode.drillID), seconds: Double(minutes * 60))
         }

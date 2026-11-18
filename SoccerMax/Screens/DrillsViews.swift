@@ -189,6 +189,8 @@ struct DrillDetail: View {
     @Environment(AppStore.self) private var store
     @State private var picking = false
     @State private var added: String?
+    /// The Start Drill timer (2026-11-18). Test builds: `-route tab:training:drill.<id>:timer`.
+    @State private var timing = DebugRoute.parts.contains("timer")
 
     var body: some View {
         ScrollView {
@@ -276,15 +278,17 @@ struct DrillDetail: View {
         .page()
         .screenTitle("")
         .dock {
-            // the old week planner is gone (2026-11-13): the button ticks the drill off for today, like the rows do
+            // 2026-11-18: no more one-tap "Mark as done". The drill is trained with the timer and earns XP for the time.
             let done = Lab.shared.isDone(drill.id)
-            Button(done ? "Done today" : "Mark as done") {
-                Lab.shared.complete(drill, store: store)
-                Haptics.play(.goal)
+            VStack(spacing: 6) {
+                Button { timing = true } label: { Label(done ? "Train again" : "Start Drill", systemImage: "play.fill") }
+                    .buttonStyle(.gameLarge(.brand, feel: .kick))
+                if done {
+                    Label("Done today", systemImage: "checkmark.circle.fill").font(F.round(13, .bold)).foregroundStyle(C.brandHi)
+                }
             }
-            .buttonStyle(.gameLarge)
-            .disabled(done)
         }
+        .fullScreenCover(isPresented: $timing) { DrillTimer(drill: drill) }
         .sheet(isPresented: $picking) {
             DayPicker { day in
                 store.add(drill.id, to: day)
@@ -365,5 +369,171 @@ struct DayPicker: View {
         }
         .padding(.horizontal, 20)
         .padding(.top, 24)
+    }
+}
+
+// MARK: - Start Drill timer (2026-11-18)
+
+/// The drill, trained for real: Start the clock when you begin, pause if you need to, Finish when you're done. XP is
+/// worked out from the time trained and the drill's level (Lab.drillXP), then shown. Replaces the old "Mark as done".
+/// Test builds: `-route tab:training:drill.<id>:timer` opens it, add `:running` for a clock part-way, `:done` for the result.
+struct DrillTimer: View {
+    let drill: Drill
+    @Environment(AppStore.self) private var store
+    @Environment(\.dismiss) private var dismiss
+    /// When the clock was last started (nil = stopped), and the time banked before the last pause.
+    @State private var startedAt: Date?
+    @State private var banked: TimeInterval = DebugRoute.parts.contains("running") ? 154 : 0
+    @State private var earned: Lab.Earned? = DebugRoute.parts.contains("timer") && DebugRoute.parts.contains("done")
+        ? Lab.Earned(drill: 27, session: 0, seconds: 312) : nil
+    @State private var quitting = false
+
+    private var target: TimeInterval { Double(drill.min) * 60 }
+    private var running: Bool { startedAt != nil }
+    private func elapsed(_ now: Date) -> TimeInterval { banked + (startedAt.map { now.timeIntervalSince($0) } ?? 0) }
+
+    var body: some View {
+        ZStack {
+            C.char900.ignoresSafeArea()
+            if let e = earned { result(e) } else { clock }
+        }
+        .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
+        .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
+        .confirmationDialog("Stop this drill?", isPresented: $quitting, titleVisibility: .visible) {
+            Button("Finish and get my XP") { finish() }
+            Button("Leave without saving", role: .destructive) { dismiss() }
+            Button("Keep training", role: .cancel) {}
+        } message: { Text("Your time only counts if you finish.") }
+    }
+
+    // the clock
+
+    private var clock: some View {
+        VStack(spacing: 18) {
+            HStack {
+                Button {
+                    if elapsed(Date()) > 0 { quitting = true } else { dismiss() }
+                } label: {
+                    Image(systemName: "xmark").font(.system(size: 15, weight: .bold)).foregroundStyle(C.creme)
+                        .frame(width: 44, height: 44).background(Circle().fill(C.char800))
+                }
+                .accessibilityLabel("Close")
+                Spacer()
+                Label("\(drill.min) min drill", systemImage: "clock").font(F.round(14, .bold)).foregroundStyle(C.muted)
+            }
+            VStack(spacing: 6) {
+                Text(drill.name.uppercased()).font(F.display(30)).foregroundStyle(C.creme)
+                    .multilineTextAlignment(.center).lineLimit(2).minimumScaleFactor(0.6)
+                Text(drill.reps).font(F.round(15, .semibold)).foregroundStyle(C.muted).multilineTextAlignment(.center)
+            }
+            TimelineView(.periodic(from: .now, by: 0.25)) { tl in
+                let t = elapsed(tl.date)
+                VStack(spacing: 14) {
+                    ZStack {
+                        Circle().stroke(C.char800, lineWidth: 16)
+                        Circle().trim(from: 0, to: min(1, t / max(target, 1)))
+                            .stroke(LinearGradient(colors: [C.brandHi, C.brand], startPoint: .top, endPoint: .bottom),
+                                    style: StrokeStyle(lineWidth: 16, lineCap: .round))
+                            .rotationEffect(.degrees(-90))
+                        VStack(spacing: 4) {
+                            Text(Self.clock(t)).font(.system(size: 64, weight: .heavy, design: .rounded)).monospacedDigit()
+                                .foregroundStyle(C.creme)
+                            Text(t >= target ? "Full time! +5 XP bonus" : "\(Self.clock(target - t)) to full time")
+                                .font(F.round(14, .bold)).foregroundStyle(t >= target ? C.gold : C.muted)
+                        }
+                    }
+                    .frame(width: 250, height: 250)
+                    .accessibilityElement(children: .ignore)
+                    .accessibilityLabel("\(Int(t) / 60) minutes \(Int(t) % 60) seconds trained")
+                    Label(t < Lab.minDrillSeconds ? "Train 30 seconds to start earning XP" : "+\(Lab.drillXP(drill, seconds: t)) XP so far",
+                          systemImage: "bolt.fill")
+                        .font(F.round(16, .heavy)).foregroundStyle(t < Lab.minDrillSeconds ? C.muted : C.brandHi)
+                }
+            }
+            if let tip = drill.points.first {
+                HStack(alignment: .top, spacing: 10) {
+                    Image(systemName: "lightbulb.fill").foregroundStyle(C.gold)
+                    Text(tip).font(F.round(15, .medium)).foregroundStyle(C.creme2).fixedSize(horizontal: false, vertical: true)
+                }
+                .padding(14)
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .background(RoundedRectangle(cornerRadius: 16, style: .continuous).fill(C.char850))
+            }
+            Spacer(minLength: 0)
+            buttons
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 12)
+        .padding(.bottom, 16)
+    }
+
+    @ViewBuilder private var buttons: some View {
+        if !running && banked == 0 {
+            Button { start() } label: { Label("Start", systemImage: "play.fill") }
+                .buttonStyle(.gameLarge(.brand, feel: .kick))
+        } else {
+            HStack(spacing: 12) {
+                Button {
+                    if running { pause() } else { start() }
+                } label: { Label(running ? "Pause" : "Resume", systemImage: running ? "pause.fill" : "play.fill") }
+                    .buttonStyle(.game(.charcoal, height: 64, font: 22))
+                TimelineView(.periodic(from: .now, by: 1)) { tl in
+                    Button { finish() } label: { Label("Finish", systemImage: "flag.checkered") }
+                        .buttonStyle(.game(.brand, height: 64, font: 22, feel: .goal))
+                        .disabled(elapsed(tl.date) < Lab.minDrillSeconds)
+                }
+            }
+        }
+    }
+
+    private func start() { startedAt = Date(); Haptics.play(.stud) }
+    private func pause() { banked = elapsed(Date()); startedAt = nil }
+    private func finish() {
+        let t = elapsed(Date())
+        startedAt = nil; banked = t
+        guard t >= Lab.minDrillSeconds else { dismiss(); return }
+        let got = Lab.shared.complete(drill, store: store, seconds: t)
+        withAnimation(.snappy) { earned = got }
+        Haptics.play(.goal)
+    }
+
+    static func clock(_ t: TimeInterval) -> String {
+        let s = max(0, Int(t.rounded(.down)))
+        return String(format: "%d:%02d", s / 60, s % 60)
+    }
+
+    // the result
+
+    private func result(_ e: Lab.Earned) -> some View {
+        VStack(spacing: 18) {
+            Spacer(minLength: 0)
+            Image(systemName: "checkmark.seal.fill")
+                .font(.system(size: 76, weight: .bold)).foregroundStyle(C.brand)
+                .shadow(color: C.brand.opacity(0.6), radius: 24)
+            Text("DRILL DONE").font(F.display(34)).foregroundStyle(C.creme)
+            Text(drill.name).font(F.round(17, .semibold)).foregroundStyle(C.muted).multilineTextAlignment(.center)
+            Text("+\(e.total) XP").font(.system(size: 56, weight: .heavy, design: .rounded)).foregroundStyle(C.gold)
+                .monospacedDigit()
+            VStack(spacing: 10) {
+                row("Time trained", Self.clock(e.seconds))
+                row("Drill XP", "+\(e.drill)")
+                if e.session > 0 { row("Today's session done", "+\(e.session)") }
+            }
+            .padding(16)
+            .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.char850))
+            Spacer(minLength: 0)
+            Button("Done") { dismiss() }.buttonStyle(.gameLarge)
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 16)
+        .transition(.opacity.combined(with: .scale(scale: 0.96)))
+    }
+
+    private func row(_ a: String, _ b: String) -> some View {
+        HStack {
+            Text(a).font(F.round(15, .semibold)).foregroundStyle(C.creme2)
+            Spacer()
+            Text(b).font(F.round(16, .heavy)).foregroundStyle(C.creme).monospacedDigit()
+        }
     }
 }

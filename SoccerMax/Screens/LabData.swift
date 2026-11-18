@@ -528,7 +528,7 @@ final class Lab {
     /// The last day the full-session bonus was given ("2026-11-15").
     private var sessionBonusDay: String { didSet { UserDefaults.standard.set(sessionBonusDay, forKey: "lab.xp.session") } }
 
-    static let xpDrill = 20, xpSession = 50, xpReview = 40, xpFoodDay = 10
+    static let xpSession = 50, xpReview = 40, xpFoodDay = 10
     /// The first day the player opened Training: week 1 starts on that week's Monday.
     let startDate: Date
 
@@ -565,25 +565,49 @@ final class Lab {
     var today: String { dateKey(Date()) }
     func isDone(_ drill: String) -> Bool { done[today]?.contains(drill) == true }
 
-    /// Tick a drill off for today: its minutes count toward the streak and stats, once per drill per day.
-    func complete(_ drill: Drill, store: AppStore) {
-        guard !isDone(drill.id) else { return }
-        done[today, default: []].append(drill.id)
-        store.logDrill(PlanItem(drill.id), seconds: Double(drill.min) * 60)
-        bonusXP += Self.xpDrill
-        // the whole of today's session done: a bonus, once a day
-        let plan = LabPlan.today(position: store.answers.position)
-        if sessionBonusDay != today, !plan.isEmpty, plan.allSatisfy({ isDone($0.id) }) {
-            sessionBonusDay = today
-            bonusXP += Self.xpSession
+    /// What one timed drill earned (Screens/DrillsViews.swift DrillTimer shows it).
+    struct Earned { var drill = 0; var session = 0; var seconds: Double = 0; var total: Int { drill + session } }
+
+    /// The shortest timed drill that counts, and how far past the drill's own time the clock keeps earning.
+    static let minDrillSeconds: Double = 30
+    static func drillCap(_ drill: Drill) -> Double { max(Double(drill.min) * 60 * 2, 120) }
+
+    /// XP for timed training (2026-11-18, the Start Drill timer): harder drills earn more per minute (level 1 = 3 XP a
+    /// minute ... level 5 = 7), plus 5 for reaching the drill's full time. Time past twice the drill's length earns
+    /// nothing, so a clock left running doesn't farm XP.
+    static func drillXP(_ drill: Drill, seconds: Double) -> Int {
+        let t = min(seconds, drillCap(drill))
+        guard t >= minDrillSeconds else { return 0 }
+        let perMinute = Double(2 + min(max(drill.level, 1), 5))
+        return max(1, Int((t / 60 * perMinute).rounded())) + (t >= Double(drill.min) * 60 ? 5 : 0)
+    }
+
+    /// A drill trained with the timer: the real minutes count toward the streak and stats, XP for the time trained.
+    /// The first time today also ticks the drill off (today's plan, the Fix List, the full-session bonus).
+    @discardableResult
+    func complete(_ drill: Drill, store: AppStore, seconds: Double) -> Earned {
+        let t = min(seconds, Self.drillCap(drill))
+        guard t >= Self.minDrillSeconds else { return Earned() }
+        var got = Earned(drill: Self.drillXP(drill, seconds: t), seconds: t)
+        store.logDrill(PlanItem(drill.id), seconds: t)
+        if !isDone(drill.id) {
+            done[today, default: []].append(drill.id)
+            // the whole of today's session done: a bonus, once a day
+            let plan = LabPlan.today(position: store.answers.position)
+            if sessionBonusDay != today, !plan.isEmpty, plan.allSatisfy({ isDone($0.id) }) {
+                sessionBonusDay = today
+                got.session = Self.xpSession
+            }
+            if fixList.contains(drill.id) {
+                let n = (fixCount[drill.id] ?? 0) + 1
+                fixCount[drill.id] = n
+                if n >= Self.fixGoal { fixList.removeAll { $0 == drill.id }; fixCount[drill.id] = nil }
+            }
         }
-        if fixList.contains(drill.id) {
-            let n = (fixCount[drill.id] ?? 0) + 1
-            fixCount[drill.id] = n
-            if n >= Self.fixGoal { fixList.removeAll { $0 == drill.id }; fixCount[drill.id] = nil }
-        }
+        bonusXP += got.total
         // keep a month of ticks, not forever
         if done.count > 40 { for k in done.keys.sorted().dropLast(31) { done[k] = nil } }
+        return got
     }
 
     // runs and the calendar
