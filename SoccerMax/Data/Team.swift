@@ -754,6 +754,13 @@ final class Team {
     func preview(code: String) async -> Preview? {
         if debugSignedIn, !api.hasAccount { return Preview(name: "Hackney Hawks", logo: nil, color: 0, members: 6) }
         guard signedIn, (try? await api.userId()) != nil else { return nil }
+        // Soccer Lab 2.0 (2026-11-18): the only code is a creator's. Team, gift, lifetime and 40% codes are off.
+        if !TEAMS_ON {
+            if let name: String = try? await api.rpc("creator_preview", ["p_code": code]), !name.isEmpty {
+                return Preview(name: name, logo: nil, color: 0, members: 0, creator: true)
+            }
+            return nil
+        }
         let rows: [Preview]? = try? await api.rpc("team_preview", ["p_code": code])
         if let t = rows?.first { return t }
         struct G: Decodable { let name: String }

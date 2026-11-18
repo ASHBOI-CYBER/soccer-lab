@@ -369,7 +369,8 @@ struct InviteCodeSheet: View {
     var body: some View {
         VStack(spacing: 16) {
             Disp("HAVE A CODE?", size: 32).padding(.top, 26)
-            Text("Got a team code from a friend? You'll join their team as soon as you're in.")
+            Text(TEAMS_ON ? "Got a team code from a friend? You'll join their team as soon as you're in."
+                 : "Got a 6-digit code from a creator? Enter it and they get credit when you subscribe. Your price stays the same.")
                 .font(F.round(15, .semibold)).foregroundStyle(C.creme2).multilineTextAlignment(.center)
             CodeEntry(code: $code)
                 .onChange(of: code) { _, v in let c = Team.clean(v); if c != v { code = c } }

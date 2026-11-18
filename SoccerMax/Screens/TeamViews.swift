@@ -1542,8 +1542,11 @@ struct JoinCodeSheet: View {
 
     var body: some View {
         VStack(spacing: 16) {
-            Disp("HAVE A CODE?", size: 30).padding(.top, 24)
-            Text("Creator, team, gift, free-pass or 40% off code").font(F.round(14, .semibold)).foregroundStyle(C.muted).padding(.top, -8)
+            Disp(TEAMS_ON ? "HAVE A CODE?" : "CREATOR CODE", size: 30).padding(.top, 24)
+            Text(TEAMS_ON ? "Creator, team, gift, free-pass or 40% off code"
+                 : "Got a 6-digit code from a creator? Enter it and they get credit when you subscribe. Your price stays the same.")
+                .font(F.round(14, .semibold)).foregroundStyle(C.muted).multilineTextAlignment(.center).padding(.top, -8)
+                .fixedSize(horizontal: false, vertical: true)
             CodeEntry(code: $code, keypad: preview == nil)
                 .onChange(of: code) { _, v in
                     let c = Team.clean(v)
@@ -1574,6 +1577,11 @@ struct JoinCodeSheet: View {
                 busy = true
                 note = nil
                 Task {
+                    if !TEAMS_ON, preview?.isCreator != true {
+                        busy = false
+                        note = "That isn't a creator code. Check the 6 digits and try again."
+                        return
+                    }
                     if preview?.isCreator == true {
                         // a creator's code: the account is tied to them, then back to the plans (it unlocks nothing)
                         let ok = await team.claimCreator(code: code)

@@ -116,11 +116,17 @@ struct SoccerMaxPaywall: View {
                 }
                 .font(F.round(14, .semibold)).foregroundStyle(C.creme2)
                 .lineLimit(1).minimumScaleFactor(0.8)
-                HStack(spacing: 16) {
-                    Button(team.pendingCode != nil ? "Your code is ready. Use it" : "Have a code?") { joining = true }
-                    Button("Redeem App Store code") { redeeming = true }
+                // the two codes, as buttons you can see (2026-11-18): a creator's 6 digits, and Apple's own offer code
+                HStack(spacing: 8) {
+                    if let name = team.creatorName {
+                        CodeChip(icon: "checkmark.seal.fill", text: "Supporting \(name)", on: true) { joining = true }
+                    } else if let c = team.pendingCode {
+                        CodeChip(icon: "ticket.fill", text: "Use code \(c)", on: true) { joining = true }
+                    } else {
+                        CodeChip(icon: "ticket.fill", text: "Creator code", on: false) { joining = true }
+                    }
+                    CodeChip(icon: "gift.fill", text: "App Store code", on: false) { redeeming = true }
                 }
-                .font(F.round(13, .semibold)).foregroundStyle(C.muted)
                 Text(fine).font(F.round(12)).foregroundStyle(C.muted).multilineTextAlignment(.center)
             }
         }
@@ -892,5 +898,27 @@ private struct DayTile: View {
         .buttonStyle(.plain)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(on ? .isSelected : [])
+    }
+}
+
+/// A code option under the plans: a small button with an icon ("Creator code", "App Store code").
+private struct CodeChip: View {
+    let icon: String
+    let text: String
+    let on: Bool
+    let tap: () -> Void
+    var body: some View {
+        Button(action: tap) {
+            HStack(spacing: 6) {
+                Image(systemName: icon).font(.system(size: 13, weight: .bold))
+                Text(text).font(F.round(14, .bold)).lineLimit(1).minimumScaleFactor(0.75)
+            }
+            .foregroundStyle(on ? C.brandHi : C.creme2)
+            .padding(.horizontal, 12)
+            .frame(maxWidth: .infinity, minHeight: 44)
+            .background(Capsule().fill(on ? C.brand.opacity(0.16) : C.char800)
+                .overlay(Capsule().stroke(on ? C.brand.opacity(0.6) : C.line, lineWidth: 1)))
+        }
+        .buttonStyle(.plain)
     }
 }
