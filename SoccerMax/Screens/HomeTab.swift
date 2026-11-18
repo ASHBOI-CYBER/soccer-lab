@@ -89,19 +89,22 @@ struct HomeTab: View {
         let done = list.filter { lab.isDone($0.id) }.count
         let minutes = list.reduce(0) { $0 + $1.min }
         let finished = !list.isEmpty && done == list.count
+        // a recovery day (LabPlan.restDays) until they train anyway
+        let rest = done == 0 && LabPlan.isRest(todayKey(), training: store.answers.trainingDaysPerWeek)
         return VStack(alignment: .leading, spacing: 14) {
             HStack {
                 Text("TODAY'S SESSION").font(F.round(12, .bold)).kerning(1.6).foregroundStyle(.white.opacity(0.85))
                 Spacer()
-                Text(finished ? "DONE" : "\(done) OF \(list.count)")
+                Text(rest ? "REST" : finished ? "DONE" : "\(done) OF \(list.count)")
                     .font(F.round(11, .bold)).kerning(1).foregroundStyle(.white)
                     .padding(.horizontal, 10).frame(height: 24)
                     .background(Capsule().fill(.white.opacity(0.2)))
             }
             VStack(alignment: .leading, spacing: 5) {
-                Text("\(LabPlan.group(store.answers.position)) session")
+                Text(rest ? "Recovery day" : "\(LabPlan.group(store.answers.position)) session")
                     .font(.system(size: 22, weight: .bold)).foregroundStyle(.white)
-                Text(finished ? "All \(list.count) drills done. Recover well and come back tomorrow."
+                Text(rest ? "You train \(store.answers.trainingDaysPerWeek) days a week, so today is for rest: stretch, drink water and sleep well."
+                     : finished ? "All \(list.count) drills done. Recover well and come back tomorrow."
                      : "\(list.count) drills built for a \(store.answers.positionName.lowercased()), about \(minutes) minutes.")
                     .font(F.round(14, .medium)).foregroundStyle(.white.opacity(0.85))
                     .fixedSize(horizontal: false, vertical: true)
@@ -117,7 +120,7 @@ struct HomeTab: View {
             .accessibilityHidden(true)
             Button { Nav.shared.tab = .training } label: {
                 HStack(spacing: 6) {
-                    Text(finished ? "See this week's plan" : done == 0 ? "Start training" : "Keep going")
+                    Text(rest ? "See recovery tips" : finished ? "See this week's plan" : done == 0 ? "Start training" : "Keep going")
                     Image(systemName: "chevron.right").font(.system(size: 13, weight: .heavy))
                 }
                 .font(F.round(15, .semibold)).foregroundStyle(C.brandLip)

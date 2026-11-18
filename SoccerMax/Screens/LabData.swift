@@ -33,6 +33,27 @@ enum LabPlan {
         }
     }
 
+    /// Recovery days (2026-11-18, Fasih: "5 days a week, so two days should show recovery day"): the weekdays a player
+    /// who trains `days` days a week rests, spread out so no two hard days pile up. Test builds: `-route ...:rest`
+    /// makes today a recovery day.
+    static func restDays(training days: Int) -> Set<String> {
+        switch days {
+        case ...2: return ["Mon", "Wed", "Thu", "Fri", "Sun"]   // trains Tue and Sat
+        case 3: return ["Tue", "Thu", "Sat", "Sun"]             // trains Mon, Wed, Fri
+        case 4: return ["Wed", "Fri", "Sun"]                    // trains Mon, Tue, Thu, Sat
+        case 5: return ["Wed", "Sun"]
+        case 6: return ["Sun"]
+        default: return []
+        }
+    }
+    static func isRest(_ day: String, training days: Int) -> Bool {
+        if DebugRoute.parts.contains("rest"), day == todayKey() { return true }
+        return restDays(training: days).contains(day)
+    }
+
+    /// Light mobility for a recovery day: optional, easy on the body.
+    static let recovery = ["walking-knee-hug", "hamstring-sweep", "glute-bridge"]
+
     /// Today's six drills. The day of the year turns the lists, so tomorrow is different and the week covers them all.
     static func today(position: String, date: Date = Date()) -> [Drill] {
         let day = Calendar.current.ordinality(of: .day, in: .year, for: date) ?? 1

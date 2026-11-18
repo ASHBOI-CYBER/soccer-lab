@@ -44,7 +44,7 @@ struct Answers: Codable, Equatable {
 
     /// Training days a week from the routine answer (for the fuel targets).
     var trainingDaysPerWeek: Int {
-        switch trainDays { case "1-2 days": return 2; case "3-4 days": return 4; case "5-6 days": return 6; case "Every day": return 7; default: return 3 }
+        switch trainDays { case "1-2 days": return 2; case "3-4 days": return 4; case "5-6 days": return 5; case "Every day": return 7; default: return 3 }
     }
 
     var firstName: String { first.trimmingCharacters(in: .whitespaces).isEmpty ? "Player" : first.trimmingCharacters(in: .whitespaces) }

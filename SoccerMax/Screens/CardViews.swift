@@ -349,8 +349,9 @@ struct SettingsView: View {
                     }
                 }
                 group("SPREAD THE WORD") {
-                    ShareLink(item: URL(string: "https://soccermax.app")!,
-                              message: Text("Train with me on Soccer Lab. Join my team!")) {
+                    // the App Store page (2026-11-18): soccermax.app is the old name's site and now shows another app
+                    ShareLink(item: URL(string: "https://apps.apple.com/app/id6814847450")!,
+                              message: Text("Train with me on Soccer Lab, the AI football training app.")) {
                         SettingRow(icon: "person.2.wave.2.fill", title: "Invite a friend") { Chevron(out: true) }
                     }
                     line

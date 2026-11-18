@@ -29,6 +29,10 @@ struct TrainingTab: View {
     private var date: Date { dateOf(day) }
     private var isToday: Bool { day == todayKey() }
     private var plan: [Drill] { LabPlan.today(position: store.answers.position, date: date) }
+    /// A recovery day for this player's training days (LabPlan.restDays).
+    private func isRest(_ d: String) -> Bool { LabPlan.isRest(d, training: store.answers.trainingDaysPerWeek) }
+    /// Days the player chose "Train anyway" on (this visit only).
+    @State private var trainAnyway: Set<String> = []
     private var fixes: [Drill] { lab.fixList.filter { Library.shared.has($0) }.map { Library.shared.drill($0) } }
     private var sessions: [ProSession] { Library.shared.technique + Library.shared.hybrid + Library.shared.workouts }
 
@@ -41,7 +45,11 @@ struct TrainingTab: View {
                     switch part {
                     case .plan:
                         week
-                        session
+                        if isRest(day) && !trainAnyway.contains(day) && !(isToday && plan.contains { lab.isDone($0.id) }) {
+                            recovery
+                        } else {
+                            session
+                        }
                         if !fixes.isEmpty { fixList }
                     case .drills:
                         TrainingDrillsPart()
@@ -94,9 +102,10 @@ struct TrainingTab: View {
                 Text(String(d.prefix(1))).font(F.round(12, .bold)).foregroundStyle(picked ? Color.white : C.muted)
                 Text("\(Calendar.current.component(.day, from: when))")
                     .font(F.round(17, .bold)).foregroundStyle(picked ? Color.white : future ? C.muted : C.creme)
-                Image(systemName: trained ? "checkmark.circle.fill" : "circle.fill")
-                    .font(.system(size: trained ? 13 : 6, weight: .bold))
-                    .foregroundStyle(trained ? (picked ? Color.white : C.brand) : (today ? C.brandHi : Color.clear))
+                let rest = !trained && isRest(d)
+                Image(systemName: trained ? "checkmark.circle.fill" : rest ? "moon.zzz.fill" : "circle.fill")
+                    .font(.system(size: trained || rest ? 12 : 6, weight: .bold))
+                    .foregroundStyle(trained ? (picked ? Color.white : C.brand) : rest ? (picked ? Color.white : C.muted) : (today ? C.brandHi : Color.clear))
                     .frame(height: 14)
             }
             .frame(maxWidth: .infinity)
@@ -109,7 +118,7 @@ struct TrainingTab: View {
             )
         }
         .buttonStyle(.plain)
-        .accessibilityLabel("\(FULL_DAY[d]?.capitalized ?? d) \(Calendar.current.component(.day, from: when))\(today ? ", today" : "")\(trained ? ", trained" : "")")
+        .accessibilityLabel("\(FULL_DAY[d]?.capitalized ?? d) \(Calendar.current.component(.day, from: when))\(today ? ", today" : "")\(trained ? ", trained" : isRest(d) ? ", recovery day" : "")")
         .accessibilityAddTraits(picked ? .isSelected : [])
     }
 
@@ -140,12 +149,54 @@ struct TrainingTab: View {
                         ForEach(list) { d in LabDrillRow(drill: d, canTick: isToday) }
                     }
                     if !isToday {
-                        Text("You can tick drills off on the day itself.")
+                        Text("You can train these on the day itself.")
                             .font(F.round(13, .semibold)).foregroundStyle(C.muted)
                     } else if doneCount == list.count, !list.isEmpty {
                         Label("Session done. Nice work.", systemImage: "checkmark.seal.fill")
                             .font(F.round(15, .bold)).foregroundStyle(C.gold)
                     }
+                }
+            }
+        }
+    }
+
+    // MARK: recovery day
+
+    private var recovery: some View {
+        let n = store.answers.trainingDaysPerWeek
+        let light = LabPlan.recovery.filter { Library.shared.has($0) }.map { Library.shared.drill($0) }
+        return VStack(alignment: .leading, spacing: 12) {
+            LabKicker(isToday ? "TODAY · RECOVERY DAY" : "\(FULL_DAY[day] ?? day) · RECOVERY DAY")
+            LabPanel {
+                VStack(alignment: .leading, spacing: 14) {
+                    HStack(spacing: 14) {
+                        Image(systemName: "moon.zzz.fill").font(.system(size: 26, weight: .bold)).foregroundStyle(C.brandHi)
+                            .frame(width: 62, height: 62).background(Circle().fill(C.brand.opacity(0.16)))
+                        VStack(alignment: .leading, spacing: 4) {
+                            Disp("RECOVERY DAY", size: 22)
+                            Text("You train \(n) days a week. Today your body gets stronger.")
+                                .font(F.round(14, .semibold)).foregroundStyle(C.muted)
+                                .fixedSize(horizontal: false, vertical: true)
+                        }
+                        Spacer(minLength: 0)
+                    }
+                    VStack(alignment: .leading, spacing: 10) {
+                        ForEach([("drop.fill", "Drink plenty of water"), ("figure.flexibility", "Stretch for 10 minutes"),
+                                 ("bed.double.fill", "Sleep 8 to 10 hours"), ("fork.knife", "Eat well to refuel")], id: \.1) { t in
+                            Label(t.1, systemImage: t.0).font(F.round(15, .semibold)).foregroundStyle(C.creme2)
+                        }
+                    }
+                    if !light.isEmpty {
+                        Text("LIGHT MOBILITY, IF YOU FEEL LIKE IT").font(F.round(12, .bold)).kerning(1).foregroundStyle(C.muted)
+                            .padding(.top, 4)
+                        VStack(spacing: 10) {
+                            ForEach(light) { d in LabDrillRow(drill: d, canTick: isToday) }
+                        }
+                    }
+                    Button {
+                        withAnimation(.snappy) { _ = trainAnyway.insert(day) }
+                    } label: { Label("Train anyway", systemImage: "figure.soccer") }
+                        .buttonStyle(.game(.charcoal, height: 52, font: 18))
                 }
             }
         }
