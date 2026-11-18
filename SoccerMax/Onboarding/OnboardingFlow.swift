@@ -277,7 +277,7 @@ struct Welcome: View {
                 VStack(alignment: .leading, spacing: 14) {
                     welcomeRow("figure.soccer", "A session every day, made for your position")
                     welcomeRow("video.fill", "Review your clips and get the drills that fix them")
-                    welcomeRow("fork.knife", "Fuel targets and a simple food log")
+                    welcomeRow("fork.knife", "Nutrition targets and a simple food log")
                 }
                 .padding(.top, 30)
                 .padding(.horizontal, 28)
@@ -405,7 +405,7 @@ struct NameStep: View {
 
     var body: some View {
         @Bindable var store = store
-        OBShell(ctx: ctx, title: "What's your name?", sub: Text("So your teammates know it's you."),
+        OBShell(ctx: ctx, title: "What's your name?", sub: Text("So your plan feels like yours."),
                 canNext: !store.answers.first.trimmingCharacters(in: .whitespaces).isEmpty) {
             VStack(spacing: 14) {
                 // Last name back (user, 2026-11-08) but OPTIONAL: only the first name unlocks CONTINUE ? on launch night
@@ -506,8 +506,8 @@ private struct PitchLines: Shape {
 enum Wants {
     static let all: [(String, String)] = [
         ("Become a better player", "arrow.up.right"),
-        ("Join my team", "person.3.fill"),
-        ("Train with my friends", "person.2.fill"),
+        ("Get fitter and faster", "bolt.fill"),
+        ("Build my confidence", "flame.fill"),
         ("Make the team", "star.fill"),
         ("Track my training", "chart.bar.fill"),
     ]
@@ -674,7 +674,7 @@ struct AccountStep: View {
                 .multilineTextAlignment(.center)
                 .contentTransition(.opacity)
                 .padding(.top, 8)
-            Text(phase == .working ? "Creating your account…" : "Save your training and join your team.")
+            Text(phase == .working ? "Creating your account…" : "Save your training and your progress.")
                 .font(F.round(16, .semibold)).foregroundStyle(C.muted)
                 .contentTransition(.opacity)
                 .padding(.top, 8)
@@ -783,7 +783,7 @@ struct PhotoAsk: View {
         VStack(spacing: 16) {
             Avatar(size: 120).padding(.top, 28)
             Disp("ADD A PHOTO?", size: 32)
-            Text("So your teammates know it's you.")
+            Text("So your plan feels like yours.")
                 .font(F.round(16, .semibold)).foregroundStyle(C.creme2).multilineTextAlignment(.center)
             Spacer(minLength: 0)
             if store.avatar == nil {

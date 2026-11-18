@@ -32,6 +32,7 @@ ORDER = [
     "2026-11-17-sandbox-switch.sql",
     "2026-11-17-creator-email.sql",
     "2026-11-17-creator-offer-codes.sql",
+    "2026-11-18-creator-stats-link.sql",
     "2026-11-13-new-project-finish.sql",
 ]
 

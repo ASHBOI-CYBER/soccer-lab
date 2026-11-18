@@ -477,7 +477,7 @@ struct DeleteFeedbackView: View {
     private static let survey = "01a18ed7-248f-0000-df77-856f0cc706b7"
     private static let qReason = "23221a62-678e-4ab7-9559-2f872efc2fc0"
     private static let qMore = "8ba3048e-4fcb-49d2-8367-b42152ec40fc"
-    private static let name = "Why are you deleting Soccer Max?"
+    private static let name = "Why are you deleting Soccer Lab?"
     private static let reasons = ["It costs too much", "I don't train enough", "It's missing something", "Bugs or too slow", "Something else"]
 
     var body: some View {

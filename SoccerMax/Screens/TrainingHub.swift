@@ -332,7 +332,7 @@ struct VoiceDrill: View {
                 Text(String(format: "%d:%02d left · %d calls", left / 60, left % 60, calls))
                     .font(F.round(15, .bold)).foregroundStyle(C.muted).monospacedDigit()
             } else if finished {
-                Text("\(calls) calls in \(minutes) minutes. It's ticked off for today.")
+                Text("\(calls) calls in \(minutes) minutes. It's done for today.")
                     .font(F.round(15, .semibold)).foregroundStyle(C.creme2).multilineTextAlignment(.center)
             }
         }

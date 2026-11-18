@@ -35,17 +35,18 @@ struct CancelFlow: View {
         }
         var answer: [String] {
             switch self {
-            case .price: ["I get it. So here's half off.", "Same everything, half the price."]
+            case .price: ["I get it.", "Yearly works out far cheaper than weekly."]
             case .time: ["10 minutes is enough!", "Once every 3 days keeps your fire alive."]
             case .missing: ["Tell me what to add.", "I read every one of these."]
             case .off: ["Rest up, then come back strong.", "Your streak and stats will be waiting."]
-            case .other: ["Before you go?", "Stay for half the price?"]
+            case .other: ["Before you go?", "Your streak and stats will be waiting."]
             }
         }
     }
 
     /// The 50% OFF yearly is only for people not already on it.
-    private var canDiscount: Bool { !pay.owned.contains(PayID.stay) }
+    /// Off in Soccer Lab 2.0 (2026-11-18): there are only two plans, weekly and yearly, and no discount product.
+    private var canDiscount: Bool { false }
 
     var body: some View {
         VStack(spacing: 0) {
@@ -143,7 +144,7 @@ struct CancelFlow: View {
                 Divider().overlay(C.char600)
                 loss("star.fill", "Level \(store.level.lv) and your stats")
                 Divider().overlay(C.char600)
-                loss("play.rectangle.fill", "All 408 drill videos")
+                loss("play.rectangle.fill", "Every drill, your AI Coach and film reviews")
             }
             .gameCard(padding: 6, radius: 20)
         }

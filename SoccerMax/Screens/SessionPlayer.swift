@@ -37,7 +37,7 @@ final class ActiveRun {
             "drill_count": r.items.count,
             "session_type": r.planDay ? "plan" : r.pro == nil ? "custom" : "premade"
         ])
-        Task { @MainActor in SessionSpot.shared.refresh() }   // MAP tab: where this session is played
+        if TEAMS_ON { Task { @MainActor in SessionSpot.shared.refresh() } }   // MAP tab: where this session is played
         Haptics.play(.kick)
         request = r
     }

@@ -412,7 +412,7 @@ struct SettingsView: View {
                             }
                             .disabled(deleting)
                         }
-                        Text("Deletes your profile, your teams, your messages and your backup. Cancel your subscription from your plan at the top.")
+                        Text("Deletes your profile, your leaderboard entry and your backup. Cancel your subscription from your plan at the top.")
                             .font(F.round(13)).foregroundStyle(C.muted).padding(.horizontal, 6)
                     }
                 }
@@ -462,10 +462,10 @@ struct SettingsView: View {
                 Task { deleteResult = await team.deleteAccount(); deleting = false }
             }
             Button("Cancel", role: .cancel) {}
-        } message: { Text("This can't be undone. You'll leave every team and your messages and backup are deleted. Training on this phone stays.") }
+        } message: { Text("This can't be undone. Your profile, leaderboard entry and backup are deleted. Training on this phone stays.") }
         .alert(deleteResult == true ? "Account deleted" : "Couldn't delete your account",
                isPresented: Binding(get: { deleteResult != nil }, set: { if !$0 { deleteResult = nil } })) { Button("OK") {} } message: {
-            Text(deleteResult == true ? "Your account and team data are gone. Don't forget to cancel your subscription in your App Store settings if you have one."
+            Text(deleteResult == true ? "Your account and its data are gone. Don't forget to cancel your subscription in your App Store settings if you have one."
                  : "Check your signal and try again, or email \(Legal.supportEmail) and we'll delete it for you.")
         }
         .confirmationDialog("Start onboarding again? Your answers are cleared.", isPresented: $confirmReset, titleVisibility: .visible) {
@@ -504,6 +504,7 @@ struct SettingsView: View {
         if o.contains(PayID.lifetime) || team.freeForLife { return .lifetime }
         if o.contains(PayID.yearly) || o.contains(PayID.yearlyNoTrial) || o.contains(PayID.stay) { return .yearly }
         if o.contains(PayID.monthly) { return .monthly }
+        if o.contains(PayID.weekly) { return .weekly }
         if team.onTrial { return .trial }
         return .member
     }
@@ -557,9 +558,9 @@ struct SettingsView: View {
 }
 
 enum PlanKind: String {
-    case lifetime, yearly, monthly, trial, member
-    var name: String { ["lifetime": "LIFETIME", "yearly": "YEARLY", "monthly": "MONTHLY", "trial": "FREE WEEK", "member": "MEMBER"][rawValue]! }
-    var subscription: Bool { self == .yearly || self == .monthly }
+    case lifetime, yearly, monthly, weekly, trial, member
+    var name: String { ["lifetime": "LIFETIME", "yearly": "YEARLY", "monthly": "MONTHLY", "weekly": "WEEKLY", "trial": "FREE WEEK", "member": "MEMBER"][rawValue]! }
+    var subscription: Bool { self == .yearly || self == .monthly || self == .weekly }
 }
 
 /// The hero at the top of Settings: gold for Lifetime, green for a subscription (a button with an arrow ? the cancel
@@ -585,9 +586,9 @@ struct PlanCard: View {
         switch plan {
         case .lifetime: return Team.shared.freeForLife && !Purchases.shared.owned.contains(PayID.lifetime)
             ? "Free for life with a code. Yours forever." : "Paid once. Yours forever."
-        case .yearly, .monthly:
-            let price = Purchases.shared.price(plan == .yearly ? PayID.yearly : PayID.monthly)
-            let per = plan == .yearly ? "year" : "month"
+        case .yearly, .monthly, .weekly:
+            let price = Purchases.shared.price(plan == .yearly ? PayID.yearly : plan == .weekly ? PayID.weekly : PayID.monthly)
+            let per = plan == .yearly ? "year" : plan == .weekly ? "week" : "month"
             guard let d else { return "\(price) a \(per)" }
             return renews ? "\(price) a \(per) · renews \(d)" : "Ends \(d) · won't renew"
         case .trial: return d.map { "Free until \($0)" } ?? "Free from your team"

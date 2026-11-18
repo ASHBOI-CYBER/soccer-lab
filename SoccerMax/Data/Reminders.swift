@@ -9,7 +9,7 @@ enum Reminders {
 
     /// Title + body, worded for what the player wants most.
     static func note(_ a: Answers) -> (String, String) {
-        Wants.social(a.wants ?? [])
+        TEAMS_ON && Wants.social(a.wants ?? [])
             ? ("Your team is counting on you", "\(a.firstName), 10 minutes today keeps the team streak alive.")
             : ("Keep your streak alive", "\(a.firstName), 10 minutes today keeps your fire going.")
     }

@@ -214,7 +214,7 @@ struct HomeTab: View {
                 shortcut("Review a clip", "Find what to work on", "video.fill", C.brandHi) { Nav.shared.tab = .film }
             }
             HStack(spacing: 10) {
-                shortcut("Log food", "Stay on your fuel target", "fork.knife", labSkillColor("Stretching")) { Nav.shared.tab = .nutrition }
+                shortcut("Log food", "Stay on your nutrition target", "fork.knife", labSkillColor("Stretching")) { Nav.shared.tab = .nutrition }
                 if Nav.teamsOn {
                     shortcut("My team", "Chat and leaderboard", "person.3.fill", labSkillColor("Defending")) { Nav.shared.team = true }
                 } else {
@@ -255,7 +255,7 @@ struct HomeTab: View {
                 }
                 .frame(width: 54, height: 54)
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("TODAY'S FUEL").font(F.round(12, .bold)).kerning(1.6).foregroundStyle(C.muted)
+                    Text("TODAY'S NUTRITION").font(F.round(12, .bold)).kerning(1.6).foregroundStyle(C.muted)
                     Text(left > 0 ? "\(left) kcal left" : "Target reached").font(F.round(18, .bold)).foregroundStyle(C.creme)
                     Text("\(day.water) of \(goal.water) glasses of water").font(F.round(13, .medium)).foregroundStyle(C.muted)
                 }

@@ -86,7 +86,7 @@ struct SoccerMaxPaywall: View {
                 growth(a)
                 rating
                 plans
-                if trial { TrialSteps(price: pay.price(PayID.yearly)) }
+                if trial { TrialSteps(price: pay.price(PayID.yearly), days: pay.trialDays) }
                 trust
             }
             .padding(.horizontal, 20)
@@ -302,7 +302,7 @@ struct SoccerMaxPaywall: View {
 
     private var plans: some View {
         HStack(alignment: .bottom, spacing: 8) {
-            DayTile(on: pick == PayID.yearly, badge: pay.trialOffered ? "7 DAYS FREE" : pay.yearlySavesPercent.map { "\($0)% OFF" }, name: "Yearly",
+            DayTile(on: pick == PayID.yearly, badge: pay.trialOffered ? "\(pay.trialDays) DAYS FREE" : pay.yearlySavesPercent.map { "\($0)% OFF" }, name: "Yearly",
                     perDay: pay.perDayValue(PayID.yearly), line: "\(pay.price(PayID.yearly))/year",
                     billed: pay.perWeek(PayID.yearly), was: "vs \(pay.weeklyForAYear)/yr") { pick = PayID.yearly }
             DayTile(on: pick == PayID.weekly, badge: nil, name: "Weekly",
@@ -332,7 +332,7 @@ struct SoccerMaxPaywall: View {
     private var cta: String {
         if !trial, pick == PayID.yearly || pick == PayID.weekly { return "Start my plan" }
         return switch pick {
-        case PayID.yearly: trial ? "Start my free week" : "Continue with yearly"
+        case PayID.yearly: trial ? (pay.trialDays == 7 ? "Start my free week" : "Start my free trial") : "Continue with yearly"
         case PayID.weekly: "Continue with weekly"
         case PayID.monthly: "Continue with monthly"
         default: "Buy lifetime"
@@ -342,7 +342,7 @@ struct SoccerMaxPaywall: View {
     /// The price line Apple wants right by the button.
     private var fine: String {
         switch pick {
-        case PayID.yearly: trial ? "7 days free, then \(pay.price(PayID.yearly))/year. Renews yearly. Cancel anytime."
+        case PayID.yearly: trial ? "\(pay.trialDays) days free, then \(pay.price(PayID.yearly))/year. Renews yearly. Cancel anytime."
                                  : "Just \(pay.price(PayID.yearly)) per year (\(pay.yearlyMonthly)/mo) · Auto-renews · Cancel anytime."
         case PayID.weekly: "Just \(pay.price(PayID.weekly)) per week · Auto-renews · Cancel anytime."
         case PayID.monthly: "\(pay.price(PayID.monthly))/month. Renews monthly. Cancel anytime."
@@ -499,8 +499,9 @@ private struct PlanTile: View {
 /// The trial, as three stops on a line: today ? day 7 ? anytime.
 private struct TrialSteps: View {
     let price: String
+    var days = 7
     var body: some View {
-        let steps = [("Today", "Full access, free", C.brand), ("Day 7", "First \(price)", C.gold), ("Anytime", "Cancel in Settings", C.creme2)]
+        let steps = [("Today", "Full access, free", C.brand), ("Day \(days)", "First \(price)", C.gold), ("Anytime", "Cancel in Settings", C.creme2)]
         ZStack(alignment: .top) {
             Rectangle().fill(C.char600).frame(height: 3).padding(.horizontal, 50).padding(.top, 7)
             HStack(alignment: .top, spacing: 0) {

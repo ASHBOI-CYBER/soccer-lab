@@ -9,7 +9,6 @@ struct SoccerMaxWidgets: WidgetBundle {
     init() { W.registerFonts() }
     var body: some Widget {
         StreakWidget()
-        MatchWidget()
         ConsistencyWidget()
         SessionLiveActivity()
     }

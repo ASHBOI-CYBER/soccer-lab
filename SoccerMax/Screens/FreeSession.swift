@@ -408,7 +408,7 @@ struct FreeSession: View {
                         }
                     }
                     if !Team.shared.teams.isEmpty && !media.isEmpty {
-                        Text("Your teammates will see these.").font(F.round(14, .semibold)).foregroundStyle(C.muted)
+                        Text("They stay with this session.").font(F.round(14, .semibold)).foregroundStyle(C.muted)
                     }
                 }
 
@@ -492,7 +492,7 @@ struct FreeSession: View {
         since = Date()
         if let preset { marks = [Mark(area: preset, at: 0)] }
         LiveRun.start("Session", liveState)
-        SessionSpot.shared.refresh()   // MAP tab: where this session is played
+        if TEAMS_ON { SessionSpot.shared.refresh() }   // MAP tab: where this session is played
     }
 
     /// Start (or switch to) a category. The first pick also takes the time before it.
@@ -509,7 +509,7 @@ struct FreeSession: View {
 
     private func finish() {
         guard current != nil else { return }
-        SessionSpot.shared.refresh()
+        if TEAMS_ON { SessionSpot.shared.refresh() }
         banked = elapsed()
         since = nil
         LiveRun.end()

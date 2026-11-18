@@ -163,7 +163,7 @@ final class Purchases {
         guard RC.isConfigured else { error = "Purchases aren't set up yet."; return false }
         if products[pick] == nil { await load() }
         // one free week per account: after a team / gift week (or Apple's), "yearly" is the plan without the trial
-        let id = pick == PayID.yearly && freeWeekUsed && products[PayID.yearlyNoTrial] != nil ? PayID.yearlyNoTrial : pick
+        let id = pick   // one Yearly product: Apple decides who gets its free trial (no separate no-trial plan)
         busy = true; defer { busy = false }
         do {
             let result: PurchaseResultData
@@ -329,13 +329,22 @@ final class Purchases {
     /// screen goes back to paid-only, with no new build. (Apple applies an intro offer at purchase either way, so the
     /// screen must follow App Store Connect.) false = never show a trial, even if one is set up.
     static let freeTrial = true
-    var trialOffered: Bool = Purchases.freeTrial
+    /// False until Apple confirms it (2026-11-18): never promise a trial that isn't set up in App Store Connect.
+    var trialOffered = false
+    /// How long Apple's free trial on Yearly is, in days (7 for "1 week").
+    var trialDays = 7
     func checkTrial() async {
-        guard Self.freeTrial else { trialOffered = false; return }
-        await Team.shared.refreshTrial()
-        guard RC.isConfigured, let p = products[PayID.yearly] else { trialOffered = !freeWeekUsed; return }
+        guard Self.freeTrial, RC.isConfigured, let p = products[PayID.yearly], let intro = p.introductoryDiscount,
+              intro.paymentMode == .freeTrial else { trialOffered = false; return }
         let status = await RC.shared.checkTrialOrIntroDiscountEligibility(product: p)
-        if status == .ineligible { Self.markFreeWeekUsed() }   // Apple's free week (or a sub) already happened on this Apple ID
-        trialOffered = status != .ineligible && status != .noIntroOfferExists && p.introductoryDiscount != nil && !freeWeekUsed
+        let n = intro.subscriptionPeriod.value
+        switch intro.subscriptionPeriod.unit {
+        case .day: trialDays = n
+        case .week: trialDays = n * 7
+        case .month: trialDays = n * 30
+        case .year: trialDays = n * 365
+        @unknown default: trialDays = 7
+        }
+        trialOffered = status == .eligible
     }
 }

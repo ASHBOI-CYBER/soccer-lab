@@ -822,7 +822,7 @@ final class Team {
     /// Activity, logged on its own to EVERY team I'm on: a finished session, film watched. Silent with no team / no signal.
     func log(session name: String, minutes: Int, items: [PlanItem], pro: String?, area: String? = nil,
              parts: [SessionPart]? = nil, media: [String] = []) {
-        guard !teams.isEmpty, minutes >= 1 else { return }
+        guard TEAMS_ON, !teams.isEmpty, minutes >= 1 else { return }
         var meta = PostMeta(title: name, minutes: minutes, drills: items.count, items: items.map { [$0.drill, "\($0.sets)"] }, pro: pro)
         meta.area = area
         meta.parts = parts
@@ -836,13 +836,14 @@ final class Team {
         }
     }
     func log(film tape: MatchTape, minutes: Double) {
-        guard !teams.isEmpty, minutes >= 1 else { return }
+        guard TEAMS_ON, !teams.isEmpty, minutes >= 1 else { return }
         var m = Self.filmMeta(tape)
         m.minutes = Int(minutes.rounded())
         Task { for t in teams { await post(to: t.id, kind: "film", body: nil, ref: "\(tape.id)", meta: m, quiet: true) } }
     }
     /// After training: the boards should show it.
     func syncStats(_ store: AppStore) {
+        guard TEAMS_ON else { return }
         guard !teams.isEmpty else { return }
         Task { try? await pushProfile(store); await pollNow() }
     }

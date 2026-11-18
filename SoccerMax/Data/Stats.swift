@@ -55,7 +55,7 @@ extension AppStore {
     @MainActor func complete(_ name: String?, minutes: Double, seconds: Int? = nil, drills: [LoggedDrill]? = nil,
                   area: String? = nil, media: [String]? = nil, parts: [SessionPart]? = nil) {
         guard minutes >= 1 else { return }
-        let spot = SessionSpot.shared.here
+        let spot = TEAMS_ON ? SessionSpot.shared.here : nil
         completions.append(Completion(date: Date(), name: name ?? "Today", minutes: Int(minutes.rounded()), seconds: seconds,
                                       drills: drills, area: area, media: media, lat: spot?.lat, lng: spot?.lng, parts: parts))
     }
