@@ -257,7 +257,7 @@ final class Purchases {
     /// "$29.99" from the store, falling back to the set price before products load.
     func price(_ id: String) -> String {
         if let p = products[id] { return p.localizedPriceString }
-        return [PayID.weekly: "$7.99", PayID.monthly: "$9.99", PayID.yearly: "$36.99", PayID.lifetime: "$39.99", PayID.stay: "$14.99",
+        return [PayID.weekly: "$7.99", PayID.monthly: "$9.99", PayID.yearly: "$39.99", PayID.lifetime: "$39.99", PayID.stay: "$14.99",
                 PayID.monthlyOff: "$5.99", PayID.yearlyOff: "$17.99", PayID.lifetimeOff: "$23.99"][id] ?? ""
     }
 
