@@ -80,7 +80,7 @@ struct FilmTab: View {
             Text("How it works").font(.system(size: 20, weight: .heavy)).foregroundStyle(C.creme)
             HStack(alignment: .top, spacing: 10) {
                 step(1, "Upload", "A clip of a touch, pass, shot, dribble or run.", "video.badge.plus")
-                step(2, "AI breakdown", "Frame by frame: your body, the ball, your choices.", "sparkles")
+                step(2, "AI review", "Frame by frame: your body, the ball, your choices.", "sparkles")
                 step(3, "Your plan", "A score, what to fix, and the drills to do.", "figure.soccer")
             }
         }
@@ -96,6 +96,7 @@ struct FilmTab: View {
                 Text("0\(n)").font(F.round(12, .bold)).foregroundStyle(C.brand)
             }
             Text(title).font(F.round(16, .bold)).foregroundStyle(C.creme)
+                .lineLimit(1).minimumScaleFactor(0.6)   // big text sizes: shrink, never split a word (2026-11-18)
             Text(text).font(F.round(12, .medium)).foregroundStyle(C.muted)
                 .fixedSize(horizontal: false, vertical: true)
         }
