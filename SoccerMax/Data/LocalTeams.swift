@@ -4,7 +4,6 @@
 // Server: supabase/2026-11-08-local-teams.sql (teams.place/lat/lng rounded to ~1 km + join_requests, owner-only RPCs).
 // Until that SQL is on the server every call here fails quietly and `ready` stays false ? the app shows nothing new.
 // Contacts never leave the phone: they're only listed so you can text a friend your team's invite link.
-import Contacts
 import CoreLocation
 import Observation
 import UIKit
@@ -153,51 +152,23 @@ final class FriendsBook {
 
     struct Friend: Identifiable, Hashable { let id: String; let name: String; let phone: String }
 
-    private(set) var status = CNContactStore.authorizationStatus(for: .contacts)
+    // Soccer Lab 2.0 (2026-11-19): the app never reads contacts (teams are off), so the Contacts framework is gone
+    // from the build. Apple requires a contacts purpose string for any app that links it (ITMS-90683).
     private(set) var friends: [Friend] = []
-    /// The player said "Not now" on our own explainer (we only ever get ONE system prompt, so we keep it for later).
     var skipped: Bool {
         get { UserDefaults.standard.bool(forKey: "sm.contacts.skipped") }
         set { UserDefaults.standard.set(newValue, forKey: "sm.contacts.skipped") }
     }
-    /// They closed the "turn contacts on" card on the Team tab ? never show it again (don't be a pest).
     var cardClosed: Bool {
         get { UserDefaults.standard.bool(forKey: "sm.contacts.card.closed") }
         set { UserDefaults.standard.set(newValue, forKey: "sm.contacts.card.closed") }
     }
-
-    var allowed: Bool {
-        if #available(iOS 18.0, *), status == .limited { return true }
-        return status == .authorized
-    }
-    var denied: Bool { status == .denied || status == .restricted }
-    var undecided: Bool { status == .notDetermined }
-
-    func recheck() { status = CNContactStore.authorizationStatus(for: .contacts) }
-
-    /// The ONE system prompt. Only called from our explainer's ALLOW button.
-    func ask() async {
-        _ = try? await CNContactStore().requestAccess(for: .contacts)
-        recheck()
-        if allowed { await load() }
-    }
-
-    func load() async {
-        guard allowed else { return }
-        let list: [Friend] = await Task.detached(priority: .userInitiated) {
-            var out: [Friend] = []
-            let keys = [CNContactGivenNameKey, CNContactFamilyNameKey, CNContactPhoneNumbersKey] as [CNKeyDescriptor]
-            let req = CNContactFetchRequest(keysToFetch: keys)
-            req.sortOrder = .givenName
-            try? CNContactStore().enumerateContacts(with: req) { c, _ in
-                guard let p = c.phoneNumbers.first?.value.stringValue else { return }
-                let n = [c.givenName, c.familyName].filter { !$0.isEmpty }.joined(separator: " ")
-                if !n.isEmpty { out.append(Friend(id: c.identifier, name: n, phone: p)) }
-            }
-            return out
-        }.value
-        friends = list
-    }
+    var allowed: Bool { false }
+    var denied: Bool { false }
+    var undecided: Bool { false }
+    func recheck() {}
+    func ask() async {}
+    func load() async {}
 
     /// The text a friend gets: your team's invite link, or the app if you're not on a team yet.
     func inviteText(team: TeamRow?) -> String {

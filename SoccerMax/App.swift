@@ -144,10 +144,11 @@ struct SoccerMaxApp: App {
                 if !store.onboarded, Team.shared.signedIn, await Backup.shared.pull(store) { store.onboarded = true }
                 if store.onboarded { await Team.shared.refresh(store) }
                 quick.refresh()
+                await Reminders.refresh(store)   // training days, streak and trial reminders (Data/Reminders.swift)
             }
             // the backup goes up only here, and only when something changed (Data/Backup.swift ? cheap on purpose)
             .onChange(of: phase) { _, p in
-                if p == .background { quick.refresh(); Task { await Backup.shared.push(store) } }
+                if p == .background { quick.refresh(); Task { await Backup.shared.push(store); await Reminders.refresh(store) } }
             }
             .fullScreenCover(isPresented: $quick.showing, onDismiss: { quick.launchCode = false }) {
                 StayOfferView(launch: quick.launchCode).duoColumn().environment(store)   // column on the Duo's big screen

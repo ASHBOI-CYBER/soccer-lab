@@ -13,11 +13,11 @@ import SwiftUI
 import UserNotifications
 
 enum OBStep: String, CaseIterable {
-    case welcome, name, position, gender, foot, body, level, routine, goal, fuel, wants, source, team, account
+    case welcome, name, position, gender, foot, body, level, routine, goal, fuel, wants, source, team, notify, account
 
     /// The steps in order; "Join a team" only while teams are on (Nav.teamsOn).
     static var allCases: [OBStep] {
-        [.welcome, .name, .position, .gender, .foot, .body, .level, .routine, .goal, .fuel, .wants, .source, .team, .account]
+        [.welcome, .name, .position, .gender, .foot, .body, .level, .routine, .goal, .fuel, .wants, .source, .team, .notify, .account]
             .filter { $0 != .team || TEAMS_ON }
     }
 
@@ -33,6 +33,7 @@ enum OBStep: String, CaseIterable {
         case .wants: return "What you want most"
         case .source: return "Where did you find us"
         case .team: return "Join a team"
+        case .notify: return "Reminders"
         default: return rawValue.prefix(1).uppercased() + rawValue.dropFirst()
         }
     }
@@ -134,6 +135,7 @@ struct OnboardingFlow: View {
         case .source: PickStep(ctx: ctx, title: "Where did you find us?", options: ["TikTok", "Instagram", "YouTube", "A friend", "App Store", "Other"], key: \.source,
                                icon: { AnyView(SourceLogo(source: $0)) })
         case .team: JoinTeamStep(ctx: ctx)
+        case .notify: NotifyStep(ctx: ctx)
         case .account: AccountStep(ctx: ctx)
         }
     }
@@ -897,4 +899,42 @@ private struct PhotoNudge: ViewModifier {
 
 extension View {
     func photoNudge() -> some View { modifier(PhotoNudge()) }
+}
+
+/// "Want reminders?" (2026-11-19): the one place onboarding asks for notifications. Yes shows iOS's own prompt and
+/// schedules them (Data/Reminders.swift); "Not now" moves on, and Settings can turn them on later.
+struct NotifyStep: View {
+    let ctx: OBContext
+    @Environment(AppStore.self) private var store
+    @State private var busy = false
+
+    var body: some View {
+        OBShell(ctx: ctx, title: "Want a nudge on your training days?",
+                sub: Text("Players who get reminders train more often. You can turn them off any time in Settings."),
+                cta: busy ? "One sec…" : "Turn on reminders", canNext: !busy,
+                onNext: {
+                    busy = true
+                    Task { _ = await Reminders.turnOn(store); busy = false; ctx.next() }
+                }) {
+            VStack(alignment: .leading, spacing: 14) {
+                ForEach([("figure.soccer", "Your session, on your training days", "Never on a recovery day."),
+                         ("flame.fill", "Before your streak goes out", "One reminder, the evening before."),
+                         ("bell.badge.fill", "Before a free trial ends", "So a payment never surprises you.")], id: \.1) { r in
+                    HStack(alignment: .top, spacing: 14) {
+                        Image(systemName: r.0).font(.system(size: 18, weight: .bold)).foregroundStyle(C.brandHi)
+                            .frame(width: 44, height: 44).background(Circle().fill(C.brand.opacity(0.16)))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(r.1).font(F.round(17, .bold)).foregroundStyle(C.creme)
+                            Text(r.2).font(F.round(14, .medium)).foregroundStyle(C.muted)
+                        }
+                        Spacer(minLength: 0)
+                    }
+                }
+                Button("Not now") { store.answers.notify = false; ctx.next() }
+                    .font(F.round(16, .bold)).foregroundStyle(C.muted)
+                    .frame(maxWidth: .infinity, minHeight: 48)
+                    .padding(.top, 8)
+            }
+        }
+    }
 }

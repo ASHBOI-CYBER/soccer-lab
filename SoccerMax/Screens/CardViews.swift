@@ -477,8 +477,8 @@ struct SettingsView: View {
     private func setReminders(_ on: Bool) async {
         Haptics.play(.latch)
         if on {
-            let ok = await Reminders.turnOn(store.answers)
-            store.answers.notify = ok
+            let ok = await Reminders.turnOn(store)
+            if !ok { store.answers.notify = false }
             remindersOn = ok
             if !ok, await Reminders.denied() { remindersBlocked = true }
         } else {
