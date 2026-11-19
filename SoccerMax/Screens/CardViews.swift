@@ -338,7 +338,7 @@ struct SettingsView: View {
                         }
                     }
                     line
-                    SettingRow(icon: "bell.fill", title: "Streak reminders") {
+                    SettingRow(icon: "bell.fill", title: "Training reminders") {
                         Toggle("", isOn: Binding(get: { remindersOn }, set: { on in remindersOn = on; Task { await setReminders(on) } }))
                             .labelsHidden().tint(C.brand)
                     }
