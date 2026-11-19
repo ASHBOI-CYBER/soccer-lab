@@ -65,6 +65,25 @@ enum LabPlan {
         return ids.filter { lib.has($0) && seen.insert($0).inserted }.map { lib.drill($0) }
     }
 
+    /// What the day's session is about, as a name ("Passing & First Touch"): the two skills its position drills
+    /// train most (2026-11-19, Fasih: show each day's agenda, not just "Midfielder session").
+    static func title(position: String, date: Date = Date()) -> String {
+        let drills = today(position: position, date: date)
+        let nice = ["First touch": "First Touch", "Ball mastery": "Ball Mastery", "Core": "Core Strength", "Runs": "Speed",
+                    "Stretching": "Mobility"]
+        var count: [String: Int] = [:], order: [String] = []
+        for d in drills.suffix(3) where d.skill != "Stretching" {
+            if count[d.skill] == nil { order.append(d.skill) }
+            count[d.skill, default: 0] += 1
+        }
+        let top = order.sorted { (count[$0] ?? 0) > (count[$1] ?? 0) }.prefix(2).map { nice[$0] ?? $0 }
+        switch top.count {
+        case 2: return "\(top[0]) & \(top[1])"
+        case 1: return top[0] == "Ball Mastery" ? "Ball Mastery" : "\(top[0]) & Ball Mastery"
+        default: return "\(group(position)) Session"
+        }
+    }
+
     private static func pick(_ list: [String], _ n: Int, from start: Int) -> [String] {
         guard !list.isEmpty else { return [] }
         return (0..<min(n, list.count)).map { list[(start + $0) % list.count] }

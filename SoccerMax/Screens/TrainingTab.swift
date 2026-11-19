@@ -143,9 +143,13 @@ struct TrainingTab: View {
                         }
                         .frame(width: 62, height: 62)
                         VStack(alignment: .leading, spacing: 4) {
-                            Disp("\(LabPlan.group(store.answers.position).uppercased()) SESSION", size: 22)
-                                .lineLimit(1).minimumScaleFactor(0.7)
-                            Label("\(list.count) drills · about \(minutes) min", systemImage: "clock.fill")
+                            // the day's agenda, big (2026-11-19): "Passing & First Touch", not just "Midfielder session"
+                            Text("\(LabPlan.group(store.answers.position).uppercased()) PROGRAM")
+                                .font(F.round(12, .heavy)).kerning(1.2).foregroundStyle(C.brandHi)
+                            Text(LabPlan.title(position: store.answers.position, date: date))
+                                .font(.system(size: 25, weight: .heavy)).foregroundStyle(C.creme)
+                                .lineLimit(2).minimumScaleFactor(0.7).fixedSize(horizontal: false, vertical: true)
+                            Label("\(minutes) min · \(list.count) drills", systemImage: "clock.fill")
                                 .font(F.round(14, .semibold)).foregroundStyle(C.muted)
                         }
                         Spacer(minLength: 0)

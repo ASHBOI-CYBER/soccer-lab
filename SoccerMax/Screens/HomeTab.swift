@@ -101,7 +101,7 @@ struct HomeTab: View {
                     .background(Capsule().fill(.white.opacity(0.2)))
             }
             VStack(alignment: .leading, spacing: 5) {
-                Text(rest ? "Recovery day" : "\(LabPlan.group(store.answers.position)) session")
+                Text(rest ? "Recovery day" : LabPlan.title(position: store.answers.position))
                     .font(.system(size: 22, weight: .bold)).foregroundStyle(.white)
                 Text(rest ? "You train \(store.answers.trainingDaysPerWeek) days a week, so today is for rest: stretch, drink water and sleep well."
                      : finished ? "All \(list.count) drills done. Recover well and come back tomorrow."
