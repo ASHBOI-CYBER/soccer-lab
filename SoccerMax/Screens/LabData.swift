@@ -48,6 +48,7 @@ enum LabPlan {
     }
     static func isRest(_ day: String, training days: Int) -> Bool {
         if DebugRoute.parts.contains("rest"), day == todayKey() { return true }
+        if DebugRoute.parts.contains("norest") { return false }
         return restDays(training: days).contains(day)
     }
 
