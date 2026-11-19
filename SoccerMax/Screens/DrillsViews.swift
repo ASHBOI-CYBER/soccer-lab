@@ -379,6 +379,11 @@ struct DayPicker: View {
 /// Test builds: `-route tab:training:drill.<id>:timer` opens it, add `:running` for a clock part-way, `:done` for the result.
 struct DrillTimer: View {
     let drill: Drill
+    /// Inside a session (SessionRun): "drill 2 of 6", the next drill's name, and what to do when this one is over
+    /// (nil = it was skipped). Alone, all three are nil and the result screen just closes.
+    var step: (Int, Int)? = nil
+    var nextName: String? = nil
+    var onNext: ((Lab.Earned?) -> Void)? = nil
     @Environment(AppStore.self) private var store
     @Environment(\.dismiss) private var dismiss
     /// When the clock was last started (nil = stopped), and the time banked before the last pause.
@@ -419,7 +424,13 @@ struct DrillTimer: View {
                 }
                 .accessibilityLabel("Close")
                 Spacer()
-                Label("\(drill.min) min drill", systemImage: "clock").font(F.round(14, .bold)).foregroundStyle(C.muted)
+                if let step {
+                    Text("DRILL \(step.0) OF \(step.1)").font(F.round(13, .heavy)).kerning(1.2).foregroundStyle(C.brandHi)
+                    Spacer()
+                    Button("Skip") { onNext?(nil) }.font(F.round(15, .bold)).foregroundStyle(C.muted).frame(minWidth: 44, minHeight: 44)
+                } else {
+                    Label("\(drill.min) min drill", systemImage: "clock").font(F.round(14, .bold)).foregroundStyle(C.muted)
+                }
             }
             VStack(spacing: 6) {
                 Text(drill.name.uppercased()).font(F.display(30)).foregroundStyle(C.creme)
@@ -522,7 +533,15 @@ struct DrillTimer: View {
             .padding(16)
             .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.char850))
             Spacer(minLength: 0)
-            Button("Done") { dismiss() }.buttonStyle(.gameLarge)
+            if let onNext {
+                Button(nextName.map { "Next: \($0)" } ?? "Finish session") { onNext(e) }
+                    .buttonStyle(.gameLarge(.brand, feel: .kick))
+                if nextName != nil {
+                    Button("End session") { dismiss() }.font(F.round(15, .bold)).foregroundStyle(C.muted).frame(minHeight: 44)
+                }
+            } else {
+                Button("Done") { dismiss() }.buttonStyle(.gameLarge)
+            }
         }
         .padding(.horizontal, 20)
         .padding(.bottom, 16)
@@ -530,6 +549,65 @@ struct DrillTimer: View {
     }
 
     private func row(_ a: String, _ b: String) -> some View {
+        HStack {
+            Text(a).font(F.round(15, .semibold)).foregroundStyle(C.creme2)
+            Spacer()
+            Text(b).font(F.round(16, .heavy)).foregroundStyle(C.creme).monospacedDigit()
+        }
+    }
+}
+
+// MARK: - Start Session (2026-11-19)
+
+/// Today's session in one go: the drills that are still to do, one timer after another. Each drill is a DrillTimer;
+/// its result screen leads to the next drill, and the last one shows what the whole session earned.
+/// Test builds: `-route tab:training:named:sessionrun`.
+struct SessionRun: View {
+    let drills: [Drill]
+    @Environment(\.dismiss) private var dismiss
+    @State private var i = 0
+    @State private var xp = 0
+    @State private var seconds: Double = 0
+    @State private var done = 0
+    @State private var finished = false
+
+    var body: some View {
+        if finished || drills.isEmpty {
+            summary
+        } else {
+            DrillTimer(drill: drills[i], step: (i + 1, drills.count),
+                       nextName: i + 1 < drills.count ? drills[i + 1].name : nil) { got in
+                if let got { xp += got.total; seconds += got.seconds; done += 1 }
+                if i + 1 < drills.count { i += 1 } else { withAnimation(.snappy) { finished = true } }
+            }
+            .id(drills[i].id)
+        }
+    }
+
+    private var summary: some View {
+        ZStack {
+            C.char900.ignoresSafeArea()
+            VStack(spacing: 18) {
+                Spacer(minLength: 0)
+                Image(systemName: "trophy.fill").font(.system(size: 72, weight: .bold)).foregroundStyle(C.gold)
+                    .shadow(color: C.gold.opacity(0.5), radius: 24)
+                Text(done == drills.count && done > 0 ? "SESSION DONE" : "SESSION OVER").font(F.display(34)).foregroundStyle(C.creme)
+                Text("+\(xp) XP").font(.system(size: 56, weight: .heavy, design: .rounded)).foregroundStyle(C.gold).monospacedDigit()
+                VStack(spacing: 10) {
+                    line("Drills trained", "\(done) of \(drills.count)")
+                    line("Time trained", DrillTimer.clock(seconds))
+                }
+                .padding(16)
+                .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.char850))
+                Spacer(minLength: 0)
+                Button("Done") { dismiss() }.buttonStyle(.gameLarge)
+            }
+            .padding(.horizontal, 20)
+            .padding(.bottom, 16)
+        }
+    }
+
+    private func line(_ a: String, _ b: String) -> some View {
         HStack {
             Text(a).font(F.round(15, .semibold)).foregroundStyle(C.creme2)
             Spacer()

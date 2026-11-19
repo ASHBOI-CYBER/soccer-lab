@@ -31,6 +31,8 @@ struct TrainingTab: View {
     private var plan: [Drill] { LabPlan.today(position: store.answers.position, date: date) }
     /// A recovery day for this player's training days (LabPlan.restDays).
     private func isRest(_ d: String) -> Bool { LabPlan.isRest(d, training: store.answers.trainingDaysPerWeek) }
+    /// Today's session, drill after drill (SessionRun). Test builds: `-route tab:training:named:sessionrun`.
+    @State private var sessionRun = DebugRoute.parts.contains("sessionrun")
     /// Days the player chose "Train anyway" on (this visit only).
     @State private var trainAnyway: Set<String> = []
     private var fixes: [Drill] { lab.fixList.filter { Library.shared.has($0) }.map { Library.shared.drill($0) } }
@@ -70,6 +72,9 @@ struct TrainingTab: View {
             .page()
         }
         .fullScreenCover(isPresented: $running) { RunView().duoColumn() }
+        .fullScreenCover(isPresented: $sessionRun) {
+            SessionRun(drills: LabPlan.today(position: store.answers.position).filter { !lab.isDone($0.id) })
+        }
     }
 
     // MARK: this week
@@ -144,6 +149,12 @@ struct TrainingTab: View {
                                 .font(F.round(14, .semibold)).foregroundStyle(C.muted)
                         }
                         Spacer(minLength: 0)
+                    }
+                    if isToday, doneCount < list.count {
+                        Button { sessionRun = true } label: {
+                            Label(doneCount == 0 ? "Start Session" : "Continue Session", systemImage: "play.fill")
+                        }
+                        .buttonStyle(.game(.brand, height: 56, font: 20, feel: .kick))
                     }
                     VStack(spacing: 10) {
                         ForEach(list) { d in LabDrillRow(drill: d, canTick: isToday) }
