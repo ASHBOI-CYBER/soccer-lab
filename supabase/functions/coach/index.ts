@@ -100,16 +100,16 @@ Deno.serve(async (req) => {
   if (req.method !== "POST") return reply({ error: "no" }, 405);
 
   const key = Deno.env.get("ANTHROPIC_API_KEY");
-  if (!key) return reply({ error: "Coach isn't switched on yet." }, 503);
+  if (!key) return reply({ error: "Socco isn't switched on yet." }, 503);
 
   // who is asking: the player's own token, checked with Supabase
   const auth = req.headers.get("authorization") ?? "";
-  if (!auth.startsWith("Bearer ")) return reply({ error: "Sign in to talk to Coach." }, 401);
+  if (!auth.startsWith("Bearer ")) return reply({ error: "Sign in to talk to Socco." }, 401);
   const db = createClient(Deno.env.get("SUPABASE_URL")!, Deno.env.get("SUPABASE_ANON_KEY")!, {
     global: { headers: { Authorization: auth } },
   });
   const { data: who, error: whoErr } = await db.auth.getUser(auth.slice(7));
-  if (whoErr || !who?.user) return reply({ error: "Sign in to talk to Coach." }, 401);
+  if (whoErr || !who?.user) return reply({ error: "Sign in to talk to Socco." }, 401);
 
   let body: { messages?: unknown; context?: unknown };
   try {
@@ -123,14 +123,14 @@ Deno.serve(async (req) => {
 
   // one message off today's allowance (runs as the player, so it can only count their own)
   const limit = await dailyLimit(who.user.id);
-  if (limit < 1) return reply({ error: "Coach is part of Soccer Lab Pro.", remaining: 0 }, 403);
+  if (limit < 1) return reply({ error: "Socco is part of Soccer Lab Pro.", remaining: 0 }, 403);
   const { data: left, error: limitErr } = await db.rpc("coach_take", { p_limit: limit });
   if (limitErr) {
     console.error("coach_take failed", limitErr.message);
-    return reply({ error: "Coach is busy. Try again in a minute." }, 500);
+    return reply({ error: "Socco is busy. Try again in a minute." }, 500);
   }
   if (typeof left !== "number" || left < 0) {
-    return reply({ error: `That's your ${limit} messages for today. Coach is back tomorrow.`, remaining: 0 }, 429);
+    return reply({ error: `That's your ${limit} messages for today. Socco is back tomorrow.`, remaining: 0 }, 429);
   }
 
   const client = new Anthropic({ apiKey: key, maxRetries: 2, timeout: 60_000 });
@@ -152,19 +152,19 @@ Deno.serve(async (req) => {
       return reply({ reply: "I can't help with that one. Ask me about training, your game, fitness or food.", remaining: left });
     }
     const text = res.content.flatMap((b) => (b.type === "text" ? [b.text] : [])).join("\n").trim();
-    if (!text) return reply({ error: "Coach lost the thread. Ask again." }, 502);
+    if (!text) return reply({ error: "Socco lost the thread. Ask again." }, 502);
     return reply({ reply: text, remaining: left });
   } catch (e) {
-    if (e instanceof Anthropic.RateLimitError) return reply({ error: "Coach is busy. Try again in a minute." }, 503);
+    if (e instanceof Anthropic.RateLimitError) return reply({ error: "Socco is busy. Try again in a minute." }, 503);
     if (e instanceof Anthropic.AuthenticationError) {
       console.error("coach: the Anthropic key was rejected");
-      return reply({ error: "Coach isn't switched on yet." }, 503);
+      return reply({ error: "Socco isn't switched on yet." }, 503);
     }
     if (e instanceof Anthropic.APIError) {
       console.error("coach: Anthropic error", e.status, e.message);
-      return reply({ error: "Coach is busy. Try again in a minute." }, 502);
+      return reply({ error: "Socco is busy. Try again in a minute." }, 502);
     }
     console.error("coach: failed", e);
-    return reply({ error: "Couldn't reach Coach. Check your connection." }, 502);
+    return reply({ error: "Couldn't reach Socco. Check your connection." }, 502);
   }
 });

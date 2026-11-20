@@ -350,7 +350,7 @@ struct CoachView: View {
                 .font(F.round(11, .medium)).foregroundStyle(C.muted)
             } else {
                 VStack(spacing: 10) {
-                    Text("Sign in to talk to Coach. It keeps your chats safe and your daily messages fair.")
+                    Text("Sign in to talk to Socco. It keeps your chats safe and your daily messages fair.")
                         .font(F.round(14, .medium)).foregroundStyle(C.muted).multilineTextAlignment(.center)
                     AppleSignIn()
                     if let e = team.error { Text(e).font(F.round(13, .semibold)).foregroundStyle(C.gold) }
