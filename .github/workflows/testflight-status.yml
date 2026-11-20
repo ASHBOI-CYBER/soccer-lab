@@ -9,6 +9,10 @@ on:
         description: "Optional: a team member's email to add to the internal testers"
         required: false
         default: ""
+      public_link:
+        description: "yes = switch on the outside testers' public TestFlight link and print it"
+        required: false
+        default: ""
 
 jobs:
   status:
@@ -21,6 +25,7 @@ jobs:
           ISS: ${{ secrets.ASC_ISSUER_ID }}
           P8: ${{ secrets.ASC_KEY_P8 }}
           ADD: ${{ inputs.add_tester }}
+          LINK: ${{ inputs.public_link }}
         run: |
           python3 -m pip install --quiet pyjwt cryptography
           python3 - <<'PY'
@@ -61,6 +66,14 @@ jobs:
               print(f"build {b['attributes']['version']}: {b['attributes']['processingState']}, outside-tester review: {state}")
           s, t = call("GET", f"/v1/betaGroups/{EXTERNAL}/betaTesters?limit=20")
           print("outside testers:", [(x["attributes"]["firstName"], x["attributes"].get("state")) for x in t["data"]])
+          s, g = call("GET", f"/v1/betaGroups/{EXTERNAL}")
+          ga = g["data"]["attributes"] if isinstance(g, dict) else {}
+          if os.environ.get("LINK", "").strip() == "yes" and not ga.get("publicLinkEnabled"):
+              s, g = call("PATCH", f"/v1/betaGroups/{EXTERNAL}", {"data": {"type": "betaGroups", "id": EXTERNAL,
+                          "attributes": {"publicLinkEnabled": True, "publicLinkLimitEnabled": True, "publicLinkLimit": 200}}})
+              print("public link switched on:", s, "" if s == 200 else str(g)[:300])
+              ga = g["data"]["attributes"] if isinstance(g, dict) else ga
+          print("PUBLIC LINK:", ga.get("publicLink") if ga.get("publicLinkEnabled") else "off", "| limit:", ga.get("publicLinkLimit"))
           # every processed build goes to the internal testers (you, Ali, Fasih) straight away, no review needed
           s, g = call("GET", f"/v1/betaGroups/{INTERNAL}/builds?limit=50")
           have = {x["id"] for x in g.get("data", [])} if isinstance(g, dict) else set()
