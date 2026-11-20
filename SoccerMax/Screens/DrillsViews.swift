@@ -540,7 +540,8 @@ struct DrillTimer: View {
             }
             ScrollView {
                 VStack(alignment: .leading, spacing: 16) {
-                    Cover(drill: drill).frame(height: 200).frame(maxWidth: .infinity)
+                    StageBox(params: .setup(id: drill.id), height: 230, interactive: false)
+                        .frame(maxWidth: .infinity)
                         .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
                     VStack(alignment: .leading, spacing: 4) {
                         Text(drill.name.uppercased()).font(F.display(28)).foregroundStyle(C.creme)

@@ -186,8 +186,8 @@ struct HomeTab: View {
             HStack(spacing: 14) {
                 CoachBadge(size: 46)
                 VStack(alignment: .leading, spacing: 3) {
-                    Text("Ask Coach").font(.system(size: 17, weight: .bold)).foregroundStyle(C.creme)
-                    Text("Your AI coach knows your position, sessions and food.")
+                    Text("Ask Socco").font(.system(size: 17, weight: .bold)).foregroundStyle(C.creme)
+                    Text("Socco knows your position, your sessions and your food.")
                         .font(F.round(13, .medium)).foregroundStyle(C.muted)
                         .fixedSize(horizontal: false, vertical: true)
                 }
@@ -202,7 +202,7 @@ struct HomeTab: View {
             )
         }
         .buttonStyle(.press(.stud))
-        .accessibilityLabel("Ask Coach, your AI training coach")
+        .accessibilityLabel("Ask Socco, your AI football buddy")
     }
 
     // MARK: shortcuts
@@ -218,7 +218,7 @@ struct HomeTab: View {
                 if Nav.teamsOn {
                     shortcut("My team", "Chat and leaderboard", "person.3.fill", labSkillColor("Defending")) { Nav.shared.team = true }
                 } else {
-                    shortcut("Ask Coach", "Your AI training coach", "sparkles", Color(hex: 0xA78BFA)) { Nav.shared.coach = true }
+                    shortcut("Ask Socco", "Your AI football buddy", "sparkles", Color(hex: 0xA78BFA)) { Nav.shared.coach = true }
                 }
             }
         }

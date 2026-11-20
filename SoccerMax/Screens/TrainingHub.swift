@@ -72,7 +72,7 @@ struct TrainingDrillsPart: View {
                         toolFace("Drill Library", "Every drill, \(lib.drills.count) of them", "square.grid.2x2.fill", C.brand)
                     }
                     .buttonStyle(.plain)
-                    tool("AI Coach", "Ask anything", "sparkles", Color(hex: 0xA78BFA)) { Nav.shared.coach = true }
+                    tool("Ask Socco", "Ask anything", "sparkles", Color(hex: 0xA78BFA)) { Nav.shared.coach = true }
                 }
             }
 

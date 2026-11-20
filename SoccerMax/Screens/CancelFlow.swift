@@ -144,7 +144,7 @@ struct CancelFlow: View {
                 Divider().overlay(C.char600)
                 loss("star.fill", "Level \(store.level.lv) and your stats")
                 Divider().overlay(C.char600)
-                loss("play.rectangle.fill", "Every drill, your AI Coach and film reviews")
+                loss("play.rectangle.fill", "Every drill, Socco and your film reviews")
             }
             .gameCard(padding: 6, radius: 20)
         }

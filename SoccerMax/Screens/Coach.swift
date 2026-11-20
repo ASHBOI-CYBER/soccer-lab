@@ -215,10 +215,11 @@ struct CoachView: View {
 
     private var header: some View {
         HStack(spacing: 12) {
-            CoachBadge(size: 40)
+            CoachBadge(size: 46, talking: coach.thinking)
             VStack(alignment: .leading, spacing: 1) {
-                Text("Coach").font(.system(size: 20, weight: .bold)).foregroundStyle(C.creme)
-                Text("Your AI training coach").font(F.round(13, .medium)).foregroundStyle(C.muted)
+                Text("Socco").font(.system(size: 20, weight: .bold)).foregroundStyle(C.creme)
+                Text(coach.thinking ? "Typing…" : "Your football buddy").font(F.round(13, .medium))
+                    .foregroundStyle(coach.thinking ? C.brandHi : C.muted)
             }
             Spacer(minLength: 0)
             if !coach.messages.isEmpty {
@@ -244,6 +245,8 @@ struct CoachView: View {
     private var intro: some View {
         VStack(alignment: .leading, spacing: 14) {
             VStack(alignment: .leading, spacing: 6) {
+                Mascot(lines: ["Hey \(store.answers.firstName)! I'm Socco.", "Ask me anything about your game."], size: 120)
+                    .frame(maxWidth: .infinity)
                 Text("Hi \(store.answers.firstName), ask me anything.").font(.system(size: 22, weight: .bold)).foregroundStyle(C.creme)
                 Text("I know your position, today's session, your Fix List and what you've eaten today, so my answers fit you. Ask for a drill and I'll pick from the ones in the app.")
                     .font(F.round(15, .medium)).foregroundStyle(C.muted)
@@ -272,7 +275,7 @@ struct CoachView: View {
 
     private func bubble(_ m: CoachMessage) -> some View {
         HStack(alignment: .bottom, spacing: 8) {
-            if m.isUser { Spacer(minLength: 48) } else { CoachBadge(size: 26) }
+            if m.isUser { Spacer(minLength: 48) } else { CoachBadge(size: 30) }
             Text(verbatim: m.text)
                 .font(F.round(15, .medium))
                 .foregroundStyle(m.isUser ? Color.white : C.creme)
@@ -287,15 +290,15 @@ struct CoachView: View {
             if !m.isUser { Spacer(minLength: 24) }
         }
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(m.isUser ? "You" : "Coach"): \(m.text)")
+        .accessibilityLabel("\(m.isUser ? "You" : "Socco"): \(m.text)")
     }
 
     private var thinkingBubble: some View {
         HStack(alignment: .bottom, spacing: 8) {
-            CoachBadge(size: 26)
+            CoachBadge(size: 30, talking: true)
             HStack(spacing: 8) {
                 ProgressView().tint(C.brandHi).controlSize(.small)
-                Text("Coach is thinking…").font(F.round(14, .medium)).foregroundStyle(C.muted)
+                Text("Socco is thinking…").font(F.round(14, .medium)).foregroundStyle(C.muted)
             }
             .padding(.horizontal, 14).padding(.vertical, 10)
             .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.char800))
@@ -323,7 +326,7 @@ struct CoachView: View {
                 consentPanel
             } else if canChat {
                 HStack(alignment: .bottom, spacing: 10) {
-                    TextField("", text: $draft, prompt: Text("Ask Coach…").foregroundStyle(C.muted), axis: .vertical)
+                    TextField("", text: $draft, prompt: Text("Ask Socco…").foregroundStyle(C.muted), axis: .vertical)
                         .lineLimit(1...5)
                         .font(F.round(16, .medium)).foregroundStyle(C.creme)
                         .focused($typing)
@@ -340,7 +343,7 @@ struct CoachView: View {
                     .accessibilityLabel("Send")
                 }
                 HStack {
-                    Text("Coach can get things wrong. Not medical advice.")
+                    Text("Socco can get things wrong. Not medical advice.")
                     Spacer(minLength: 8)
                     if let left = coach.remaining { Text("\(left) left today").monospacedDigit() }
                 }
@@ -388,6 +391,20 @@ struct CoachView: View {
 
 /// Coach's little round mark: a glowing blue circle with a chat-and-ball symbol.
 struct CoachBadge: View {
+    var size: CGFloat = 40
+    /// Socco's mouth moves (while he's answering).
+    var talking = false
+    var body: some View {
+        // ASK SOCCO (2026-11-21, Fasih: the AI coach is Socco, the mascot, alive and answering): his face, not a sparkle
+        MascotDrawn(talking: talking)
+            .frame(width: size * 1.12, height: size * 1.12)
+            .frame(width: size, height: size)
+            .accessibilityHidden(true)
+    }
+}
+
+/// The old sparkle badge (kept for reference; not used).
+private struct SparkleBadge: View {
     var size: CGFloat = 40
     var body: some View {
         Image(systemName: "sparkles")

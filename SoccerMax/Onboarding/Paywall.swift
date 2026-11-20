@@ -277,7 +277,7 @@ struct SoccerMaxPaywall: View {
     private var features: some View {
         VStack(alignment: .leading, spacing: 12) {
             featureRow("figure.soccer", "A session every day for your position")
-            featureRow("sparkles", "Ask Coach, your AI training coach")
+            featureRow("sparkles", "Ask Socco, your AI football buddy")
             featureRow("video.fill", "Review your clips and get the drills that fix them")
             featureRow("fork.knife", "Fuel targets, meal plans and hydration")
             featureRow("location.fill", "Live GPS runs with distance and pace")
