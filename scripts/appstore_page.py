@@ -140,8 +140,13 @@ if en:
     for st in sets:
         n = len(st.get("relationships", {}).get("appScreenshots", {}).get("data", []))
         print("  screenshot set", st["attributes"]["screenshotDisplayType"], n, "images")
+    DISPLAY = "APP_IPHONE_67"
+    if editable and MODE == "apply":
+        # screenshot sets carried over from the old app (other sizes): the 6.9-inch set is used for every iPhone
+        for old in [x for x in sets if x["attributes"]["screenshotDisplayType"] != DISPLAY]:
+            say("remove the old " + old["attributes"]["screenshotDisplayType"] + " screenshots",
+                call("DELETE", f"/v1/appScreenshotSets/{old['id']}")[0])
     if editable and MODE == "apply" and os.environ.get("SHOTS", "yes") == "yes":
-        DISPLAY = "APP_IPHONE_67"
         st = next((x for x in sets if x["attributes"]["screenshotDisplayType"] == DISPLAY), None)
         if st is None:
             s, r = call("POST", "/v1/appScreenshotSets", {"data": {"type": "appScreenshotSets",
