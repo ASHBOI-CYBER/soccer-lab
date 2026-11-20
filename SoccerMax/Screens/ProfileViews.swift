@@ -108,10 +108,10 @@ struct ProfileTab: View {
         return VStack(spacing: 10) {
             HStack(spacing: 10) {
                 numberTile("\(store.air.days)", "Day streak", "flame.fill", C.gold) { showStreak = true }
-                numberTile("\(store.minutesThisWeek)", "Minutes this week", "clock.fill", C.brandHi) { showYear = true }
+                numberTile("\(store.minutesThisWeek)", "Min this week", "clock.fill", C.brandHi) { showYear = true }
             }
             HStack(spacing: 10) {
-                numberTile(String(format: "%.1f", km), "Km run this week", "figure.run", labSkillColor("Runs")) { Nav.shared.tab = .training }
+                numberTile(String(format: "%.1f", km), "Km this week", "figure.run", labSkillColor("Runs")) { Nav.shared.tab = .training }
                 numberTile("\(lab.reviews.count)", "Film reviews", "video.fill", labSkillColor("Defending")) { Nav.shared.tab = .film }
             }
         }
