@@ -1,0 +1,37 @@
+# Fills the App Store page for version 2.0 from appstore/listing.json and appstore/screenshots (scripts/appstore_page.py).
+# mode=check only prints what is there; mode=apply writes it. It never submits for review.
+name: App Store page
+
+on:
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: "check (read only) or apply (write the page)"
+        required: false
+        default: "check"
+      build:
+        description: "Build number to attach (empty = the newest processed build)"
+        required: false
+        default: ""
+      shots:
+        description: "Upload the screenshots too (yes / no)"
+        required: false
+        default: "yes"
+
+jobs:
+  page:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Fill the page
+        env:
+          ID: ${{ secrets.ASC_KEY_ID }}
+          ISS: ${{ secrets.ASC_ISSUER_ID }}
+          P8: ${{ secrets.ASC_KEY_P8 }}
+          MODE: ${{ inputs.mode }}
+          BUILD: ${{ inputs.build }}
+          SHOTS: ${{ inputs.shots }}
+        run: |
+          python3 -m pip install --quiet pyjwt cryptography
+          python3 scripts/appstore_page.py
