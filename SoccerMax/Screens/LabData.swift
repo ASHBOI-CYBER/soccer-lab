@@ -626,10 +626,11 @@ final class Lab {
     /// A drill trained with the timer: the real minutes count toward the streak and stats, XP for the time trained.
     /// The first time today also ticks the drill off (today's plan, the Fix List, the full-session bonus).
     @discardableResult
-    func complete(_ drill: Drill, store: AppStore, seconds: Double) -> Earned {
+    func complete(_ drill: Drill, store: AppStore, seconds: Double, quality: Double = 1) -> Earned {
         let t = min(seconds, Self.drillCap(drill))
         guard t >= Self.minDrillSeconds else { return Earned() }
-        var got = Earned(drill: Self.drillXP(drill, seconds: t), seconds: t)
+        // `quality` is the player's own rating after the drill (DrillTimer's "How did it go?"): 0.6 ... 1.15
+        var got = Earned(drill: max(1, Int((Double(Self.drillXP(drill, seconds: t)) * quality).rounded())), seconds: t)
         store.logDrill(PlanItem(drill.id), seconds: t)
         if !isDone(drill.id) {
             done[today, default: []].append(drill.id)

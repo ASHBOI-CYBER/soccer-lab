@@ -32,6 +32,7 @@ struct ProfileTab: View {
     @State private var photo: PhotosPickerItem?
     @State private var showBadges = false
     @State private var showYear = false
+    @State private var showStreak = false
 
     var body: some View {
         NavigationStack(path: $path) {
@@ -48,7 +49,8 @@ struct ProfileTab: View {
                     // v3 (2026-11-08, user): no rank card; tap the level bar ? every level
                     Button { showBadges = true } label: { LevelBar(level: store.level, showsMore: true) }
                         .buttonStyle(.press)
-                    CareerCard()
+                    Button { showYear = true } label: { CareerCard() }.buttonStyle(.plain)
+                        .accessibilityHint("Opens your year")
                     AchievementsCard()
                     TrainingChart()
                 }
@@ -69,6 +71,7 @@ struct ProfileTab: View {
             .sheet(isPresented: $showTeams) { TeamDisplayPicker() }
             .sheet(isPresented: $showBadges) { LevelsSheet() }
             .sheet(isPresented: $showYear) { YearSheet() }
+            .sheet(isPresented: $showStreak) { StreakSheet() }
             .alert("Your name", isPresented: $editName) {
                 TextField("First name", text: $first).textInputAutocapitalization(.words)
                 TextField("Last name", text: $last).textInputAutocapitalization(.words)
@@ -104,17 +107,24 @@ struct ProfileTab: View {
         let km = lab.runs.filter { $0.date >= weekStart }.reduce(0) { $0 + $1.km }
         return VStack(spacing: 10) {
             HStack(spacing: 10) {
-                numberTile("\(store.air.days)", "Day streak", "flame.fill", C.gold)
-                numberTile("\(store.minutesThisWeek)", "Minutes this week", "clock.fill", C.brandHi)
+                numberTile("\(store.air.days)", "Day streak", "flame.fill", C.gold) { showStreak = true }
+                numberTile("\(store.minutesThisWeek)", "Minutes this week", "clock.fill", C.brandHi) { showYear = true }
             }
             HStack(spacing: 10) {
-                numberTile(String(format: "%.1f", km), "Km run this week", "figure.run", labSkillColor("Runs"))
-                numberTile("\(lab.reviews.count)", "Film reviews", "video.fill", labSkillColor("Defending"))
+                numberTile(String(format: "%.1f", km), "Km run this week", "figure.run", labSkillColor("Runs")) { Nav.shared.tab = .training }
+                numberTile("\(lab.reviews.count)", "Film reviews", "video.fill", labSkillColor("Defending")) { Nav.shared.tab = .film }
             }
         }
     }
 
-    private func numberTile(_ value: String, _ label: String, _ icon: String, _ tint: Color) -> some View {
+    /// Every tile opens what it counts (2026-11-20): the streak page, the year, the Training tab, the Film tab.
+    private func numberTile(_ value: String, _ label: String, _ icon: String, _ tint: Color, open: @escaping () -> Void) -> some View {
+        Button { Haptics.play(.stud); open() } label: { numberFace(value, label, icon, tint) }
+            .buttonStyle(.plain)
+            .accessibilityHint("Opens \(label.lowercased())")
+    }
+
+    private func numberFace(_ value: String, _ label: String, _ icon: String, _ tint: Color) -> some View {
         HStack(spacing: 12) {
             Image(systemName: icon).font(.system(size: 16, weight: .bold)).foregroundStyle(tint)
                 .frame(width: 40, height: 40)
@@ -125,6 +135,7 @@ struct ProfileTab: View {
                 Text(label).font(F.round(12, .semibold)).foregroundStyle(C.muted).lineLimit(1).minimumScaleFactor(0.8)
             }
             Spacer(minLength: 0)
+            Image(systemName: "chevron.right").font(.system(size: 11, weight: .heavy)).foregroundStyle(C.muted)
         }
         .padding(12)
         .frame(maxWidth: .infinity)

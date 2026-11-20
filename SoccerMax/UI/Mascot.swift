@@ -149,7 +149,7 @@ struct Mascot: View {
                 .onTapGesture { next() }
         }
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel(lines.joined(separator: " "))
+        .accessibilityLabel("Socco says: " + lines.joined(separator: " "))
         .task(id: line) {
             let text = lines[safe: line] ?? ""
             guard await Typer.run(text, shown: { shown = $0 }, talking: { talking = $0 }) else { return }

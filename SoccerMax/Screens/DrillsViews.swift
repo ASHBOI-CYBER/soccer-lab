@@ -392,15 +392,19 @@ struct DrillTimer: View {
     @State private var earned: Lab.Earned? = DebugRoute.parts.contains("timer") && DebugRoute.parts.contains("done")
         ? Lab.Earned(drill: 27, session: 0, seconds: 312) : nil
     @State private var quitting = false
+    /// After Finish: the time trained, waiting for "How did it go?" (2026-11-20).
+    @State private var rating: TimeInterval? = DebugRoute.parts.contains("timer") && DebugRoute.parts.contains("rate") ? 300 : nil
 
     private var target: TimeInterval { Double(drill.min) * 60 }
+    /// Before the clock has ever started: the page shows how to do the drill (2026-11-20, Fasih: "show it first").
+    private var ready: Bool { startedAt == nil && banked == 0 }
     private var running: Bool { startedAt != nil }
     private func elapsed(_ now: Date) -> TimeInterval { banked + (startedAt.map { now.timeIntervalSince($0) } ?? 0) }
 
     var body: some View {
         ZStack {
             C.char900.ignoresSafeArea()
-            if let e = earned { result(e) } else { clock }
+            if let e = earned { result(e) } else if let t = rating { rate(t) } else if ready { intro } else { clock }
         }
         .onAppear { UIApplication.shared.isIdleTimerDisabled = true }
         .onDisappear { UIApplication.shared.isIdleTimerDisabled = false }
@@ -447,9 +451,11 @@ struct DrillTimer: View {
                                     style: StrokeStyle(lineWidth: 16, lineCap: .round))
                             .rotationEffect(.degrees(-90))
                         VStack(spacing: 4) {
-                            Text(Self.clock(t)).font(.system(size: 64, weight: .heavy, design: .rounded)).monospacedDigit()
-                                .foregroundStyle(C.creme)
-                            Text(t >= target ? "Full time! +5 XP bonus" : "\(Self.clock(target - t)) to full time")
+                            // counts DOWN to zero, then counts the extra time up (2026-11-20)
+                            Text(t >= target ? "+" + Self.clock(t - target) : Self.clock(target - t))
+                                .font(.system(size: 64, weight: .heavy, design: .rounded)).monospacedDigit()
+                                .foregroundStyle(t >= target ? C.gold : C.creme)
+                            Text(t >= target ? "Full time! +5 XP bonus" : "\(Self.clock(t)) trained")
                                 .font(F.round(14, .bold)).foregroundStyle(t >= target ? C.gold : C.muted)
                         }
                     }
@@ -502,10 +508,112 @@ struct DrillTimer: View {
     private func finish() {
         let t = elapsed(Date())
         startedAt = nil; banked = t
-        guard t >= Lab.minDrillSeconds else { dismiss(); return }
-        let got = Lab.shared.complete(drill, store: store, seconds: t)
-        withAnimation(.snappy) { earned = got }
+        guard t >= Lab.minDrillSeconds else { if let onNext { onNext(nil) } else { dismiss() }; return }
+        withAnimation(.snappy) { rating = t }
+    }
+
+    private func rated(_ quality: Double) {
+        guard let t = rating else { return }
+        let got = Lab.shared.complete(drill, store: store, seconds: t, quality: quality)
+        withAnimation(.snappy) { rating = nil; earned = got }
         Haptics.play(.goal)
+    }
+
+    // see the drill first
+
+    private var intro: some View {
+        VStack(spacing: 14) {
+            HStack {
+                Button { dismiss() } label: {
+                    Image(systemName: "xmark").font(.system(size: 15, weight: .bold)).foregroundStyle(C.creme)
+                        .frame(width: 44, height: 44).background(Circle().fill(C.char800))
+                }
+                .accessibilityLabel("Close")
+                Spacer()
+                if let step {
+                    Text("DRILL \(step.0) OF \(step.1)").font(F.round(13, .heavy)).kerning(1.2).foregroundStyle(C.brandHi)
+                    Spacer()
+                    Button("Skip") { onNext?(nil) }.font(F.round(15, .bold)).foregroundStyle(C.muted).frame(minWidth: 44, minHeight: 44)
+                } else {
+                    Label("\(drill.min) min drill", systemImage: "clock").font(F.round(14, .bold)).foregroundStyle(C.muted)
+                }
+            }
+            ScrollView {
+                VStack(alignment: .leading, spacing: 16) {
+                    Cover(drill: drill).frame(height: 200).frame(maxWidth: .infinity)
+                        .clipShape(RoundedRectangle(cornerRadius: 20, style: .continuous))
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(drill.name.uppercased()).font(F.display(28)).foregroundStyle(C.creme)
+                            .lineLimit(2).minimumScaleFactor(0.6)
+                        Text("\(drill.reps) · \(drill.min) min").font(F.round(15, .semibold)).foregroundStyle(C.muted)
+                    }
+                    if !drill.setup.isEmpty {
+                        VStack(alignment: .leading, spacing: 6) {
+                            Text("SET UP").font(F.round(12, .bold)).kerning(1.4).foregroundStyle(C.muted)
+                            Text(drill.setup).font(F.round(16)).foregroundStyle(C.creme2).fixedSize(horizontal: false, vertical: true)
+                        }
+                    }
+                    VStack(alignment: .leading, spacing: 10) {
+                        Text("HOW TO DO IT").font(F.round(12, .bold)).kerning(1.4).foregroundStyle(C.muted)
+                        ForEach(Array(drill.how.enumerated()), id: \.offset) { i, line in
+                            HStack(alignment: .firstTextBaseline, spacing: 12) {
+                                Text("\(i + 1)").font(F.round(15, .heavy)).foregroundStyle(C.brandHi).frame(width: 18)
+                                Text(line).font(F.round(16)).foregroundStyle(C.creme).fixedSize(horizontal: false, vertical: true)
+                            }
+                        }
+                    }
+                }
+                .padding(.bottom, 8)
+            }
+            .scrollIndicators(.hidden)
+            Button { start() } label: { Label("I'm ready. Start the timer", systemImage: "play.fill") }
+                .buttonStyle(.gameLarge(.brand, feel: .kick))
+        }
+        .padding(.horizontal, 20)
+        .padding(.top, 12)
+        .padding(.bottom, 16)
+    }
+
+    // how did it go?
+
+    private func rate(_ t: TimeInterval) -> some View {
+        let base = Lab.drillXP(drill, seconds: t)
+        let options: [(String, String, String, Double, Color)] = [
+            ("Tough one", "Messy today, but I showed up.", "cloud.rain.fill", 0.6, C.muted),
+            ("Okay", "Some good reps, some rushed.", "hand.thumbsup.fill", 0.85, C.creme2),
+            ("Good", "Clean reps most of the time.", "checkmark.circle.fill", 1.0, C.brandHi),
+            ("Game speed", "Clean and fast, like a match.", "bolt.fill", 1.15, C.gold),
+        ]
+        return VStack(alignment: .leading, spacing: 14) {
+            Spacer(minLength: 0)
+            // Socco, the mascot, asks (2026-11-20: the mascot's name is Socco)
+            Mascot(lines: ["Nice work!", "How did that one go?"], size: 110).frame(maxWidth: .infinity)
+            Text("HOW DID IT GO?").font(F.display(30)).foregroundStyle(C.creme)
+            Text("Be honest. Clean reps earn more XP than rushed ones.").font(F.round(15, .medium)).foregroundStyle(C.muted)
+                .fixedSize(horizontal: false, vertical: true)
+            ForEach(options, id: \.0) { o in
+                Button { rated(o.3) } label: {
+                    HStack(spacing: 14) {
+                        Image(systemName: o.2).font(.system(size: 18, weight: .bold)).foregroundStyle(o.4)
+                            .frame(width: 44, height: 44).background(Circle().fill(o.4.opacity(0.16)))
+                        VStack(alignment: .leading, spacing: 2) {
+                            Text(o.0).font(F.round(17, .bold)).foregroundStyle(C.creme)
+                            Text(o.1).font(F.round(13, .medium)).foregroundStyle(C.muted)
+                        }
+                        Spacer(minLength: 0)
+                        Text("+\(max(1, Int((Double(base) * o.3).rounded()))) XP").font(F.round(15, .heavy)).foregroundStyle(o.4).monospacedDigit()
+                    }
+                    .padding(12)
+                    .background(RoundedRectangle(cornerRadius: 18, style: .continuous).fill(C.char850)
+                        .overlay(RoundedRectangle(cornerRadius: 18, style: .continuous).stroke(C.line, lineWidth: 1)))
+                }
+                .buttonStyle(.plain)
+            }
+            Spacer(minLength: 0)
+        }
+        .padding(.horizontal, 20)
+        .padding(.bottom, 16)
+        .transition(.opacity)
     }
 
     static func clock(_ t: TimeInterval) -> String {

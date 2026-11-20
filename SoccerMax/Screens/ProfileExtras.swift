@@ -42,15 +42,19 @@ struct SkillMapCard: View {
                         ForEach(STATS, id: \.self) { k in
                             let v = sp.now[k] ?? 0
                             let gain = sp.gain[k] ?? 0
+                            NavigationLink(value: CardRoute.stat(k)) {
                             VStack(spacing: 6) {
                                 HStack {
                                     Text(STAT_NAME[k] ?? k).font(F.round(15, .semibold)).foregroundStyle(C.creme)
+                                    Image(systemName: "chevron.right").font(.system(size: 10, weight: .heavy)).foregroundStyle(C.muted)
                                     Spacer()
                                     if gain > 0 { Text("+\(gain)").font(F.round(12, .bold)).foregroundStyle(labSkillColor("Stretching")) }
                                     Text("\(v)").font(.system(size: 17, weight: .bold)).foregroundStyle(C.creme).monospacedDigit()
                                 }
                                 LabBar(value: Double(v - 40), goal: 59)
                             }
+                            }
+                            .buttonStyle(.plain)
                             .accessibilityElement(children: .ignore)
                             .accessibilityLabel("\(STAT_NAME[k] ?? k): \(v)\(gain > 0 ? ", up \(gain) from training" : "")")
                         }
