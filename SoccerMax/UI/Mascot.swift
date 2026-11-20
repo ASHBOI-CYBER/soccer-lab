@@ -54,19 +54,32 @@ struct MascotDrawn: View {
                         .frame(width: s * 0.5, height: s * 0.07)
                         .offset(y: s * 0.43)
                         .blur(radius: s * 0.02)
+                    // SOCCO (2026-11-20): the app's logo is the character. Its eyes and smile are part of the picture, so
+                    // only the changes are drawn on top: closed eyes for a blink, and an open mouth while it talks.
+                    // Positions are fractions of the picture (measured from the artwork).
                     ZStack {
                         Image("AppBall").resizable().scaledToFit()
-                        HStack(spacing: s * 0.13) {
-                            MascotEye(size: s * 0.17, closed: blink)
-                            MascotEye(size: s * 0.17, closed: blink)
+                        GeometryReader { f in
+                            let b = min(f.size.width, f.size.height)
+                            if blink {
+                                ForEach([CGPoint(x: 0.3125, y: 0.453), CGPoint(x: 0.6875, y: 0.447)], id: \.x) { e in
+                                    ZStack {
+                                        Circle().fill(.white).overlay(Circle().stroke(C.charInk, lineWidth: b * 0.018))
+                                        Capsule().fill(C.charInk).frame(width: b * 0.16, height: b * 0.02)
+                                    }
+                                    .frame(width: b * 0.227, height: b * 0.227)
+                                    .position(x: b * e.x, y: b * e.y)
+                                }
+                            }
+                            if talking {
+                                SoccoMouth(open: open)
+                                    .fill(Color(hex: 0x7A1020))
+                                    .overlay(SoccoMouth(open: open).stroke(C.charInk, style: StrokeStyle(lineWidth: b * 0.012, lineJoin: .round)))
+                                    .frame(width: b, height: b)
+                            }
                         }
-                        .offset(y: -s * 0.04)
-                        // closed: a smile; talking: the smile opens into a mouth
-                        MascotMouth(open: open)
-                            .fill(C.charInk)
-                            .frame(width: s * 0.2, height: s * 0.12)
-                            .offset(y: s * 0.15)
                     }
+                    .rotationEffect(.degrees(sin(t * 1.3) * 2.5))
                     .frame(width: s * 0.9, height: s * 0.9)
                     .offset(y: bob - s * 0.03)
                 }
@@ -90,6 +103,22 @@ private struct MascotEye: View {
             }
         }
         .frame(width: size, height: size * 1.15)
+    }
+}
+
+/// Socco's open mouth: the top lip is the smile in the artwork, and the lower lip drops as `open` goes 0 to 1.
+/// Drawn in the picture's own square (fractions of its side).
+private struct SoccoMouth: Shape {
+    var open: CGFloat
+    func path(in r: CGRect) -> Path {
+        let b = min(r.width, r.height)
+        let left = CGPoint(x: b * 0.378, y: b * 0.625), right = CGPoint(x: b * 0.62, y: b * 0.621)
+        var p = Path()
+        p.move(to: left)
+        p.addQuadCurve(to: right, control: CGPoint(x: b * 0.5, y: b * 0.708))
+        p.addQuadCurve(to: left, control: CGPoint(x: b * 0.5, y: b * (0.758 + 0.22 * open)))
+        p.closeSubpath()
+        return p
     }
 }
 

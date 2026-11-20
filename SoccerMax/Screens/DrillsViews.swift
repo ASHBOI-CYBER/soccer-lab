@@ -697,8 +697,8 @@ struct SessionRun: View {
             C.char900.ignoresSafeArea()
             VStack(spacing: 18) {
                 Spacer(minLength: 0)
-                Image(systemName: "trophy.fill").font(.system(size: 72, weight: .bold)).foregroundStyle(C.gold)
-                    .shadow(color: C.gold.opacity(0.5), radius: 24)
+                Mascot(lines: done == drills.count && done > 0 ? ["That's the whole session!", "See you at the next one."]
+                                                                  : ["Good work today.", "Come back for the rest."], size: 130)
                 Text(done == drills.count && done > 0 ? "SESSION DONE" : "SESSION OVER").font(F.display(34)).foregroundStyle(C.creme)
                 Text("+\(xp) XP").font(.system(size: 56, weight: .heavy, design: .rounded)).foregroundStyle(C.gold).monospacedDigit()
                 VStack(spacing: 10) {
