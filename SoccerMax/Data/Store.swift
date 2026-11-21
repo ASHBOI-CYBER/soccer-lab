@@ -31,6 +31,8 @@ struct Answers: Codable, Equatable {
     var when: String?
     var source: String?
     var notify: Bool?
+    /// When the player ticked the "Before you start" page (onboarding, 2026-11-21).
+    var agreedAt: Date?
     var drills: [String] = []
     var pledged = false
     /// Onboarding v4 (2026-11-17): the body and routine behind the personal fuel targets and plan. Optional so older

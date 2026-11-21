@@ -61,6 +61,7 @@
 		9A3C9C849F063C4E08F0480E /* Matchday.swift in Sources */ = {isa = PBXBuildFile; fileRef = D25C20692BD219DE50953FB6 /* Matchday.swift */; };
 		9A6DD11E33BA2F2210B53C87 /* ProfileViews.swift in Sources */ = {isa = PBXBuildFile; fileRef = 321081A7E10807BC492CE684 /* ProfileViews.swift */; };
 		9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */ = {isa = PBXBuildFile; fileRef = 008B54515A513BD184531E29 /* MapTab.swift */; };
+		062DD793A5C9A41C06E41336 /* PlanReveal.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9C10A029003F997E062DD793 /* PlanReveal.swift */; };
 		746D9D068339426D29025034 /* Streaks.swift in Sources */ = {isa = PBXBuildFile; fileRef = FE2422053CFE0F3B746D9D06 /* Streaks.swift */; };
 		B42DDB5B6F7A0C448433F064 /* NutritionPlan.swift in Sources */ = {isa = PBXBuildFile; fileRef = BA2DC592ACE28D0CB42DDB5B /* NutritionPlan.swift */; };
 		4A5D7D3EE1F9B7A0313AA089 /* BodyStep.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9BB5D09C1D1E866E4A5D7D3E /* BodyStep.swift */; };
@@ -136,6 +137,7 @@
 
 /* Begin PBXFileReference section */
 		008B54515A513BD184531E29 /* MapTab.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapTab.swift; sourceTree = "<group>"; };
+		9C10A029003F997E062DD793 /* PlanReveal.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlanReveal.swift; sourceTree = "<group>"; };
 		FE2422053CFE0F3B746D9D06 /* Streaks.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Streaks.swift; sourceTree = "<group>"; };
 		BA2DC592ACE28D0CB42DDB5B /* NutritionPlan.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NutritionPlan.swift; sourceTree = "<group>"; };
 		9BB5D09C1D1E866E4A5D7D3E /* BodyStep.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BodyStep.swift; sourceTree = "<group>"; };
@@ -339,6 +341,7 @@
 				84384AF82E40D2BD83DFB35E /* LocalTeamViews.swift */,
 				457EAABAD4522119C8D6381B /* LoggedViews.swift */,
 				008B54515A513BD184531E29 /* MapTab.swift */,
+				9C10A029003F997E062DD793 /* PlanReveal.swift */,
 				FE2422053CFE0F3B746D9D06 /* Streaks.swift */,
 				BA2DC592ACE28D0CB42DDB5B /* NutritionPlan.swift */,
 				9BB5D09C1D1E866E4A5D7D3E /* BodyStep.swift */,
@@ -594,6 +597,7 @@
 				410B5D77DB3B7434D4C9F886 /* LocalTeams.swift in Sources */,
 				2A313F5883861E364088C2C7 /* LoggedViews.swift in Sources */,
 				9ED47AE40E03D5BD43344201 /* MapTab.swift in Sources */,
+				062DD793A5C9A41C06E41336 /* PlanReveal.swift in Sources */,
 				746D9D068339426D29025034 /* Streaks.swift in Sources */,
 				B42DDB5B6F7A0C448433F064 /* NutritionPlan.swift in Sources */,
 				4A5D7D3EE1F9B7A0313AA089 /* BodyStep.swift in Sources */,

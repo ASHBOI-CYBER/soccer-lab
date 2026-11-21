@@ -13,11 +13,11 @@ import SwiftUI
 import UserNotifications
 
 enum OBStep: String, CaseIterable {
-    case welcome, name, position, gender, foot, body, level, routine, goal, fuel, wants, source, team, notify, account
+    case welcome, agree, name, position, gender, foot, body, level, routine, goal, fuel, wants, source, team, notify, account, build, ready
 
     /// The steps in order; "Join a team" only while teams are on (Nav.teamsOn).
     static var allCases: [OBStep] {
-        [.welcome, .name, .position, .gender, .foot, .body, .level, .routine, .goal, .fuel, .wants, .source, .team, .notify, .account]
+        [.welcome, .agree, .name, .position, .gender, .foot, .body, .level, .routine, .goal, .fuel, .wants, .source, .team, .notify, .account, .build, .ready]
             .filter { $0 != .team || TEAMS_ON }
     }
 
@@ -34,6 +34,9 @@ enum OBStep: String, CaseIterable {
         case .source: return "Where did you find us"
         case .team: return "Join a team"
         case .notify: return "Reminders"
+        case .agree: return "Before you start"
+        case .build: return "Building your plan"
+        case .ready: return "Your plan is ready"
         default: return rawValue.prefix(1).uppercased() + rawValue.dropFirst()
         }
     }
@@ -135,7 +138,10 @@ struct OnboardingFlow: View {
         case .source: PickStep(ctx: ctx, title: "Where did you find us?", options: ["TikTok", "Instagram", "YouTube", "A friend", "App Store", "Other"], key: \.source,
                                icon: { AnyView(SourceLogo(source: $0)) })
         case .team: JoinTeamStep(ctx: ctx)
+        case .agree: AgreeStep(ctx: ctx)
         case .notify: NotifyStep(ctx: ctx)
+        case .build: BuildPlanStep(ctx: ctx)
+        case .ready: PlanReadyStep(ctx: ctx)
         case .account: AccountStep(ctx: ctx)
         }
     }
@@ -288,7 +294,7 @@ struct Welcome: View {
         }
         .dock(fade: .clear) {
             VStack(spacing: 12) {
-                Button("Get started") { ctx.go(.name) }.buttonStyle(.gameLarge)
+                Button("Get started") { ctx.go(.agree) }.buttonStyle(.gameLarge)
                 // an invite link's code (or one typed here) waits for the end of onboarding: after the Apple account
                 // the app opens the Team page with it ready to use (ShareLinks, notes/19 "SHARE LINKS")
                 Button { entering = true } label: {
@@ -663,7 +669,7 @@ struct AccountStep: View {
         done = true
         Haptics.play(.goal)
         withAnimation(.snappy) { phase = .scored }
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) { ctx.finish() }
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.9) { ctx.next() }   // then: building your plan → ready → paywall
     }
 
     var body: some View {
