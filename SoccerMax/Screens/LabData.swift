@@ -581,6 +581,16 @@ final class Lab {
         fixCount = Self.load("lab.fixcount.v1") ?? [:]
         reviews = Self.load("lab.film.v1") ?? []
         fuel = Self.load("lab.fuel.v1") ?? [:]
+        body = Self.load("lab.body.v1") ?? FuelBody()
+        runs = Self.load("lab.runs.v1") ?? []
+        bonusXP = UserDefaults.standard.integer(forKey: "lab.xp.v1")
+        sessionBonusDay = UserDefaults.standard.string(forKey: "lab.xp.session") ?? ""
+        if let t = UserDefaults.standard.object(forKey: "lab.start") as? Date {
+            startDate = t
+        } else {
+            startDate = Date()
+            UserDefaults.standard.set(startDate, forKey: "lab.start")
+        }
         // test builds: `-route ...:demo` is a player a few weeks in (store screenshots): runs, film reviews, XP
         if DebugRoute.parts.last?.hasPrefix("demo") == true {
             let cal = Calendar.current
@@ -600,16 +610,6 @@ final class Lab {
                 FoodEntry(name: "Greek yoghurt and berries", kcal: 210, protein: 17, carbs: 24, fat: 5, time: t.addingTimeInterval(16 * 3600)),
                 FoodEntry(name: "Salmon, rice and greens", kcal: 690, protein: 44, carbs: 70, fat: 22, time: t.addingTimeInterval(19 * 3600))],
                 water: 6)
-        }
-        body = Self.load("lab.body.v1") ?? FuelBody()
-        runs = Self.load("lab.runs.v1") ?? []
-        bonusXP = UserDefaults.standard.integer(forKey: "lab.xp.v1")
-        sessionBonusDay = UserDefaults.standard.string(forKey: "lab.xp.session") ?? ""
-        if let t = UserDefaults.standard.object(forKey: "lab.start") as? Date {
-            startDate = t
-        } else {
-            startDate = Date()
-            UserDefaults.standard.set(startDate, forKey: "lab.start")
         }
     }
 
