@@ -594,7 +594,7 @@ final class Lab {
         // test builds: `-route ...:demo` is a player a few weeks in (store screenshots): runs, film reviews, XP
         if DebugRoute.parts.last?.hasPrefix("demo") == true {
             let cal = Calendar.current
-            runs = [(1, 3200.0, 1080.0), (3, 2600, 880), (5, 4100, 1420)].map { d, m, s in
+            runs = [(0, 3200.0, 1080.0), (2, 2600, 880), (4, 4100, 1420)].map { d, m, s in
                 RunLog(date: cal.date(byAdding: .day, value: -d, to: Date()) ?? Date(), meters: m, seconds: s, topSpeed: 6.8) }
             reviews = (0..<4).map { i in
                 FilmReview(date: cal.date(byAdding: .day, value: -3 * i - 1, to: Date()) ?? Date(), title: "Match clip \(4 - i)",

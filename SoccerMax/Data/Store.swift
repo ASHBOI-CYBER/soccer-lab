@@ -467,6 +467,8 @@ final class AppStore {
         if let first = items(todayKey()).first { setDone(1, day: todayKey(), drill: first.drill) }
         if DebugRoute.parts.contains("done") { finish(todayKey()) }
         seedStatsDemo()
+        // store screenshots: about 45 minutes trained today
+        trained[dateKey(Date())] = max(trained[dateKey(Date())] ?? 0, 46)
     }
 
     func apply(_ t: Template) {
