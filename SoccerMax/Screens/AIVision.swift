@@ -155,9 +155,9 @@ extension FilmAIReport {
 extension FoodScanResult {
     /// Test builds only: a made-up scan for screenshots (`-route tab:nutrition:scan`).
     static let demo = FoodScanResult(is_food: true, message: "A solid recovery plate: carbs to refuel and protein to rebuild.", items: [
-        FoodScanItem(name: "Chicken biryani", portion: "1 plate", grams: 350, kcal: 620, protein: 32, carbs: 78, fat: 19),
-        FoodScanItem(name: "Raita", portion: "1 small bowl", grams: 120, kcal: 90, protein: 5, carbs: 7, fat: 4.5),
-        FoodScanItem(name: "Salad", portion: "1 side", grams: 80, kcal: 25, protein: 1, carbs: 5, fat: 0)])
+        FoodScanItem(name: "Grilled chicken breast", portion: "1 breast", grams: 170, kcal: 280, protein: 53, carbs: 0, fat: 6),
+        FoodScanItem(name: "Roast potatoes", portion: "1 serving", grams: 200, kcal: 290, protein: 5, carbs: 44, fat: 10),
+        FoodScanItem(name: "Steamed broccoli", portion: "1 side", grams: 90, kcal: 30, protein: 3, carbs: 6, fat: 0.4)])
 }
 
 struct FilmAIFix: Codable, Hashable {

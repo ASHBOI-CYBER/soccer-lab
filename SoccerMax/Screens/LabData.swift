@@ -581,6 +581,16 @@ final class Lab {
         fixCount = Self.load("lab.fixcount.v1") ?? [:]
         reviews = Self.load("lab.film.v1") ?? []
         fuel = Self.load("lab.fuel.v1") ?? [:]
+        // test builds: `-route tab:nutrition:named:fed` shows a day with food logged (store screenshots)
+        if DebugRoute.parts.contains("fed") {
+            let t = Calendar.current.startOfDay(for: Date())
+            fuel[dateKey(Date())] = FuelDay(entries: [
+                FoodEntry(name: "Porridge with banana and honey", kcal: 420, protein: 14, carbs: 72, fat: 9, time: t.addingTimeInterval(8 * 3600)),
+                FoodEntry(name: "Grilled chicken wrap", kcal: 540, protein: 38, carbs: 52, fat: 18, time: t.addingTimeInterval(12.5 * 3600)),
+                FoodEntry(name: "Greek yoghurt and berries", kcal: 210, protein: 17, carbs: 24, fat: 5, time: t.addingTimeInterval(16 * 3600)),
+                FoodEntry(name: "Salmon, rice and greens", kcal: 690, protein: 44, carbs: 70, fat: 22, time: t.addingTimeInterval(19 * 3600))],
+                water: 6)
+        }
         body = Self.load("lab.body.v1") ?? FuelBody()
         runs = Self.load("lab.runs.v1") ?? []
         bonusXP = UserDefaults.standard.integer(forKey: "lab.xp.v1")
