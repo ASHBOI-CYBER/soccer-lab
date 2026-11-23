@@ -581,6 +581,16 @@ final class Lab {
         fixCount = Self.load("lab.fixcount.v1") ?? [:]
         reviews = Self.load("lab.film.v1") ?? []
         fuel = Self.load("lab.fuel.v1") ?? [:]
+        // test builds: `-route ...:demo` is a player a few weeks in (store screenshots): runs, film reviews, XP
+        if DebugRoute.parts.last?.hasPrefix("demo") == true {
+            let cal = Calendar.current
+            runs = [(1, 3200.0, 1080.0), (3, 2600, 880), (5, 4100, 1420)].map { d, m, s in
+                RunLog(date: cal.date(byAdding: .day, value: -d, to: Date()) ?? Date(), meters: m, seconds: s, topSpeed: 6.8) }
+            reviews = (0..<4).map { i in
+                FilmReview(date: cal.date(byAdding: .day, value: -3 * i - 1, to: Date()) ?? Date(), title: "Match clip \(4 - i)",
+                           mistakes: [], note: "", clip: nil, drills: []) }
+            bonusXP = 1680
+        }
         // test builds: `-route tab:nutrition:named:fed` shows a day with food logged (store screenshots)
         if DebugRoute.parts.contains("fed") {
             let t = Calendar.current.startOfDay(for: Date())
