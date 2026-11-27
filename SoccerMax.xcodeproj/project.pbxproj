@@ -692,7 +692,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skillerai.ios.widgets;
 				PRODUCT_NAME = SoccerMaxWidgets;
 				SDKROOT = iphoneos;
@@ -718,7 +718,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skillerai.ios;
 				PRODUCT_NAME = SoccerMax;
 				SDKROOT = iphoneos;
@@ -797,7 +797,7 @@
 					"@executable_path/Frameworks",
 					"@executable_path/../../Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skillerai.ios.widgets;
 				PRODUCT_NAME = SoccerMaxWidgets;
 				SDKROOT = iphoneos;
@@ -886,7 +886,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
-				MARKETING_VERSION = 2.0;
+				MARKETING_VERSION = 2.0.1;
 				PRODUCT_BUNDLE_IDENTIFIER = com.skillerai.ios;
 				PRODUCT_NAME = SoccerMax;
 				SDKROOT = iphoneos;

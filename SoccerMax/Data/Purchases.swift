@@ -328,7 +328,7 @@ final class Purchases {
     /// the Yearly plan and the plans screen shows "7 DAYS FREE" to people Apple says can get it; remove it and the
     /// screen goes back to paid-only, with no new build. (Apple applies an intro offer at purchase either way, so the
     /// screen must follow App Store Connect.) false = never show a trial, even if one is set up.
-    static let freeTrial = false   // 2026-11-21: no free trial (the team decided). Never shows, whatever ASC says.
+    static let freeTrial = true    // 2026-11-28: back on, 3-day free trial on Yearly (team). Shows only when ASC has it.
     /// False until Apple confirms it (2026-11-18): never promise a trial that isn't set up in App Store Connect.
     var trialOffered = false
     /// How long Apple's free trial on Yearly is, in days (7 for "1 week").
